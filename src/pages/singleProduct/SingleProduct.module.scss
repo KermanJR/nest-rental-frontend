@@ -1,0 +1,12 @@
+.singleProduct{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 3rem;
+    height: auto;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    &__img img{
+        object-fit: contain;
+        width: 400px;
+    }
+}

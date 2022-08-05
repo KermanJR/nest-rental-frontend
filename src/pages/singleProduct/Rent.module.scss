@@ -1,0 +1,67 @@
+@import '../../default/variables.scss';
+
+.rent{
+    display: block;
+    color: $primary-color;
+    background-color: #ccc;
+    border-radius: 9px;
+    padding: 1rem;
+    height: 400px;
+    &__price, &__title{
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: .5rem;
+    }
+
+    &__form{
+        padding: 2.5rem 2rem;
+
+    }
+
+    &__form__date{
+        display: flex;
+        justify-content: space-between;
+        grid-gap: 5rem;
+    }
+
+    &__form__date div{
+        width: 100%;
+    }
+
+    &__form__date div label{
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        padding-bottom: .7rem;
+    }
+
+    &__form__date div input{
+        width: 100%;
+        border: none;
+        background-color: #D9D9D9;
+        padding: .5rem;
+        box-shadow: 1px 1px 2px 1px #a0a0a0;
+        border-radius: 9px;
+    }
+
+    &__form__calc{
+        display: flex;
+        justify-content: space-between;
+        padding-top: 2rem;
+        padding-bottom: 1rem;
+        align-items: center;
+        label{
+            font-weight: bold;
+        }
+        input{
+            width: 60%;
+            justify-content: space-between;
+            border: none;
+            background-color: #D9D9D9;
+            padding: .5rem;
+            box-shadow: 1px 1px 2px 1px #a0a0a0;
+            border-radius: 9px;
+        }
+    }
+}

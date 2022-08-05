@@ -1,0 +1,46 @@
+@import '../../default/variables.scss' ;
+
+.header{
+    width: 100%;
+    margin: 0 auto;
+    &__sub{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: $primary-color;
+        padding: 1rem 5rem;
+        color: #fff;
+        &__infos{
+            display: flex;
+            grid-gap: 2rem;
+            list-style: none;
+            & li{
+                display: flex;
+                align-items: center;
+                grid-gap: .5rem;
+            }
+        }
+
+        &__socialMedias{
+            display: flex;
+            grid-gap: 2rem;
+            list-style: none;
+        }
+    }
+
+    &__main{
+        display: flex;
+        align-items: center;
+        padding: 1rem 5rem;
+    }
+    &__links{
+        display: flex;
+        grid-gap: 4rem;
+        margin-left: 4rem;
+    }
+    &__links a{
+        text-decoration: none;
+        color: #000;
+        font-weight: 500;
+    }
+}
