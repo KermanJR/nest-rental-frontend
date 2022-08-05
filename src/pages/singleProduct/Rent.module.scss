@@ -6,8 +6,15 @@
     background-color: #ccc;
     border-radius: 9px;
     padding: 1rem;
-    height: 400px;
-    &__price, &__title{
+    height: 430px;
+
+    &__price{
+        margin-top: 1rem;
+        text-align: left;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    &__title{
         text-align: center;
         font-size: 1.2rem;
         font-weight: bold;
