@@ -2,8 +2,8 @@ import Header from "./components/Header/Header";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SingleProduct from "./pages/singleProduct/SingleProduct";
 import Footer from "./components/Footer/Footer";
-import Container from "./components/Container/Container";
 import Demonstration from "./pages/singleProduct/Demonstration/Demonstration";
+import Home from "./pages/Home/Home";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Header/>
           <Routes>
-            <Route path="/">
+            <Route path="/" element={<Home/>}>
               <Route path="/produto/ecolift-50" element={<SingleProduct/>} />
               <Route path="/demonstracao" element={<Demonstration/>} />
             </Route>
