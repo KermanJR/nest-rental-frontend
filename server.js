@@ -11,7 +11,7 @@ app.use('/',
     )
 )
 
-app.use('*', 
+app.use('/*', 
     express.static(
         resolve(
             __dirname,
