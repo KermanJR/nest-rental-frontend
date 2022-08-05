@@ -20,6 +20,10 @@ app.use('*',
     )
 )
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/build/index.html'));
+  });
+
 app.listen(process.env.PORT || 3000, (err)=>{
     if(err){
         return console.log(err)
