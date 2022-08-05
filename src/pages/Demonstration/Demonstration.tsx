@@ -1,10 +1,16 @@
-import React from 'react'
+import React from 'react';
+import styles from './Demonstration.module.scss';
 
 const Demonstration = () => {
   return (
-    <div>
-        Página de demonstração
-    </div>
+    <section className={styles.demonstration}>
+      <h1>Escolha a plataforma ideal</h1>
+      <div className={styles.demonstration__imagesMachines}>
+        <div className={styles.demonstration__images}>
+
+        </div>
+      </div>
+    </section>  
   )
 }
 
