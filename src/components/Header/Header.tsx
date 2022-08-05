@@ -33,7 +33,7 @@ const Header = () => {
             <ul className={styles.header__links}>
                 <Link to="/home">Home</Link>
                 <Link to="/home">Como funciona</Link>
-                <Link to="/home">Demonstração</Link>
+                <Link to="/demonstracao">Demonstração</Link>
                 <Link to="/home">Aluguel</Link>
             </ul>
            
