@@ -31,10 +31,10 @@ const Header = () => {
             <img src={Logo} alt="Logo - Nest Rental"/>
             
             <ul className={styles.header__links}>
-                <Link to="/home">Home</Link>
-                <Link to="/home">Como funciona</Link>
+                <Link to="/">Home</Link>
+                <Link to="/como-funciona">Como funciona</Link>
                 <Link to="/demonstracao">Demonstração</Link>
-                <Link to="/home">Aluguel</Link>
+                <Link to="/aluguel">Aluguel</Link>
             </ul>
            
            
