@@ -1,6 +1,5 @@
 import React from 'react';
-import { idText } from 'typescript';
-import Button from '../../components/Button/Button';
+
 import styles from './Rent.module.scss';
 
 
@@ -9,120 +8,127 @@ const Rent = () => {
 
     const [startDate, setStartDate] = React.useState<any>(null);
     const [endDate, setEndDate] = React.useState<any>(null);
-    const [totalDays, setTotalDays] = React.useState<any>(0);
+    const [totalDays, setTotalDays] = React.useState<number>(0);
     const [price, setPrice] = React.useState<any>(137)
     const [addDays, setAddDays] = React.useState<number>(0)
     const [newPrice, setNewPrice] = React.useState<any>(null)
+ 
 
-    function compareDate(e: React.FormEvent<HTMLInputElement>){
-        e.preventDefault()
+    function diferenceBetweenDate(e: React.FormEvent<HTMLInputElement>){
+        e.preventDefault();
         let date_1 = new Date(startDate);
         let date_2 = new Date(endDate);
-       
         let difference = date_2.getTime() - date_1.getTime();
         let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
         setTotalDays(totalDays)
-
-        if(totalDays === 1){
-            setPrice(137)
-        }
-        if(totalDays === 2){
-            setPrice(149)
-        }
-        if(totalDays === 3){
-            setPrice(164)
-        }
-        if(totalDays === 4){
-            setPrice(
-                317
-            )
-        }
-        if(totalDays === 5){
-            setPrice(458)
-        }
-        if(totalDays === 6){
-            setPrice(588)
-        }
-        if(totalDays === 7){
-            setPrice(709)
-        }
-        if(totalDays === 8){
-            setPrice(819)
-        }
-        if(totalDays === 9){
-            setPrice(921)
-        }
-        if(totalDays === 10){
-            setPrice(1014)
-        }
-        if(totalDays === 11){
-            setPrice(1099)
-        }
-        if(totalDays === 12){
-            setPrice(1177)
-        }
-        if(totalDays === 13){
-            setPrice(1247)
-        }
-        if(totalDays === 14){
-            setPrice(1311)
-        }
-        if(totalDays === 15){
-            setPrice(1369)
-        }
-        if(totalDays === 16){
-            setPrice(1420)
-        }
-        if(totalDays === 17){
-            setPrice(1466)
-        }
-        if(totalDays === 18){
-            setPrice(1507)
-        }
-        if(totalDays === 19){
-            setPrice(1542)
-        }
-        if(totalDays === 20){
-            setPrice(1573)
-        }
-        if(totalDays === 21){
-            setPrice(1600)
-        }
-        if(totalDays === 22){
-            setPrice(1623)
-        }
-        if(totalDays === 23){
-            setPrice(1642)
-        }
-        if(totalDays === 24){
-            setPrice(1657)
-        }
-        if(totalDays === 25){
-            setPrice(1669)
-        }
-        if(totalDays === 26){
-            setPrice(1678)
-        }
-        if(totalDays === 27){
-            setPrice(1682)
-        }
-        if(totalDays === 28){
-            setPrice(1684)
-        }
-        if(totalDays === 29){
-            setPrice(1686)
-        }
-        if(totalDays === 30){
-            setPrice(1688)
-        }
-
-        
-        
+        let valor = calculaDias(totalDays)
+        setPrice(valor)
     }
 
+    function calculaDias(totalDays: number){
+        let result: number = 0;
+        if(totalDays === 1){
+            return(137)
+        }
+        if(totalDays === 2){
+            return(149)
+        }
+        if(totalDays === 3){
+            return(164)
+        }
+        if(totalDays === 4){
+            return(317)
+        }
+        if(totalDays === 5){
+            return 458
+           
+        }
+        if(totalDays === 6){
+            return(588)
+        }
+        if(totalDays === 7){
+            return(709)
+        }
+        if(totalDays === 8){
+            return(819)
+        }
+        if(totalDays === 9){
+            return(921)
+        }
+        if(totalDays === 10){
+            return(1014)
+        }
+        if(totalDays === 11){
+            return(1099)
+        }
+        if(totalDays === 12){
+            return(1177)
+        }
+        if(totalDays === 13){
+            return(1247)
+        }
+        if(totalDays === 14){
+            return(1311)
+        }
+        if(totalDays === 15){
+            return(1369)
+        }
+        if(totalDays === 16){
+            return(1420)
+        }
+        if(totalDays === 17){
+            return(1466)
+        }
+        if(totalDays === 18){
+            return(1507)
+        }
+        if(totalDays === 19){
+            return(1542)
+        }
+        if(totalDays === 20){
+            return(1573)
+        }
+        if(totalDays === 21){
+            return(1600)
+        }
+        if(totalDays === 22){
+            return(1623)
+        }
+        if(totalDays === 23){
+            return(1642)
+        }
+        if(totalDays === 24){
+            return(1657)
+        }
+        if(totalDays === 25){
+            return(1669)
+        }
+        if(totalDays === 26){
+            return(1678)
+        }
+        if(totalDays === 27){
+            return(1682)
+        }
+        if(totalDays === 28){
+            return(1684)
+        }
+        if(totalDays === 29){
+            return(1686)
+        }
+        if(totalDays === 30){
+            return(1688)
+        }
+        else if(totalDays > 30){
+            result = calculaDias(totalDays - 30) + 1688;
+        }
+    
+        return result;
+    }
+
+
+
     function adicionaDias(){
-        console.log(addDays)
-        
+      
         if(addDays && addDays === 1){
             console.log(price + 137)
             setNewPrice(Number(price) + 137)
@@ -134,9 +140,7 @@ const Rent = () => {
             setNewPrice(price + 164)
         }
         if(addDays && addDays === 4){
-            setNewPrice( price +
-                317
-            )
+            setNewPrice(price + 317)
         }
         if(addDays && addDays === 5){
             setNewPrice(price + 458)
@@ -294,7 +298,7 @@ const Rent = () => {
                 fontSize: "1rem",
                 cursor: "pointer"
             }}
-            onClick={(e)=> compareDate(e)} value="Alugar"/>
+            onClick={(e)=> diferenceBetweenDate(e)} value="Alugar"/>
         </form>
     </div> 
   )
