@@ -28,6 +28,7 @@ const Rent = () => {
     function calculaDias(totalDays: number){
         let result: number = 0;
         if(totalDays === 1){
+            
             return(137)
         }
         if(totalDays === 2){
@@ -128,9 +129,7 @@ const Rent = () => {
 
 
     function adicionaDias(){
-      
         if(addDays && addDays === 1){
-            console.log(price + 137)
             setNewPrice(Number(price) + 137)
         }
         if(addDays && addDays === 2){
