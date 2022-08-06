@@ -115,6 +115,8 @@ const Rent = () => {
         if(totalDays === 30){
             setPrice(1688)
         }
+
+        
         
     }
 
