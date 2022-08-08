@@ -9,9 +9,13 @@ const Rent = () => {
     const [startDate, setStartDate] = React.useState<any>(null);
     const [endDate, setEndDate] = React.useState<any>(null);
     const [totalDays, setTotalDays] = React.useState<number>(0);
-    const [price, setPrice] = React.useState<any>(137)
+    const [price, setPrice] = React.useState<any>(0)
     const [addDays, setAddDays] = React.useState<number>(0)
-    const [newPrice, setNewPrice] = React.useState<any>(null)
+    const [newPrice, setNewPrice] = React.useState<any>(0)
+    const [cep, setCep] = React.useState('');
+    const [biling, setBiling] = React.useState(0);
+    const [log, setLog] = React.useState('');
+    const [errorCep, setErrorCep] = React.useState('');;
  
 
     function diferenceBetweenDate(e: React.FormEvent<HTMLInputElement>){
@@ -28,7 +32,6 @@ const Rent = () => {
     function calculaDias(totalDays: number){
         let result: number = 0;
         if(totalDays === 1){
-            
             return(137)
         }
         if(totalDays === 2){
@@ -130,7 +133,7 @@ const Rent = () => {
 
     function adicionaDias(){
         if(addDays && addDays === 1){
-            setNewPrice(Number(price) + 137)
+            setNewPrice(price + 137)
         }
         if(addDays && addDays === 2){
             setNewPrice(price + 149)
@@ -174,7 +177,7 @@ const Rent = () => {
         if(addDays && addDays === 15){
             setNewPrice(price + 1369)
         }
-        if(addDays && addDays ===16){
+        if(addDays && addDays === 16){
             setNewPrice(price + 1420)
         }
         if(addDays && addDays === 17){
@@ -225,6 +228,46 @@ const Rent = () => {
         adicionaDias();
     }, [addDays])
 
+    React.useEffect(()=>{
+        buscaCep();
+    }, [cep])
+
+    
+    async function buscaCep(){
+        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+            method: 'GET',
+        })
+
+        const response = await url_fetch;
+        const json = await response.json();
+        const faixaCep = (json.cep).split('-', 1);
+        setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+        if(faixaCep >= '11000' && faixaCep <= '11999'){
+            setBiling(1800);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '12000' && faixaCep <= '19999'){
+            setBiling(1800);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '06000' && faixaCep <= '09999'){
+            setBiling(730);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '01000' && faixaCep <= '05999'){
+            setBiling(320);
+            setErrorCep('')
+        }
+
+        else{
+            setErrorCep('Área fora de cobertura de nossos serviços.')
+        }
+        
+    
+    }
    
 
 
@@ -244,10 +287,19 @@ const Rent = () => {
             </div>
             <div className={styles.rent__form__calc}>
                 <label>Calcule o frete:</label>
-                <input type="text"/>
+                <input 
+                    type="text" 
+                    placeholder='Digite o CEP'
+                    onChange={(e)=>setCep(e.target.value)}
+
+                />
+                
             </div>
-            <div>
-                <label>Quantidade de dias: {totalDays}</label>
+
+            {errorCep? <p style={{color: 'red'}}>{errorCep}</p>: <p>{log}</p>}
+            
+            <div style={{padding: '1rem 0 0 0'}}>
+                <label >Quantidade de dias: {totalDays}</label>
                 <div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>
                 <p>Adicionar mais dias: </p>
                 <select onChange={(e:any)=>setAddDays(Number(e.target.value))}>
@@ -284,7 +336,16 @@ const Rent = () => {
                     <option value={30}>30 </option>
                 </select>
                 </div>
-                <p className={styles.rent__price}>Valor: R$ {addDays?  Number(newPrice).toFixed(2) : price.toFixed(2)}</p>
+                <p>Frete: {biling.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                <p className={styles.rent__price}>
+                    TOTAL: 
+                     {
+                        addDays?  
+                            (newPrice + biling).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
+                            price ?(price + biling).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
+                    }
+                </p>
             </div>
             <input type="submit" style={{
                 backgroundColor: "#125082",
@@ -297,7 +358,7 @@ const Rent = () => {
                 fontSize: "1rem",
                 cursor: "pointer"
             }}
-            onClick={(e)=> diferenceBetweenDate(e)} value="Alugar"/>
+            onClick={(e)=> diferenceBetweenDate(e)} value="Ver orçamento"/>
         </form>
     </div> 
   )
