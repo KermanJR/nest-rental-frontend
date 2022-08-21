@@ -1,0 +1,59 @@
+
+@import '../../default/variables.scss';
+.formCheckout{
+    background-color: #d9d9d9;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    &__title{
+        margin-top: 1rem;
+        color: $primary-color;
+    }
+
+    &__div{
+        display: flex;
+        grid-gap: 1rem;
+        width: 100%;
+        margin-top: 1rem;
+        label{
+            display: block;
+        }
+        input{
+            width: 100%;
+            border: none;
+            padding: .5rem .5rem;
+            background-color: #c2c2c2;
+            border-radius: 8px;
+        }
+    }
+
+    &__div2{
+        background-color: #d9d9d9;
+        width: 30%;
+        border-radius: 1rem;
+        padding: 2rem 2rem;
+        height: 400px;
+        p{
+            color: $primary-color
+        }
+    }
+    &__date{
+        display: flex;
+        grid-gap: 2rem;
+        width: 100%;
+        div{
+            width: 100%;
+        }
+        label{
+            color: $primary-color;
+            font-weight: 600;
+            display: block;
+        }
+        input{
+            width: 100%;
+            border: none;
+            padding: .5rem .5rem;
+            background-color: #c2c2c2;
+            border-radius: 8px;
+        }
+    }
+}

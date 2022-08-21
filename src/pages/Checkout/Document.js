@@ -1,0 +1,1 @@
+URL = "https://raw.githubusercontent.com/clicksign/embedded/main/build/embedded.js";

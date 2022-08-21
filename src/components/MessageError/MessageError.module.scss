@@ -1,0 +1,8 @@
+.divMessage{
+    padding: 0 2rem;
+    text-align: center;
+    &__message{
+        color: red;
+        font-weight: 400;
+    }
+}

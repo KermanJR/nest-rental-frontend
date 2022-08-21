@@ -1,133 +1,39 @@
-import React from 'react';
-
+import React, { FormEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MessageError } from '../../components/MessageError/MessageError';
 import styles from './Rent.module.scss';
+import { useContext } from 'react';
+import { checkContext } from '../../context/CheckoutContext';
 
 
 
 const Rent = () => {
 
-    const [startDate, setStartDate] = React.useState<any>(null);
-    const [endDate, setEndDate] = React.useState<any>(null);
-    const [totalDays, setTotalDays] = React.useState<number>(0);
-    const [price, setPrice] = React.useState<any>(0)
     const [addDays, setAddDays] = React.useState<number>(0)
-    const [newPrice, setNewPrice] = React.useState<any>(0)
-    const [cep, setCep] = React.useState('');
-    const [biling, setBiling] = React.useState(0);
     const [log, setLog] = React.useState('');
-    const [errorCep, setErrorCep] = React.useState('');;
+    const [errorCep, setErrorCep] = React.useState('');
+    const [error, setError] = React.useState(['']);
+
+    const navigate = useNavigate();
+
+    const {
+        cep,
+        setCep,
+        price,
+        billing,
+        setBilling,
+        totalDays,
+        setTotalDays,
+        newPrice,
+        setNewPrice,
+        startDate,
+        endDate,
+        setEndDate,
+        setStartDate,
+    } = useContext(checkContext);
+
  
 
-    function diferenceBetweenDate(e: React.FormEvent<HTMLInputElement>){
-        e.preventDefault();
-        let date_1 = new Date(startDate);
-        let date_2 = new Date(endDate);
-        let difference = date_2.getTime() - date_1.getTime();
-        let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
-        setTotalDays(totalDays)
-        let valor = calculaDias(totalDays)
-        setPrice(valor)
-    }
-
-    function calculaDias(totalDays: number){
-        let result: number = 0;
-        if(totalDays === 1){
-            return(137)
-        }
-        if(totalDays === 2){
-            return(149)
-        }
-        if(totalDays === 3){
-            return(164)
-        }
-        if(totalDays === 4){
-            return(317)
-        }
-        if(totalDays === 5){
-            return 458
-           
-        }
-        if(totalDays === 6){
-            return(588)
-        }
-        if(totalDays === 7){
-            return(709)
-        }
-        if(totalDays === 8){
-            return(819)
-        }
-        if(totalDays === 9){
-            return(921)
-        }
-        if(totalDays === 10){
-            return(1014)
-        }
-        if(totalDays === 11){
-            return(1099)
-        }
-        if(totalDays === 12){
-            return(1177)
-        }
-        if(totalDays === 13){
-            return(1247)
-        }
-        if(totalDays === 14){
-            return(1311)
-        }
-        if(totalDays === 15){
-            return(1369)
-        }
-        if(totalDays === 16){
-            return(1420)
-        }
-        if(totalDays === 17){
-            return(1466)
-        }
-        if(totalDays === 18){
-            return(1507)
-        }
-        if(totalDays === 19){
-            return(1542)
-        }
-        if(totalDays === 20){
-            return(1573)
-        }
-        if(totalDays === 21){
-            return(1600)
-        }
-        if(totalDays === 22){
-            return(1623)
-        }
-        if(totalDays === 23){
-            return(1642)
-        }
-        if(totalDays === 24){
-            return(1657)
-        }
-        if(totalDays === 25){
-            return(1669)
-        }
-        if(totalDays === 26){
-            return(1678)
-        }
-        if(totalDays === 27){
-            return(1682)
-        }
-        if(totalDays === 28){
-            return(1684)
-        }
-        if(totalDays === 29){
-            return(1686)
-        }
-        if(totalDays === 30){
-            return(1688)
-        }
-        else if(totalDays > 30){
-            result = calculaDias(totalDays - 30) + 1688;
-        }
-    
-        return result;
-    }
 
 
 
@@ -232,42 +138,53 @@ const Rent = () => {
         buscaCep();
     }, [cep])
 
+
     
+    /* Busca CEP*/
     async function buscaCep(){
         const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
             method: 'GET',
         })
-
         const response = await url_fetch;
         const json = await response.json();
         const faixaCep = (json.cep).split('-', 1);
         setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
         if(faixaCep >= '11000' && faixaCep <= '11999'){
-            setBiling(1800);
+            setBilling(1800);
             setErrorCep('')
         }
 
         else if(faixaCep >= '12000' && faixaCep <= '19999'){
-            setBiling(1800);
+            setBilling(1800);
             setErrorCep('')
         }
 
         else if(faixaCep >= '06000' && faixaCep <= '09999'){
-            setBiling(730);
+            setBilling(730);
             setErrorCep('')
         }
 
         else if(faixaCep >= '01000' && faixaCep <= '05999'){
-            setBiling(320);
+            setBilling(320);
             setErrorCep('')
         }
-
         else{
             setErrorCep('Área fora de cobertura de nossos serviços.')
         }
-        
-    
     }
+
+
+    function handleSubmit(e: React.FormEvent<HTMLInputElement>){
+        e.preventDefault();
+        if(!cep || price === 0){
+            setError(["Preencha todos os campos."])
+        }
+        else{
+            navigate('/checkout')
+        }
+    }
+
+console.log(error)
    
 
 
@@ -336,14 +253,14 @@ const Rent = () => {
                     <option value={30}>30 </option>
                 </select>
                 </div>
-                <p>Frete: {biling.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                <p>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
                 <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
                 <p className={styles.rent__price}>
                     TOTAL: 
                      {
                         addDays?  
-                            (newPrice + biling).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
-                            price ?(price + biling).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
+                            (newPrice + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
+                            price ?(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
                     }
                 </p>
             </div>
@@ -358,8 +275,14 @@ const Rent = () => {
                 fontSize: "1rem",
                 cursor: "pointer"
             }}
-            onClick={(e)=> diferenceBetweenDate(e)} value="Ver orçamento"/>
+            value="Ir para o checkout"
+            onClick={(e)=>handleSubmit(e)}/>
         </form>
+
+        {error &&
+            <MessageError message={error}/>
+        }
+        
     </div> 
   )
 }
