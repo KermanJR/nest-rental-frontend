@@ -106,7 +106,7 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="https://sandbox.clicksign.com/api/v1/templates/179a3c77-a4ac-4948-8905-3686320bd60b/documents?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba" method="post">
+            <form className={styles.formCheckout}>
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
