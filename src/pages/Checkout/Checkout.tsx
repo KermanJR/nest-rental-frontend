@@ -60,7 +60,7 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="http://localhost:6700/create-model" method="post">
+            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="post">
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
