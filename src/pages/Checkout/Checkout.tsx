@@ -264,7 +264,7 @@ export const Checkout = () =>{
                     cursor: "pointer"
                 }}
                 value="Alugar"
-                onSubmit={(e)=>teste(e)}
+                onClick={(e)=>teste(e)}
                 />
                 
             </form>
