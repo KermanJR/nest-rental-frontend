@@ -184,7 +184,6 @@ const Rent = () => {
         }
     }
 
-console.log(error)
    
 
 

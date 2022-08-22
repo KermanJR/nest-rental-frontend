@@ -20,7 +20,7 @@ export const Checkout = () =>{
         endDate
     } = useContext(checkContext);
 
-    function createSignatary(e: React.FormEvent<HTMLInputElement>){
+    /*function createSignatary(e: React.FormEvent<HTMLInputElement>){
         console.log(e)
         e.preventDefault();
         var myHeaders = new Headers();
@@ -59,22 +59,49 @@ fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-4
     }
 
     function handleSubmit(e: React.FormEvent<HTMLInputElement>){
-        console.log(e)
         e.preventDefault();
         try{
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-           
-          
-              
-            fetch('https://sandbox.clicksign.com/api/v1/accounts?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba')
-            .then(response => response.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            var axios = require('axios');
+            var data = JSON.stringify({
+                "signer": {
+                    "email": "fulano@example.com",
+                    "phone_number": "11999999999",
+                    "auths": [
+                    "email"
+                    ],
+                    "name": "Marcos Zumba",
+                    "documentation": "123.321.123-40",
+                    "birthday": "1983-03-31",
+                    "has_documentation": true,
+                    "selfie_enabled": false,
+                    "handwritten_enabled": false,
+                    "official_document_enabled": false,
+                    "liveness_enabled": false,
+                    "facial_biometrics_enabled": false
+                }
+            });
+
+            var config = {
+                method: 'post',
+                url: 'https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                data : data
+            };
+
+            axios(config)
+            .then(function (response: { data: any; }) {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch(function (error: any) {
+                console.log(error);
+            });
+
         }catch(err){
             console.log(err)
         }
-    }
+    }*/
     
     return(
         <>
@@ -224,7 +251,7 @@ fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-4
                     cursor: "pointer"
                 }}
                 value="Alugar"
-                onClick={(e)=>createSignatary(e)}
+                
                 />
             </form> 
         </div>
