@@ -30,6 +30,11 @@ const Rent = () => {
         endDate,
         setEndDate,
         setStartDate,
+        setBairro,
+        setContact,
+        setCnpj,
+        setStreet,
+        setCountry
     } = useContext(checkContext);
 
  
@@ -148,6 +153,9 @@ const Rent = () => {
         const response = await url_fetch;
         const json = await response.json();
         const faixaCep = (json.cep).split('-', 1);
+        setStreet(json.logradouro);
+        setBairro(json.bairro);
+        setCountry(json.localidade)
         setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
         if(faixaCep >= '11000' && faixaCep <= '11999'){
             setBilling(1800);

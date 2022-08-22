@@ -58,15 +58,14 @@ var config = {
   },
   data : data
 };
-var tt;
+
 axios(config)
 .then(function (response) {
-  tt= JSON.stringify(response.data);
+  console.log(JSON.stringify(response.data));
 })
 .catch(function (error) {
   console.log(error);
 });
-	res.status(200).json({message: tt})
 
 })
 

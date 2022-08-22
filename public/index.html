@@ -11,13 +11,44 @@
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <script src="https://sandbox.clicksign.com/tokenlessWidget.js"></script>
   
     <title>Nest Rental</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div id="cs-widget-tokenless"></div>
    
   </body>
+
+  <script>
+    const submitButton = document.getElementById('submitButton')
+    
+    const tw = new TokenlessWidget('93649147-db14-4279-b7f8-48acdc8fb898') //request_signature_key
+    
+    tw.injectLoader('<div class="loader"></div>')
+  
+    tw.attach('click', 'submitButton', () => {
+      const data = {
+        "signature": {}
+      }
+      tw.sign(data)
+      .then(() => {
+        console.log('Assinatura realizada com sucesso!')
+      })
+      .catch((error) => {
+        console.log(error.code, error.message)
+      })
+    })
+  
+    tw.mount({
+      'containerId':'cs-tokenless-widget',
+      'textTemplate': 'banco_acme_1'
+    })
+  
+  </script>
+    
+    </script>
   
 </html>

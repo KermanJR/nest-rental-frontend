@@ -3,6 +3,7 @@ import Container from "../../components/Container/Container";
 import styles from './Checkout.module.scss';
 import { checkContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
+import axios from "axios";
 
 
 
@@ -17,91 +18,53 @@ export const Checkout = () =>{
         setPrice,
         newPrice,
         startDate,
-        endDate
+        endDate,
+        nameLocataria,
+        setNameLocataria,
+        cnpj, setCnpj,
+        street,
+        bairro,
+        country,
+        contact
     } = useContext(checkContext);
 
-    /*function createSignatary(e: React.FormEvent<HTMLInputElement>){
-        console.log(e)
+
+    function createDocument(e: React.FormEvent<HTMLInputElement>){
         e.preventDefault();
-        var myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-
-var raw = JSON.stringify({
-  "signer": {
-    "email": "fulano@example.com",
-    "phone_number": "11999999999",
-    "auths": [
-      "email"
-    ],
-    "name": "Marcos Zumba",
-    "documentation": "123.321.123-40",
-    "birthday": "1983-03-31",
-    "has_documentation": true,
-    "selfie_enabled": false,
-    "handwritten_enabled": false,
-    "official_document_enabled": false,
-    "liveness_enabled": false,
-    "facial_biometrics_enabled": false
-  }
-});
-
-var requestOptions: RequestInit = {
-  method: 'POST',
-  headers: myHeaders,
-  body: raw,
-  redirect: 'follow'
-};
-
-fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-    }
-
-    function handleSubmit(e: React.FormEvent<HTMLInputElement>){
-        e.preventDefault();
-        try{
-            var axios = require('axios');
-            var data = JSON.stringify({
-                "signer": {
-                    "email": "fulano@example.com",
-                    "phone_number": "11999999999",
-                    "auths": [
-                    "email"
-                    ],
-                    "name": "Marcos Zumba",
-                    "documentation": "123.321.123-40",
-                    "birthday": "1983-03-31",
-                    "has_documentation": true,
-                    "selfie_enabled": false,
-                    "handwritten_enabled": false,
-                    "official_document_enabled": false,
-                    "liveness_enabled": false,
-                    "facial_biometrics_enabled": false
+        var data = JSON.stringify({
+            "document":{
+                "path": "/modelos/nestteste.docx",
+                "template": {
+                    "data":{
+                        "fantasy_name": nameLocataria,
+                        "address": street  + ', Bairro' + bairro + ', ' + country,
+                        "contact": contact,
+                        "totalDays": totalDays,
+                        "cnpj": cnpj,
+                        "billing": billing,
+                        "total": newPrice? newPrice: price,
+                        "machine_name": "Ecolift-50",
+                    }
                 }
-            });
+            }
+        })
+        var config = {
+            method: 'post',
+            url: 'https://sandbox.clicksign.com/api/v1/templates/179a3c77-a4ac-4948-8905-3686320bd60b/documents?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba',
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            data : data
+        };
 
-            var config = {
-                method: 'post',
-                url: 'https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                data : data
-            };
-
-            axios(config)
-            .then(function (response: { data: any; }) {
-                console.log(JSON.stringify(response.data));
-            })
-            .catch(function (error: any) {
-                console.log(error);
-            });
-
-        }catch(err){
-            console.log(err)
-        }
-    }*/
+        axios(config)
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
     
     return(
         <>
@@ -124,7 +87,7 @@ fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-4
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout}>
+            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="post">
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
@@ -133,14 +96,16 @@ fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-4
                     </div>
                     <div>
                         <label>Nome fantasia:*</label>
-                        <input type="text" id="" name=""/>
+                        <input type="text" id="company_name" name="company_name"
+                            onChange={(e)=>setNameLocataria(e.target.value)}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>CNPJ:*</label>
-                        <input type="text" id="" name=""/>
+                        <input type="text" id="cnpj" name="cnpj"/>
                     </div>
                     <div>
                         <label>Inscrição Estadual:*</label>
@@ -201,9 +166,24 @@ fetch("https://sandbox.clicksign.com/api/v1/signers?access_token=3c40d95b-ebb6-4
                 <div className={styles.formCheckout__div}> 
                     <div>
                         <label>E-mail:*</label>
-                        <input type="text" id="" name=""/>
+                        <input type="text" id="email" name="email"/>
                     </div>
                 </div>
+                <input type="submit" style={{
+                    backgroundColor: "#125082",
+                    color: "#fff",
+                    width: "100%", 
+                    padding: "1rem",
+                    borderRadius: "9px",
+                    border: "none",
+                    marginTop: "1rem",
+                    fontSize: "1rem",
+                    cursor: "pointer"
+                }}
+                value="Alugar"
+                onSubmit={createDocument}
+                />
+                
             </form>
 
         {/***********************************************************/}

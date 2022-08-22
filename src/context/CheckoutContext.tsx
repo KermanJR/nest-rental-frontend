@@ -18,7 +18,20 @@ export type PropsContextType = {
     startDate: string,
     endDate: string,
     setStartDate: (startDate: string)=>void,
-    setEndDate:(endDate: string)=>void
+    setEndDate:(endDate: string)=>void,
+    nameLocataria: string,
+    setNameLocataria: (name: string) =>void,
+    cnpj: string,
+    setCnpj: (cnpj: string) =>void,
+    street: string,
+    bairro: string,
+    country: string,
+    setStreet: (street: string) =>void,
+    setBairro: (bairro: string) =>void,
+    setCountry: (country: string) =>void,
+    contact: string,
+    setContact: (contact: string)=>void
+
 }
 export const checkContext = React.createContext<PropsContextType>({
     cep: '',
@@ -35,7 +48,19 @@ export const checkContext = React.createContext<PropsContextType>({
     startDate: '',
     endDate: '',
     setStartDate: ()=> '',
-    setEndDate: ()=> ''
+    setEndDate: ()=> '',
+    nameLocataria: '',
+    setNameLocataria: ()=>'',
+    cnpj: '',
+    setCnpj: () =>'',
+    street: '',
+    bairro: '',
+    country: '',
+    setStreet: () =>'',
+    setBairro: () =>'',
+    setCountry: () =>'',
+    contact: '',
+    setContact: () => ''
 });
 
 
@@ -48,6 +73,12 @@ export const checkContext = React.createContext<PropsContextType>({
     const [newPrice, setNewPrice] = React.useState<any>(0)
     const [startDate, setStartDate] = React.useState<string>('');
     const [endDate, setEndDate] = React.useState<string>('');
+    const [nameLocataria, setNameLocataria] = React.useState('')
+    const [cnpj, setCnpj] = React.useState<string>('');
+    const [street, setStreet] = React.useState<string>('');
+    const [bairro, setBairro] = React.useState<string>('');
+    const [country, setCountry] = React.useState<string>('');
+    const [contact, setContact] = React.useState<string>('');
 
     let difference: number = 0
     let valor: number = 0
@@ -232,6 +263,18 @@ export const checkContext = React.createContext<PropsContextType>({
             endDate,
             setEndDate,
             setStartDate,
+            nameLocataria,
+            setNameLocataria,
+            cnpj,
+            setCnpj,
+            street,
+            setStreet,
+            bairro,
+            setBairro,
+            country,
+            setCountry,
+            contact,
+            setContact
         }}>
             {children}
         </checkContext.Provider>
