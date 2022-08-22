@@ -9,6 +9,11 @@ import axios from "axios";
 
 
 export const Checkout = () =>{
+
+    const [razaoSocial, setRazaoSocial] = React.useState('');
+    const [inscEstadual, setInscEstadual] = React.useState('');
+    const [number, setNumber] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const {
         cep,
         setCep,
@@ -25,45 +30,13 @@ export const Checkout = () =>{
         street,
         bairro,
         country,
-        contact
+        contact,
+        setContact
     } = useContext(checkContext);
 
 
     function createDocument(e: React.FormEvent<HTMLInputElement>){
         e.preventDefault();
-        var data = JSON.stringify({
-            "document":{
-                "path": "/modelos/nestteste.docx",
-                "template": {
-                    "data":{
-                        "fantasy_name": nameLocataria,
-                        "address": street  + ', Bairro' + bairro + ', ' + country,
-                        "contact": contact,
-                        "totalDays": totalDays,
-                        "cnpj": cnpj,
-                        "billing": billing,
-                        "total": newPrice? newPrice: price,
-                        "machine_name": "Ecolift-50",
-                    }
-                }
-            }
-        })
-        var config = {
-            method: 'post',
-            url: 'https://sandbox.clicksign.com/api/v1/templates/179a3c77-a4ac-4948-8905-3686320bd60b/documents?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba',
-            headers: { 
-              'Content-Type': 'application/json'
-            },
-            data : data
-        };
-
-        axios(config)
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
     }
     
     return(
@@ -87,16 +60,29 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="post">
+            <form className={styles.formCheckout} action="http://localhost:6700/create-model" method="post">
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
+
+                        <input type="text" id="total_days" name="total_days" value={totalDays}/>
+                        <input type="text" id="billing" name="billing" value={billing}/>
+                        <input type="text" id="total" name="total" value={price? price: newPrice}/>
+
                         <label>Razão Social:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="razao_social" 
+                            name="razao_social"
+                            onChange={(e)=>setRazaoSocial(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label>Nome fantasia:*</label>
-                        <input type="text" id="company_name" name="company_name"
+                        <input 
+                            type="text" 
+                            id="company_name" 
+                            name="company_name"
                             onChange={(e)=>setNameLocataria(e.target.value)}
                         />
                     </div>
@@ -105,42 +91,78 @@ export const Checkout = () =>{
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>CNPJ:*</label>
-                        <input type="text" id="cnpj" name="cnpj"/>
+                        <input 
+                            type="text" 
+                            id="cnpj" 
+                            name="cnpj" 
+                            onChange={(e)=>setCnpj(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label>Inscrição Estadual:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="insc_estadual" name="insc_estadual" 
+                            onChange={(e)=>setInscEstadual(e.target.value)}
+                        />
                     </div>
                 </div>
+
+
+                {/* DETALHES DO FATURAMENTO*/}
 
                 <h3 className={styles.formCheckout__title}>Detalhes do faturamento</h3>
 
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Rua/Av:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="street" 
+                            name="street" 
+                            value={street}
+                        />
                     </div>
                     <div>
                         <label>Número:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="number" 
+                            name="number"
+                            onChange={(e)=>setNumber(e.target.value)}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Complemento</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name=""
+                        />
                     </div>
                     <div>
                         <label>Bairro:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="bairro" 
+                            name="bairro" 
+                            value={bairro}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Cidade</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="country" 
+                            name="country" 
+                            value={country}
+                        />
                     </div>
                     <div>
                         <label>UF:*</label>
@@ -148,25 +170,40 @@ export const Checkout = () =>{
                     </div>
                     <div>
                         <label>CEP:*</label>
-                        <input type="text" id="" name="" defaultValue={cep}/>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name="" 
+                            defaultValue={cep}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Nome:*</label>
-                        <input type="text" id="" name=""/>
+                        <input type="text" id="name" name="name"/>
                     </div>
                     <div>
                         <label>Telefone:*</label>
-                        <input type="text" id="" name=""/>
+                        <input 
+                            type="text" 
+                            id="contact" 
+                            name="contact"
+                            onChange={(e)=>setContact(e.target.value)}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.formCheckout__div}> 
                     <div>
                         <label>E-mail:*</label>
-                        <input type="text" id="email" name="email"/>
+                        <input 
+                            type="text" 
+                            id="email" 
+                            name="email"
+                            onChange={(e)=>setEmail(e.target.value)}
+                        />
                     </div>
                 </div>
                 <input type="submit" style={{
