@@ -4,11 +4,14 @@ import styles from './Checkout.module.scss';
 import { checkContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 
 
 export const Checkout = () =>{
+
+    const navigate = useNavigate();
 
     const [razaoSocial, setRazaoSocial] = React.useState('');
     const [inscEstadual, setInscEstadual] = React.useState('');
@@ -38,6 +41,49 @@ export const Checkout = () =>{
     function createDocument(e: React.FormEvent<HTMLInputElement>){
         e.preventDefault();
     }
+
+    function teste(e: React.FormEvent<HTMLInputElement>){
+        e.preventDefault();
+        try{
+            fetch('https://sandbox.clicksign.com/api/v1/templates/96bee646-4a82-4b4d-9299-daa381f38725/documents?access_token=befe028e-684c-4193-b73a-005205daa727', {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "document": {
+                    "path": "/modelos/nestteste.docx",
+                    "template": {
+                    "data": {
+                      "fantasy_name": "Nome teste 123",
+                      "address": "R. Teodoro Sampaio 2767, 10° andar",
+                      "contact": "67995949494",
+                      "totalDays": 6,
+                      "cnpj": "611626",
+                      "billing": 1900,
+                      "total": 3600,
+                      "machine_name": "Ecolift-50"
+                    }
+                    },
+                    "signers": [
+                        "kermanpereira@gmail.com"
+                    ]
+                    }
+                })
+            })
+            
+                .then(r=>{
+                    return r;
+                }).then(r=>{
+                    return r.json();
+                }).then(r=>{
+                    console.log(r)
+                })
+
+        }catch(err){
+            console.log(err)
+        }
+    }
     
     return(
         <>
@@ -60,7 +106,7 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="post">
+            <form className={styles.formCheckout} action="https://sandbox.clicksign.com/api/v1/templates/179a3c77-a4ac-4948-8905-3686320bd60b/documents?access_token=3c40d95b-ebb6-45cb-a179-6e8c76e513ba" method="post">
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
@@ -218,7 +264,7 @@ export const Checkout = () =>{
                     cursor: "pointer"
                 }}
                 value="Alugar"
-                onSubmit={createDocument}
+                onSubmit={(e)=>teste(e)}
                 />
                 
             </form>
