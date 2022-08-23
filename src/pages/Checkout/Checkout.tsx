@@ -17,6 +17,8 @@ export const Checkout = () =>{
     const [inscEstadual, setInscEstadual] = React.useState('');
     const [number, setNumber] = React.useState('');
     const [email, setEmail] = React.useState('');
+    const [businessEmail, setBusinessEmail] = React.useState('');
+    const [nameUser, setNameUser] = React.useState('');
     const {
         cep,
         setCep,
@@ -62,14 +64,15 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="POST">
+            <form className={styles.formCheckout} action="http://localhost:6700/create-model" method="POST">
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
 
-                        <input type="text" id="total_days" name="total_days" value={totalDays}/>
-                        <input type="text" id="billing" name="billing" value={billing}/>
-                        <input type="text" id="total" name="total" value={price? price: newPrice}/>
+                        <input type="text" id="total_days" name="total_days" value={totalDays} style={{display: 'none'}}/>
+                        <input type="text" id="billing" name="billing" value={billing} style={{display: 'none'}}/>
+                        <input type="text" id="total" name="total" value={price? price: newPrice} style={{display: 'none'}}/>
+                        <input type="text" id="address_pay" name="address_pay" value={`${street}, ${bairro}, ${country}, ${number}`} style={{display: 'none'}}/>
 
                         <label>Razão Social:*</label>
                         <input 
@@ -83,8 +86,8 @@ export const Checkout = () =>{
                         <label>Nome fantasia:*</label>
                         <input 
                             type="text" 
-                            id="company_name" 
-                            name="company_name"
+                            id="fantasy_name" 
+                            name="fantasy_name"
                             onChange={(e)=>setNameLocataria(e.target.value)}
                         />
                     </div>
@@ -106,6 +109,14 @@ export const Checkout = () =>{
                             type="text" 
                             id="insc_estadual" name="insc_estadual" 
                             onChange={(e)=>setInscEstadual(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Email(empresarial):*</label>
+                        <input 
+                            type="email" 
+                            id="business_email" name="business_email" 
+                            onChange={(e)=>setBusinessEmail(e.target.value)}
                         />
                     </div>
                 </div>
@@ -184,7 +195,12 @@ export const Checkout = () =>{
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Nome:*</label>
-                        <input type="text" id="name" name="name"/>
+                        <input 
+                            type="text"
+                            id="name_user"
+                            name="name_user"
+                            onChange={(e)=>setNameUser(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label>Telefone:*</label>
@@ -202,8 +218,8 @@ export const Checkout = () =>{
                         <label>E-mail:*</label>
                         <input 
                             type="text" 
-                            id="email" 
-                            name="email"
+                            id="email_user" 
+                            name="email_user"
                             onChange={(e)=>setEmail(e.target.value)}
                         />
                     </div>
