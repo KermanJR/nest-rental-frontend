@@ -19,6 +19,8 @@ export const Checkout = () =>{
     const [email, setEmail] = React.useState('');
     const [businessEmail, setBusinessEmail] = React.useState('');
     const [nameUser, setNameUser] = React.useState('');
+    const [cpfUser, setCpfUser] = React.useState('');
+    const [dateBirthday, setDateBirthday] = React.useState('');
     const {
         cep,
         setCep,
@@ -200,6 +202,26 @@ export const Checkout = () =>{
                             id="name_user"
                             name="name_user"
                             onChange={(e)=>setNameUser(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>CPF:*</label>
+                        <input 
+                            type="text"
+                            id="cpf_user"
+                            name="cpf_user"
+                            onChange={(e)=>setCpfUser(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>Data de nascimento:*</label>
+                        <input 
+                            type="date"
+                            id="date_birthday"
+                            name="date_birthday"
+                            onChange={(e)=>setDateBirthday(e.target.value)}
                         />
                     </div>
                     <div>
