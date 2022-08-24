@@ -224,15 +224,7 @@ export const Checkout = () =>{
                             onChange={(e)=>setDateBirthday(e.target.value)}
                         />
                     </div>
-                    <div>
-                        <label>Telefone:*</label>
-                        <input 
-                            type="text" 
-                            id="contact" 
-                            name="contact"
-                            onChange={(e)=>setContact(e.target.value)}
-                        />
-                    </div>
+                    
                 </div>
 
                 <div className={styles.formCheckout__div}> 
@@ -243,6 +235,15 @@ export const Checkout = () =>{
                             id="email_user" 
                             name="email_user"
                             onChange={(e)=>setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Telefone:*</label>
+                        <input 
+                            type="text" 
+                            id="contact" 
+                            name="contact"
+                            onChange={(e)=>setContact(e.target.value)}
                         />
                     </div>
                 </div>
