@@ -1,10 +1,13 @@
 import React from "react";
-import Container from "../../components/Container/Container";
 import styles from './Checkout.module.scss';
 import { checkContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { TOKEN_POST } from "../../api/Zoho/ApiZoho";
+import { useFetch } from "../../hooks/useFetch";
+import { Title } from "../../components/Title/Title";
+
+
 
 
 
@@ -12,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 export const Checkout = () =>{
 
     const navigate = useNavigate();
+    const { request, error, loading, data} = useFetch();
 
     const [razaoSocial, setRazaoSocial] = React.useState('');
     const [inscEstadual, setInscEstadual] = React.useState('');
@@ -21,6 +25,33 @@ export const Checkout = () =>{
     const [nameUser, setNameUser] = React.useState('');
     const [cpfUser, setCpfUser] = React.useState('');
     const [dateBirthday, setDateBirthday] = React.useState('');
+    const [signKey, setSignKey] = React.useState<string>('');
+    const [tokenAuth, setTokenAuth] = React.useState<string>('');
+
+
+
+    //Billing address
+    const [billingStreet, setBillingStreet] = React.useState('');
+    const [billingBairro, setBillingBairro] = React.useState('');
+    const [billingCity, setBillingCity] = React.useState('');
+    const [billingCountry, setBillingCountry] = React.useState('');
+    const [billingAddress, setBillingAddress] = React.useState('');
+    const [billingCep, setBillingCep] = React.useState('');
+
+    /* Busca CEP*/
+    async function buscaCep(){
+        const url_fetch = fetch(`https://viacep.com.br/ws/${billingCep}/json/`, {
+            method: 'GET',
+        })
+        const response = await url_fetch;
+        const json = await response.json();
+        const faixaCep = (json.cep).split('-', 1);
+        setBillingStreet(json.logradouro);
+        setBillingBairro(json.bairro);
+        setBillingCity(json.localidade)
+        setBillingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+    }
+
     const {
         cep,
         setCep,
@@ -42,9 +73,103 @@ export const Checkout = () =>{
     } = useContext(checkContext);
 
 
-    function createDocument(e: React.FormEvent<HTMLInputElement>){
+    const createModelDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
         e.preventDefault();
+        try{
+            let teste = fetch('https://nestrental-back.herokuapp.com/create-model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }, body: JSON.stringify({
+                    "document": {
+                        "path": "/modelos/teste.docx",
+                          "template": {
+                            "data": {
+                              "fantasy_name": nameLocataria,
+                              "address_pay": `${street}, ${bairro}, ${country}`,
+                              "address_billing": `${billingStreet}, ${billingBairro}, ${billingCity}`,
+                              "contact": contact,
+                              "business_email": businessEmail,
+                              "name_user": nameUser,
+                              "date_birthday": dateBirthday,
+                              "total_days": totalDays,
+                              "documentation": cpfUser,
+                              "cnpj": cnpj,
+                              "billing": billing,
+                              "total": price? price: newPrice,
+                              "machine_name": "Ecolift-50"
+                            }
+                          },
+                      }
+                })
+            })
+            let response = await teste;
+            let dataJson = await response.json();
+            if(dataJson.request_signature_key != ""){
+                console.log(dataJson);
+                setSignKey(dataJson.request_signature_key);
+                window.localStorage.setItem('key_signature', dataJson.request_signature_key);
+
+                //Envia lead para o Zoho CRM
+                getTokenAuthorization();
+                sendLead();
+                navigate('/contrato');
+            }
+            
+        }catch(err){
+            console.log(err);
+        }
     }
+
+    const getTokenAuthorization = async () =>{
+        try{
+            let teste = fetch('https://nestrental-back.herokuapp.com/generate-token', {
+                method: 'POST'
+            })
+            let response = await teste;
+            let json = await response.json();
+            window.localStorage.setItem('access_token', json.message);
+            setTokenAuth(json.message);
+            console.log(json)
+        }catch(error){
+            console.log(error);
+        }
+        
+    }
+
+    
+
+    const sendLead = async () =>{
+        if(tokenAuth != ''){
+            try{
+                const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },body: JSON.stringify({
+                        "data":[
+                            {
+                                "Email": businessEmail
+                            }
+                        ]
+                    })
+                    
+                })
+                const response = await teste;
+                const json = await response.json();
+                console.log(json);
+            }catch(err){
+                console.log(err)
+            }
+        }
+    }
+
+    React.useEffect(()=>{
+        buscaCep();
+    }, [billingCep])
+
+   
+
     return(
         <>
             <section style={{
@@ -66,7 +191,7 @@ export const Checkout = () =>{
             padding: '2rem 5rem',
             marginTop: '2rem'
         }}>
-            <form className={styles.formCheckout} action="https://nestrental-back.herokuapp.com/create-model" method="POST">
+            <form className={styles.formCheckout}>
                 <h3 className={styles.formCheckout__title}>Empresa</h3>
                 <div className={styles.formCheckout__div}>
                     <div>
@@ -93,9 +218,6 @@ export const Checkout = () =>{
                             onChange={(e)=>setNameLocataria(e.target.value)}
                         />
                     </div>
-                </div>
-
-                <div className={styles.formCheckout__div}>
                     <div>
                         <label>CNPJ:*</label>
                         <input 
@@ -103,8 +225,13 @@ export const Checkout = () =>{
                             id="cnpj" 
                             name="cnpj" 
                             onChange={(e)=>setCnpj(e.target.value)}
+                            placeholder="XX. XXX. XXX/0001-XX"
                         />
                     </div>
+                </div>
+
+                <div className={styles.formCheckout__div}>
+                    
                     <div>
                         <label>Inscrição Estadual:*</label>
                         <input 
@@ -124,76 +251,11 @@ export const Checkout = () =>{
                 </div>
 
 
-                {/* DETALHES DO FATURAMENTO*/}
-
-                <h3 className={styles.formCheckout__title}>Detalhes do faturamento</h3>
-
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Rua/Av:*</label>
-                        <input 
-                            type="text" 
-                            id="street" 
-                            name="street" 
-                            value={street}
-                        />
-                    </div>
-                    <div>
-                        <label>Número:*</label>
-                        <input 
-                            type="text" 
-                            id="number" 
-                            name="number"
-                            onChange={(e)=>setNumber(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Complemento</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            name=""
-                        />
-                    </div>
-                    <div>
-                        <label>Bairro:*</label>
-                        <input 
-                            type="text" 
-                            id="bairro" 
-                            name="bairro" 
-                            value={bairro}
-                        />
-                    </div>
-                </div>
-
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Cidade</label>
-                        <input 
-                            type="text" 
-                            id="country" 
-                            name="country" 
-                            value={country}
-                        />
-                    </div>
-                    <div>
-                        <label>UF:*</label>
-                        <input type="text" id="" name=""/>
-                    </div>
-                    <div>
-                        <label>CEP:*</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            name="" 
-                            defaultValue={cep}
-                        />
-                    </div>
-                </div>
-
+                <Title 
+                    level={3}
+                    >
+                    Detalhes do usuário
+                </Title>
                 <div className={styles.formCheckout__div}>
                     <div>
                         <label>Nome:*</label>
@@ -202,6 +264,7 @@ export const Checkout = () =>{
                             id="name_user"
                             name="name_user"
                             onChange={(e)=>setNameUser(e.target.value)}
+                            placeholder="Digite seu nome"
                         />
                     </div>
                     
@@ -211,6 +274,7 @@ export const Checkout = () =>{
                             type="text"
                             id="cpf_user"
                             name="cpf_user"
+                            placeholder="000.000.000-00"
                             onChange={(e)=>setCpfUser(e.target.value)}
                         />
                     </div>
@@ -235,6 +299,7 @@ export const Checkout = () =>{
                             id="email_user" 
                             name="email_user"
                             onChange={(e)=>setEmail(e.target.value)}
+                            placeholder="seuemail@gmail.com"
                         />
                     </div>
                     <div>
@@ -243,10 +308,173 @@ export const Checkout = () =>{
                             type="text" 
                             id="contact" 
                             name="contact"
+                            placeholder="67992658458"
                             onChange={(e)=>setContact(e.target.value)}
                         />
                     </div>
                 </div>
+
+
+                {/* DETALHES DO FATURAMENTO*/}
+
+                <Title 
+                    level={3}
+                    >
+                    Detalhes do faturamento
+                </Title>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Rua/Av:*</label>
+                        <input 
+                            type="text" 
+                            id="street" 
+                            name="street" 
+                            value={street}
+                            disabled
+                        />
+                    </div>
+                    <div>
+                        <label>Número:*</label>
+                        <input 
+                            type="text" 
+                            id="number" 
+                            name="number"
+                            onChange={(e)=>setNumber(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>CEP:*</label>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name="" 
+                            defaultValue={cep}
+                            disabled
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Complemento</label>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name=""
+                        />
+                    </div>
+                    <div>
+                        <label>Bairro:*</label>
+                        <input 
+                            type="text" 
+                            id="bairro" 
+                            name="bairro" 
+                            value={bairro}
+                            disabled
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Cidade</label>
+                        <input 
+                            type="text" 
+                            id="country" 
+                            name="country" 
+                            value={country}
+                            disabled
+                        />
+                    </div>
+                    <div>
+                        <label>UF:*</label>
+                        <input type="text" id="" name=""/>
+                    </div>
+                    
+                </div>
+
+                
+                
+
+
+                <Title 
+                    level={3}
+                    >
+                    Detalhes de entrega
+                </Title>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Rua/Av:*</label>
+                        <input 
+                            type="text" 
+                            id="street" 
+                            name="street" 
+                            value={billingStreet}
+                            disabled
+                        />
+                    </div>
+                    <div>
+                        <label>Número:*</label>
+                        <input 
+                            type="text" 
+                            id="number" 
+                            name="number"
+                            onChange={(e)=>setNumber(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>CEP:*</label>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name="" 
+                            onChange={(e)=>setBillingCep(e.target.value)}
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Complemento</label>
+                        <input 
+                            type="text" 
+                            id="" 
+                            name=""
+                        />
+                    </div>
+                    <div>
+                        <label>Bairro:*</label>
+                        <input 
+                            type="text" 
+                            id="bairro" 
+                            name="bairro" 
+                            value={billingBairro}
+                            disabled
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.formCheckout__div}>
+                    <div>
+                        <label>Cidade</label>
+                        <input 
+                            type="text" 
+                            id="country" 
+                            name="country" 
+                            value={billingCity}
+                            disabled
+                        />
+                    </div>
+                    <div>
+                        <label>UF:*</label>
+                        <input type="text" id="" name=""/>
+                    </div>
+                    
+                </div>
+
+
                 <input type="submit" style={{
                     backgroundColor: "#125082",
                     color: "#fff",
@@ -259,9 +487,7 @@ export const Checkout = () =>{
                     cursor: "pointer"
                 }}
                 value="Alugar"
-                onSubmit={(e)=>{
-                    e.preventDefault();
-                }}
+                onClick={(e)=>createModelDocument(e)}
                 />
                 
             </form>
