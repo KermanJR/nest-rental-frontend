@@ -15,7 +15,7 @@ import { Title } from "../../components/Title/Title";
 export const Checkout = () =>{
 
     const navigate = useNavigate();
-    const { request, error, loading, data} = useFetch();
+    const { request, error, data} = useFetch();
 
     const [razaoSocial, setRazaoSocial] = React.useState('');
     const [inscEstadual, setInscEstadual] = React.useState('');
@@ -27,6 +27,7 @@ export const Checkout = () =>{
     const [dateBirthday, setDateBirthday] = React.useState('');
     const [signKey, setSignKey] = React.useState<string>('');
     const [tokenAuth, setTokenAuth] = React.useState<string>('');
+    const [loading, setLoading] = React.useState(false);
 
 
 
@@ -75,7 +76,9 @@ export const Checkout = () =>{
 
     const createModelDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
         e.preventDefault();
+        setLoading(false)
         try{
+            setLoading(true)
             let teste = fetch('https://nestrental-back.herokuapp.com/create-model', {
                 method: 'POST',
                 headers: {
@@ -109,10 +112,10 @@ export const Checkout = () =>{
                 console.log(dataJson);
                 setSignKey(dataJson.request_signature_key);
                 window.localStorage.setItem('key_signature', dataJson.request_signature_key);
-
+                setLoading(false)
                 //Envia lead para o Zoho CRM
-                getTokenAuthorization();
-                sendLead();
+                //getTokenAuthorization();
+                //sendLead();
                 navigate('/contrato');
             }
             
@@ -123,7 +126,7 @@ export const Checkout = () =>{
 
     const getTokenAuthorization = async () =>{
         try{
-            let teste = fetch('https://nestrental-back.herokuapp.com/generate-token', {
+            let teste = fetch('http://localhost:6800/generate-token', {
                 method: 'POST'
             })
             let response = await teste;
@@ -142,7 +145,7 @@ export const Checkout = () =>{
     const sendLead = async () =>{
         if(tokenAuth != ''){
             try{
-                const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+                const teste = fetch('http://localhost:6800/send-lead', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -171,7 +174,43 @@ export const Checkout = () =>{
    
 
     return(
+
         <>
+        {loading && 
+        <div className="loader loader--style1" title="0" style={{
+            width: '100%',
+            height: '100%',
+            position: 'fixed',
+            textAlign: 'center',
+            display: 'flex',
+            top: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, .5)'
+        }}>
+            <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+             width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xmlSpace="preserve" style={{
+                position: 'relative',
+                top: 0,
+                left: 0
+             }}>
+            <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+              s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+              c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+            <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+              C22.32,8.481,24.301,9.057,26.013,10.047z">
+              <animateTransform attributeType="xml"
+                attributeName="transform"
+                type="rotate"
+                from="0 20 20"
+                to="360 20 20"
+                dur="0.5s"
+                repeatCount="indefinite"/>
+              </path>
+            </svg>
+          </div>
+          
+        }
             <section style={{
                 backgroundColor: "#125082",
                 padding: "1rem 5rem",
