@@ -143,6 +143,30 @@ export const Checkout = () =>{
         }
         
     }
+    
+    const refreshToken = async ()=>{
+        let tkn = window.localStorage.getItem('access_token');
+        if(tkn != undefined){
+            try{
+                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },body: JSON.stringify({
+                        "tkn": tkn
+                    })
+                    
+                })
+                const response = await teste;
+                const json = await response.json();
+                setTokenAuth(json.tkn);
+            }catch(err){
+                console.log(err)
+            }
+        }else{
+            console.log('Deu ruim')
+        }
+    }
 
     
 
@@ -194,29 +218,7 @@ export const Checkout = () =>{
         }
     }
 
-    const refreshToken = async ()=>{
-        let tkn = window.localStorage.getItem('access_token');
-        if(tkn != undefined){
-            try{
-                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
-                    method: 'POST',
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },body: JSON.stringify({
-                        "tkn": tkn
-                    })
-                    
-                })
-                const response = await teste;
-                const json = await response.json();
-                console.log(json);
-            }catch(err){
-                console.log(err)
-            }
-        }else{
-            console.log('Deu ruim')
-        }
-    }
+    
 
     React.useEffect(()=>{
         buscaCep();
