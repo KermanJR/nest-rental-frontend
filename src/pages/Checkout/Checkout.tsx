@@ -108,7 +108,8 @@ export const Checkout = () =>{
             })
             let response = await fetchGenerateDocument;
             let json = await response.json();
-            if(json.request_signature_key != ""){
+            window.localStorage.setItem('key_signature', '');
+            if(json.request_signature_key != "" || json.request_signature_key != undefined){
                 console.log(json);
                 setSignKey(json.request_signature_key);
                 window.localStorage.setItem('key_signature', json.request_signature_key);
