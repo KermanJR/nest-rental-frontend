@@ -193,13 +193,7 @@ export const Checkout = () =>{
                               "id": "3652397000003677001"
                             }
                           },
-                          {
-                            "Company": nameLocataria,
-                            "Last_Name": nameUser,
-                            "First_Name": nameUser,
-                            "Email": businessEmail,
-                            "State": "Brasil"
-                          }
+             
                         ],
                         "lar_id": "3652397000002045001",
                         "trigger": [
