@@ -12,6 +12,7 @@ import { Title } from "../../components/Title/Title";
 
 
 
+
 export const Checkout = () =>{
 
     const navigate = useNavigate();
@@ -73,13 +74,12 @@ export const Checkout = () =>{
         setContact
     } = useContext(checkContext);
 
-
-    const createModelDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
+       const createModelDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
         e.preventDefault();
         setLoading(false)
         try{
             setLoading(true)
-            let teste = fetch('https://nestrental-back.herokuapp.com/create-model', {
+            let fetchGenerateDocument = fetch('https://nestrental-back.herokuapp.com/create-model', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,16 +106,18 @@ export const Checkout = () =>{
                       }
                 })
             })
-            let response = await teste;
-            let dataJson = await response.json();
-            if(dataJson.request_signature_key != ""){
-                console.log(dataJson);
-                setSignKey(dataJson.request_signature_key);
-                window.localStorage.setItem('key_signature', dataJson.request_signature_key);
+            let response = await fetchGenerateDocument;
+            let json = await response.json();
+            if(json.request_signature_key != ""){
+                console.log(json);
+                setSignKey(json.request_signature_key);
+                window.localStorage.setItem('key_signature', json.request_signature_key);
                 setLoading(false)
+
                 //Envia lead para o Zoho CRM
-                //getTokenAuthorization();
-                //sendLead();
+                sendLead();
+
+                //Navega para a página de contrato
                 navigate('/contrato');
             }
             
@@ -126,14 +128,16 @@ export const Checkout = () =>{
 
     const getTokenAuthorization = async () =>{
         try{
-            let teste = fetch('http://localhost:6800/generate-token', {
+            let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
                 method: 'POST'
             })
-            let response = await teste;
+            let response = await fetchGenerateToken;
             let json = await response.json();
-            window.localStorage.setItem('access_token', json.message);
+            console.log(json);
+            if(json.access_token != undefined){
+                window.localStorage.setItem('access_token', json.access_token);
+            }
             setTokenAuth(json.message);
-            console.log(json)
         }catch(error){
             console.log(error);
         }
@@ -143,20 +147,43 @@ export const Checkout = () =>{
     
 
     const sendLead = async () =>{
-        if(tokenAuth != ''){
+        let wtoken = window.localStorage.getItem('access_token');
+        if(wtoken != ''){
             try{
-                const teste = fetch('http://localhost:6800/send-lead', {
+                const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
                     },body: JSON.stringify({
-                        "data":[
-                            {
-                                "Email": businessEmail
+                        "data": [
+                          {
+                            "Company": nameLocataria,
+                            "Last_Name": nameUser,
+                            "First_Name": nameUser,
+                            "Email": businessEmail,
+                            "State": "Brasil",
+                            "$wizard_connection_path": [
+                              "3652397000003679053"
+                            ],
+                            "Wizard": {
+                              "id": "3652397000003677001"
                             }
+                          },
+                          {
+                            "Company": nameLocataria,
+                            "Last_Name": nameUser,
+                            "First_Name": nameUser,
+                            "Email": businessEmail,
+                            "State": "Brasil"
+                          }
+                        ],
+                        "lar_id": "3652397000002045001",
+                        "trigger": [
+                          "approval",
+                          "workflow",
+                          "blueprint"
                         ]
-                    })
-                    
+                      })
                 })
                 const response = await teste;
                 const json = await response.json();
@@ -167,9 +194,39 @@ export const Checkout = () =>{
         }
     }
 
+    const refreshToken = async ()=>{
+        let tkn = window.localStorage.getItem('access_token');
+        if(tkn != undefined){
+            try{
+                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },body: JSON.stringify({
+                        "tkn": tkn
+                    })
+                    
+                })
+                const response = await teste;
+                const json = await response.json();
+                console.log(json);
+            }catch(err){
+                console.log(err)
+            }
+        }else{
+            console.log('Deu ruim')
+        }
+    }
+
     React.useEffect(()=>{
         buscaCep();
     }, [billingCep])
+
+    React.useEffect(()=>{
+        getTokenAuthorization();
+        refreshToken();
+    }, [])
+    
 
    
 
@@ -210,7 +267,9 @@ export const Checkout = () =>{
             </svg>
           </div>
           
-        }
+            }
+      
+   
             <section style={{
                 backgroundColor: "#125082",
                 padding: "1rem 5rem",
