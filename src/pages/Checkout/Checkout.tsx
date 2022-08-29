@@ -113,7 +113,7 @@ export const Checkout = () =>{
             let key = json.request_signature_key;
             window.localStorage.setItem('key_signature', key);
             setSignKey(key);
-            console.log("Chave do documento: " + signKey);
+            console.log("Chave do documento: " + key);
 
             //Envia lead para o Zoho CRM
             sendLead();
