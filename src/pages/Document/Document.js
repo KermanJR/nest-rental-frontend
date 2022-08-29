@@ -6,10 +6,11 @@ import { useLocation } from "react-router-dom";
 
 
 export const Document = () =>{
+    const [tokenNav, setTokenNav] = React.useState('');
     const key_signature = window.localStorage.getItem('key_signature'); 
     const { state } = useLocation();
     const { token } = state;
-    console.log(token)
+    setTokenNav(token);
 
     var widget = '';
     var input = '';
@@ -25,7 +26,7 @@ export const Document = () =>{
     function run(){
        // var request_signature_key = input.value;
         if(widget){widget.unmount();}
-        widget = new Clicksign(token);
+        widget = new Clicksign(tokenNav);
 
         widget.endpoint = 'https://sandbox.clicksign.com';
         widget.origin = 'https://nest-rental.herokuapp.com';
@@ -41,13 +42,13 @@ export const Document = () =>{
 
     React.useEffect(()=>{
         run();
-    }, [key_signature])
+    }, [tokenNav])
     
    
     return(
         <>
             <div>
-                <input id='request_signature_key' value={token} style={{display: 'none'}}/>
+                <input id='request_signature_key' value={tokenNav} style={{display: 'none'}}/>
             </div>
 
             <div id='container' style={{height: "600px"}}></div>
