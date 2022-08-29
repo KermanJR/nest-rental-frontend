@@ -28,7 +28,7 @@ export const Document = () =>{
         widget = new Clicksign(token);
 
         widget.endpoint = 'https://sandbox.clicksign.com';
-        widget.origin = 'http://localhost:3000';
+        widget.origin = 'https://nest-rental.herokuapp.com';
         widget.mount('container');
 
         widget.on('loaded', function(ev) { console.log('loaded!'); });
