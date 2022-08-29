@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { TOKEN_POST } from "../../api/Zoho/ApiZoho";
 import { useFetch } from "../../hooks/useFetch";
 import { Title } from "../../components/Title/Title";
+import { isNullishCoalesce } from "typescript";
 
 
 
@@ -84,6 +85,7 @@ export const Checkout = () =>{
                 headers: {
                     'Content-Type': 'application/json'
                 }, body: JSON.stringify({
+                    
                     "document": {
                         "path": "/modelos/teste.docx",
                           "template": {
@@ -108,8 +110,8 @@ export const Checkout = () =>{
             })
             let response = await fetchGenerateDocument;
             let json = await response.json();
-            window.localStorage.setItem('key_signature', '');
-            if(json.request_signature_key != "" || json.request_signature_key != undefined){
+            window.localStorage.setItem('key_signature', '')
+            if(json.request_signature_key != ""){
                 console.log(json);
                 setSignKey(json.request_signature_key);
                 window.localStorage.setItem('key_signature', json.request_signature_key);
@@ -122,34 +124,39 @@ export const Checkout = () =>{
                 navigate('/contrato');
             }
             
+            
         }catch(err){
             console.log(err);
         }
     }
 
+    //window.localStorage.setItem('access_token', '');
+
     const getTokenAuthorization = async () =>{
-        try{
-            let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
-                method: 'POST'
-            })
-            let response = await fetchGenerateToken;
-            let json = await response.json();
-            console.log(json);
-            if(json.access_token != undefined){
+
+            try{
+                let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
+                    method: 'POST'
+                })
+                let response = await fetchGenerateToken;
+                let json = await response.json();
+                console.log(json);
                 window.localStorage.setItem('access_token', json.access_token);
+                setTokenAuth(json.message);
+            }catch(error){
+                console.log(error);
             }
-            setTokenAuth(json.message);
-        }catch(error){
-            console.log(error);
-        }
+        
         
     }
+
+
     
-    const refreshToken = async ()=>{
+    /*const refreshToken = async ()=>{
         let tkn = window.localStorage.getItem('access_token');
-        if(tkn != undefined){
+        if(tkn != undefined || tkn !== null){
             try{
-                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
+                const teste = fetch('http://localhost:6800/refresh-token', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -167,7 +174,7 @@ export const Checkout = () =>{
         }else{
             console.log('Deu ruim')
         }
-    }
+    }*/
 
     
 
@@ -193,20 +200,21 @@ export const Checkout = () =>{
                             "Wizard": {
                               "id": "3652397000003677001"
                             }
-                          },
-             
+                          }
                         ],
+
                         "lar_id": "3652397000002045001",
                         "trigger": [
                           "approval",
                           "workflow",
                           "blueprint"
-                        ]
+                        ],
                       })
                 })
                 const response = await teste;
                 const json = await response.json();
-                console.log(json);
+                console.log(json)
+                
             }catch(err){
                 console.log(err)
             }
@@ -221,9 +229,9 @@ export const Checkout = () =>{
 
     React.useEffect(()=>{
         getTokenAuthorization();
-        refreshToken();
+        //refreshToken();
     }, [])
-    
+
 
    
 
