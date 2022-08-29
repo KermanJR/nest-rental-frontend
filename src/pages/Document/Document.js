@@ -37,10 +37,11 @@ export const Document = () =>{
         });
     }
     
+     const { state } = useLocation();
+        const { token } = state; 
+    
     
     React.useEffect(()=>{
-        const { state } = useLocation();
-        const { token } = state;   
         run(token);  
     }, [])
 
