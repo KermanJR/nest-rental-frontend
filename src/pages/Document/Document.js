@@ -7,8 +7,7 @@ import { useLocation } from "react-router-dom";
 
 export const Document = () =>{
     const key_signature = window.localStorage.getItem('key_signature'); 
-    const { state } = useLocation();
-    const { token } = state;
+    
 
     var widget = '';
     var input = '';
@@ -38,9 +37,12 @@ export const Document = () =>{
         });
     }
     
+    
     React.useEffect(()=>{
-        run(token);   
-    }, [token])
+        const { state } = useLocation();
+        const { token } = state;   
+        run(token);  
+    }, [])
 
     
    
