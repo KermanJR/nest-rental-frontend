@@ -111,7 +111,7 @@ export const Checkout = () =>{
             let response = await fetchGenerateDocument;
             let json = await response.json();
             window.localStorage.setItem('key_signature', '')
-            if(json.request_signature_key != ""){
+         
                 console.log(json);
                 setSignKey(json.request_signature_key);
                 window.localStorage.setItem('key_signature', json.request_signature_key);
@@ -122,7 +122,7 @@ export const Checkout = () =>{
 
                 //Navega para a página de contrato
                 navigate('/contrato');
-            }
+            
             
             
         }catch(err){
