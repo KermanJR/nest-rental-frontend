@@ -10,7 +10,7 @@ export const Document = () =>{
     //const key_signature = window.localStorage.getItem('key_signature'); 
     const { state } = useLocation();
     const { token } = state;
-    setTokenNav(token);
+    //setTokenNav(token);
 
     var widget = '';
     var input = '';
@@ -26,7 +26,7 @@ export const Document = () =>{
     function run(){
        // var request_signature_key = input.value;
         if(widget){widget.unmount();}
-        widget = new Clicksign(tokenNav);
+        widget = new Clicksign(token);
 
         widget.endpoint = 'https://sandbox.clicksign.com';
         widget.origin = 'https://nest-rental.herokuapp.com';
@@ -39,16 +39,17 @@ export const Document = () =>{
           document.getElementById('container').style.height = height+'px';
         });
     }
-
+    
     React.useEffect(()=>{
-        run();
-    }, [token])
+        run();   
+    }, [)
+
     
    
     return(
         <>
             <div>
-                <input id='request_signature_key' value={tokenNav} style={{display: 'none'}}/>
+                <input id='request_signature_key' value={token} style={{display: 'none'}}/>
             </div>
 
             <div id='container' style={{height: "600px"}}></div>
