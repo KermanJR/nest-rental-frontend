@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 export const Document = () =>{
     const [tokenNav, setTokenNav] = React.useState('');
-    const key_signature = window.localStorage.getItem('key_signature'); 
+    //const key_signature = window.localStorage.getItem('key_signature'); 
     const { state } = useLocation();
     const { token } = state;
     setTokenNav(token);
