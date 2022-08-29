@@ -42,7 +42,7 @@ export const Document = () =>{
 
     React.useEffect(()=>{
         run();
-    }, [tokenNav])
+    }, [token])
     
    
     return(
