@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import styles from './Checkout.module.scss';
 import { checkContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
