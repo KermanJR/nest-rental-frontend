@@ -121,7 +121,7 @@ export const Checkout = () =>{
             //Navega para a página de contrato
             navigate('/contrato', {
                 state: {
-                    token: signKey
+                    token: key
                 }
             });
             
