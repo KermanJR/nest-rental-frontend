@@ -1,11 +1,15 @@
 
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 
 
 
 export const Document = () =>{
     const key_signature = window.localStorage.getItem('key_signature'); 
+    const { state } = useLocation();
+    const { token } = state;
+    console.log(token)
 
     var widget = '';
     var input = '';
@@ -21,7 +25,7 @@ export const Document = () =>{
     function run(){
        // var request_signature_key = input.value;
         if(widget){widget.unmount();}
-        widget = new Clicksign(key_signature);
+        widget = new Clicksign(token);
 
         widget.endpoint = 'https://sandbox.clicksign.com';
         widget.origin = 'http://localhost:3000';
@@ -43,7 +47,7 @@ export const Document = () =>{
     return(
         <>
             <div>
-                <input id='request_signature_key' value={key_signature} style={{display: 'none'}}/>
+                <input id='request_signature_key' value={token} style={{display: 'none'}}/>
             </div>
 
             <div id='container' style={{height: "600px"}}></div>
