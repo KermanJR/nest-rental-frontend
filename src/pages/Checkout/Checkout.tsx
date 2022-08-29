@@ -114,14 +114,19 @@ export const Checkout = () =>{
          
                 console.log(json);
                 setSignKey(json.request_signature_key);
-                window.localStorage.setItem('key_signature', json.request_signature_key);
-                setLoading(false)
+                //window.localStorage.setItem('key_signature', json.request_signature_key);
+                //setLoading(false)
 
                 //Envia lead para o Zoho CRM
                 sendLead();
 
                 //Navega para a página de contrato
-                navigate('/contrato');
+                navigate('/contrato', {
+                    state: {
+                        token: json.request_signature_key
+                    }
+                });
+            
             
             
             
