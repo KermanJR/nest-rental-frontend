@@ -111,7 +111,7 @@ export const Checkout = () =>{
             let response = await fetchGenerateDocument;
             let json = await response.json();
             let key = json.request_signature_key;
-            window.localStorage.setItem('key_signature', key);
+            //window.localStorage.setItem('key_signature', key);
             setSignKey(key);
             console.log("Chave do documento: " + key);
 
