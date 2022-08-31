@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import styles from './Checkout.module.scss';
 import { checkContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { TOKEN_POST } from "../../api/Zoho/ApiZoho";
 import { useFetch } from "../../hooks/useFetch";
 import { Title } from "../../components/Title/Title";
-import { isNullishCoalesce } from "typescript";
+import { Document } from "../Document/Document";
 
 
 
@@ -27,10 +27,12 @@ export const Checkout = () =>{
     const [nameUser, setNameUser] = React.useState('');
     const [cpfUser, setCpfUser] = React.useState('');
     const [dateBirthday, setDateBirthday] = React.useState('');
-    const [signKey, setSignKey] = React.useState<string>('');
-    const [tokenAuth, setTokenAuth] = React.useState<string>('');
+    const [signKey, setSignKey] = React.useState('');
+    const [tokenAuth, setTokenAuth] = React.useState('');
     const [loading, setLoading] = React.useState(false);
-
+    const [keyDocument, setKeyDocument] = React.useState('');
+    const [keySigner, setKeySigner] = React.useState('');
+    const [keyDocumentSign, setKeyDocumentSign] = React.useState('');
 
 
     //Billing address
@@ -75,7 +77,7 @@ export const Checkout = () =>{
         setContact
     } = useContext(checkContext);
 
-       const createModelDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
+    const createModelDocument = async (e) =>{
         e.preventDefault();
         setLoading(false)
         try{
@@ -110,32 +112,105 @@ export const Checkout = () =>{
             })
             let response = await fetchGenerateDocument;
             let json = await response.json();
-            let key = json.request_signature_key;
-            //window.localStorage.setItem('key_signature', key);
-            setSignKey(key);
-            console.log("Chave do documento: " + key);
-
-            //Envia lead para o Zoho CRM
-            sendLead();
-
-            //Navega para a página de contrato
-            navigate('/contrato', {
-                state: {
-                    token: key
-                }
-            });
-            
+            setKeyDocument(json.data);
+            setLoading(false);
         }catch(err){
+            setKeyDocument('');
             console.log(err);
         }
     }
 
+    const createDocumentKey = async (key_signer) =>{
+        console.log(key_signer)
+        setLoading(false)
+        try{
+            setLoading(true)
+            let fetchGenerateDocumentKey = fetch('https://nestrental-back.herokuapp.com/create-document', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }, body: JSON.stringify({
+                    "list": {
+                        "document_key": keyDocument,
+                        "signer_key": key_signer,
+                        "sign_as": "sign",
+                        "refusable": true,
+                        "message": `Prezado ${nameUser},\nPor favor assine o documento.\n\nQualquer dúvida estou à disposição.\n\nAtenciosamente,\nNest Rental.`
+                      }
+                })
+            })
+            let response = await fetchGenerateDocumentKey;
+            let json = await response.json();
+            setKeyDocumentSign(json.data);
+            if(json.data !== null || json.data !== undefined || json.data !== ''){
+                window.localStorage.setItem('document_key', json.data)
+                setLoading(false);
+            
+            }else{
+                window.localStorage.setItem('document_key', '')
+                setLoading(false);
+            }
+
+            
+        }catch(err){
+            setKeyDocumentSign('');
+            console.log(err);
+        }
+    }
+
+
+    const createSignerDocument = async (e) =>{
+        e.preventDefault();
+        setLoading(false)
+        try{
+            setLoading(true)
+            let fetchGenerateSigner = fetch('https://nestrental-back.herokuapp.com/create-signer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }, body: JSON.stringify({
+
+                    "signer": {
+                        "email": businessEmail,
+                        "phone_number": contact,
+                        "auths": [
+                          "email"
+                        ],
+                        "name": nameUser,
+                        "documentation": cpfUser,
+                        "birthday": dateBirthday,
+                        "has_documentation": true,
+                        "selfie_enabled": false,
+                        "handwritten_enabled": false,
+                        "official_document_enabled": false,
+                        "liveness_enabled": false,
+                        "facial_biometrics_enabled": false
+                      }
+                })
+            })
+            let response = await fetchGenerateSigner;
+            let json = await response.json();
+            setKeySigner(json.data);
+            console.log(json.data)
+            setTimeout(()=>{
+                createDocumentKey(json.data);
+            }, 5000)
+            setLoading(false)
+        }catch(err){
+            setKeySigner('');
+            console.log(err);
+        }
+    }
+
+
+    
     //window.localStorage.setItem('access_token', '');
 
-    const getTokenAuthorization = async () =>{
-
+    /*const getTokenAuthorization = async () =>{
+            setLoading(false)
             try{
-                let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
+                setLoading(true)
+                let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
                     method: 'POST'
                 })
                 let response = await fetchGenerateToken;
@@ -143,15 +218,15 @@ export const Checkout = () =>{
                 console.log(json);
                 window.localStorage.setItem('access_token', json.access_token);
                 setTokenAuth(json.message);
+                setLoading(false);
             }catch(error){
                 console.log(error);
             }
         
         
-    }
+    }*/
 
 
-    
     /*const refreshToken = async ()=>{
         let tkn = window.localStorage.getItem('access_token');
         if(tkn != undefined || tkn !== null){
@@ -176,13 +251,13 @@ export const Checkout = () =>{
         }
     }*/
 
-    
 
+    
     const sendLead = async () =>{
         let wtoken = window.localStorage.getItem('access_token');
         if(wtoken != ''){
             try{
-                const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+                const teste = fetch('http://localhost:6800/send-lead', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -221,17 +296,42 @@ export const Checkout = () =>{
         }
     }
 
+
     
 
     React.useEffect(()=>{
         buscaCep();
     }, [billingCep])
 
-    React.useEffect(()=>{
-        getTokenAuthorization();
-        //refreshToken();
-    }, [])
 
+
+    /*function Clicksign(i){"use strict";function n(n){var t;(e[(t=n).name||t]||[]).forEach(function(t){t(n.data)})}var o,r,t=window.location.protocol+"//"+window.location.host,e={},u=function(t){n(t.data)};return{endpoint:"https://app.clicksign.com",origin:t,mount:function(t){var n="/sign/"+i,e="?embedded=true&origin="+this.origin,e=this.endpoint+n+e;return r=document.getElementById(t),(o=document.createElement("iframe")).setAttribute("src",e),o.setAttribute("style","width: 100%; height: 100%;"),o.setAttribute("allow","camera"),window.addEventListener("message",u),r.appendChild(o)},unmount:function(){return o&&(r.removeChild(o),o=r=null,window.removeEventListener("message",n)),!0},on:function(t,n){return e[t]||(e[t]=[]),e[t].push(n)},trigger:n}}
+    var widget = '';
+    var input = '';
+    setTimeout(()=>{
+        widget = window.document.querySelector("#request_signature_key");
+        input = window.document.querySelector("#request_signature_key");
+    }, 3000)
+    function run(){
+       //var request_signature_key = input.value;
+        if(widget){widget.unmount();}
+        widget = new Clicksign(signKey);
+
+        widget.endpoint = 'https://sandbox.clicksign.com';
+        widget.origin = 'https://nest-rental.herokuapp.com/produto/ecolift-50';
+        widget.mount('container');
+
+        widget.on('loaded', function(ev) { console.log('loaded!'); });
+        widget.on('signed', function(ev) { console.log('signed!'); });
+        widget.on('resized', function(height) {
+          console.log('resized!');
+          document.getElementById('container').style.height = height+'px';
+        });
+    }*/
+
+    React.useEffect(()=>{
+        //run();
+    }, [signKey])
 
    
 
@@ -288,7 +388,7 @@ export const Checkout = () =>{
             }}>Pedido</h1>
             </section>
 
-        <section style={{
+    {!keyDocument && <section style={{
             display: 'flex',
             justifyContent: 'space-between',
             padding: '2rem 5rem',
@@ -349,70 +449,6 @@ export const Checkout = () =>{
                             type="email" 
                             id="business_email" name="business_email" 
                             onChange={(e)=>setBusinessEmail(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-
-                <Title 
-                    level={3}
-                    >
-                    Detalhes do usuário
-                </Title>
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Nome:*</label>
-                        <input 
-                            type="text"
-                            id="name_user"
-                            name="name_user"
-                            onChange={(e)=>setNameUser(e.target.value)}
-                            placeholder="Digite seu nome"
-                        />
-                    </div>
-                    
-                    <div>
-                        <label>CPF:*</label>
-                        <input 
-                            type="text"
-                            id="cpf_user"
-                            name="cpf_user"
-                            placeholder="000.000.000-00"
-                            onChange={(e)=>setCpfUser(e.target.value)}
-                        />
-                    </div>
-                    
-                    <div>
-                        <label>Data de nascimento:*</label>
-                        <input 
-                            type="date"
-                            id="date_birthday"
-                            name="date_birthday"
-                            onChange={(e)=>setDateBirthday(e.target.value)}
-                        />
-                    </div>
-                    
-                </div>
-
-                <div className={styles.formCheckout__div}> 
-                    <div>
-                        <label>E-mail:*</label>
-                        <input 
-                            type="text" 
-                            id="email_user" 
-                            name="email_user"
-                            onChange={(e)=>setEmail(e.target.value)}
-                            placeholder="seuemail@gmail.com"
-                        />
-                    </div>
-                    <div>
-                        <label>Telefone:*</label>
-                        <input 
-                            type="text" 
-                            id="contact" 
-                            name="contact"
-                            placeholder="67992658458"
-                            onChange={(e)=>setContact(e.target.value)}
                         />
                     </div>
                 </div>
@@ -644,7 +680,109 @@ export const Checkout = () =>{
                 />
             </form> 
         </div>
-    </section>
+    </section>}
+    {keyDocument &&
+    <>
+    <div style={{padding: '.5rem 5rem'}}>
+         <Title 
+         level={3}
+         >
+         Detalhes do usuário:
+     </Title>
+     </div>
+    <form style={{
+        padding: "1rem 5rem"
+    }}>
+    <div className={styles.formCheckout__div}>
+         <div>
+             <label>Nome:*</label>
+             <input 
+                 type="text"
+                 id="name_user"
+                 name="name_user"
+                 onChange={(e)=>setNameUser(e.target.value)}
+                 placeholder="Digite seu nome"
+             />
+         </div>
+         
+         <div>
+             <label>CPF:*</label>
+             <input 
+                 type="text"
+                 id="cpf_user"
+                 name="cpf_user"
+                 placeholder="000.000.000-00"
+                 onChange={(e)=>setCpfUser(e.target.value)}
+             />
+         </div>
+         
+         <div>
+             <label>Data de nascimento:*</label>
+             <input 
+                 type="date"
+                 id="date_birthday"
+                 name="date_birthday"
+                 onChange={(e)=>setDateBirthday(e.target.value)}
+             />
+         </div>
+         
+    </div>
+
+    <div className={styles.formCheckout__div}> 
+        <div>
+             <label>E-mail:*</label>
+             <input 
+                 type="text" 
+                 id="email_user" 
+                 name="email_user"
+                 onChange={(e)=>setEmail(e.target.value)}
+                 placeholder="seuemail@gmail.com"
+             />
+        </div>
+        <div>
+             <label>Telefone:*</label>
+             <input 
+                 type="text" 
+                 id="contact" 
+                 name="contact"
+                 placeholder="67992658458"
+                 onChange={(e)=>setContact(e.target.value)}
+             />
+        </div>
+    </div>
+    <input type="submit" style={{
+                    backgroundColor: "#125082",
+                    color: "#fff",
+                    width: "40%", 
+                    padding: "1rem",
+                    borderRadius: "9px",
+                    border: "none",
+                    marginTop: "1rem",
+                    fontSize: "1rem",
+                    cursor: "pointer"
+                }}
+                value="Continuar"
+                onClick={(e)=>createSignerDocument(e)}
+                />
+    </form>
+     </>
+    }
+    {console.log(keyDocumentSign)};
+    {keyDocumentSign &&
+        <div  style={{padding: '1rem 5rem'}}>
+
+            
+            <Title 
+            level={1}
+            >
+            Documento:
+            </Title>
+            <Document/>
+            
+        </div>
+    }
+
+    
 </>
     );
 }
