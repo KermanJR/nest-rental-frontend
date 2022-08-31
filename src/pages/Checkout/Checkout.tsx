@@ -77,7 +77,7 @@ export const Checkout = () =>{
         setContact
     } = useContext(checkContext);
 
-    const createModelDocument = async (e) =>{
+    const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
         e.preventDefault();
         setLoading(false)
         try{
@@ -120,7 +120,7 @@ export const Checkout = () =>{
         }
     }
 
-    const createDocumentKey = async (key_signer) =>{
+    const createDocumentKey = async (key_signer: string) =>{
         console.log(key_signer)
         setLoading(false)
         try{
@@ -159,7 +159,7 @@ export const Checkout = () =>{
     }
 
 
-    const createSignerDocument = async (e) =>{
+    const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
         e.preventDefault();
         setLoading(false)
         try{
