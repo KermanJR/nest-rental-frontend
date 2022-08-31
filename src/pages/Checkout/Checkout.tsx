@@ -7,6 +7,7 @@ import { TOKEN_POST } from "../../api/Zoho/ApiZoho";
 import { useFetch } from "../../hooks/useFetch";
 import { Title } from "../../components/Title/Title";
 import { Document } from "../Document/Document";
+import { sensitiveHeaders } from "http2";
 
 
 
@@ -114,6 +115,7 @@ export const Checkout = () =>{
             let json = await response.json();
             setKeyDocument(json.data);
             setLoading(false);
+          
         }catch(err){
             setKeyDocument('');
             console.log(err);
@@ -121,7 +123,6 @@ export const Checkout = () =>{
     }
 
     const createDocumentKey = async (key_signer: string) =>{
-        console.log(key_signer)
         setLoading(false)
         try{
             setLoading(true)
@@ -144,13 +145,13 @@ export const Checkout = () =>{
             setKeyDocumentSign(json.data);
             if(json.data !== null || json.data !== undefined || json.data !== ''){
                 window.localStorage.setItem('document_key', json.data)
-                setLoading(false);
+                sendLead();
             
             }else{
                 window.localStorage.setItem('document_key', '')
-                setLoading(false);
+          
             }
-
+            setLoading(false);
             
         }catch(err){
             setKeyDocumentSign('');
@@ -206,32 +207,27 @@ export const Checkout = () =>{
     
     //window.localStorage.setItem('access_token', '');
 
-    /*const getTokenAuthorization = async () =>{
-            setLoading(false)
+    const getTokenAuthorization = async () =>{
             try{
-                setLoading(true)
-                let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
+
+                let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
                     method: 'POST'
                 })
                 let response = await fetchGenerateToken;
                 let json = await response.json();
-                console.log(json);
                 window.localStorage.setItem('access_token', json.access_token);
                 setTokenAuth(json.message);
-                setLoading(false);
             }catch(error){
                 console.log(error);
             }
-        
-        
-    }*/
+    }
 
 
-    /*const refreshToken = async ()=>{
+    const refreshToken = async ()=>{
         let tkn = window.localStorage.getItem('access_token');
         if(tkn != undefined || tkn !== null){
             try{
-                const teste = fetch('http://localhost:6800/refresh-token', {
+                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
@@ -249,7 +245,7 @@ export const Checkout = () =>{
         }else{
             console.log('Deu ruim')
         }
-    }*/
+    }
 
 
     
@@ -257,33 +253,38 @@ export const Checkout = () =>{
         let wtoken = window.localStorage.getItem('access_token');
         if(wtoken != ''){
             try{
-                const teste = fetch('http://localhost:6800/send-lead', {
+                const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
                     },body: JSON.stringify({
-                        "data": [
-                          {
-                            "Company": nameLocataria,
-                            "Last_Name": nameUser,
-                            "First_Name": nameUser,
-                            "Email": businessEmail,
-                            "State": "Brasil",
-                            "$wizard_connection_path": [
-                              "3652397000003679053"
-                            ],
-                            "Wizard": {
-                              "id": "3652397000003677001"
-                            }
-                          }
-                        ],
 
-                        "lar_id": "3652397000002045001",
-                        "trigger": [
-                          "approval",
-                          "workflow",
-                          "blueprint"
-                        ],
+                        "xxx": {
+                            "data": [
+                            {
+                                "Company": nameLocataria,
+                                "Last_Name": nameUser,
+                                "First_Name": nameUser,
+                                "Email": businessEmail,
+                                "State": "Brasil",
+                                "$wizard_connection_path": [
+                                "3652397000003679053"
+                                ],
+                                "Wizard": {
+                                "id": "3652397000003677001"
+                                }
+                            }
+                            ],
+
+                            "lar_id": "3652397000002045001",
+                            "trigger": [
+                            "approval",
+                            "workflow",
+                            "blueprint"
+                            ],
+                        },
+                        "token": wtoken
+
                       })
                 })
                 const response = await teste;
@@ -303,33 +304,12 @@ export const Checkout = () =>{
         buscaCep();
     }, [billingCep])
 
+    React.useEffect(()=>{
+        getTokenAuthorization();
+       // refreshToken();
+    }, [])
 
-
-    /*function Clicksign(i){"use strict";function n(n){var t;(e[(t=n).name||t]||[]).forEach(function(t){t(n.data)})}var o,r,t=window.location.protocol+"//"+window.location.host,e={},u=function(t){n(t.data)};return{endpoint:"https://app.clicksign.com",origin:t,mount:function(t){var n="/sign/"+i,e="?embedded=true&origin="+this.origin,e=this.endpoint+n+e;return r=document.getElementById(t),(o=document.createElement("iframe")).setAttribute("src",e),o.setAttribute("style","width: 100%; height: 100%;"),o.setAttribute("allow","camera"),window.addEventListener("message",u),r.appendChild(o)},unmount:function(){return o&&(r.removeChild(o),o=r=null,window.removeEventListener("message",n)),!0},on:function(t,n){return e[t]||(e[t]=[]),e[t].push(n)},trigger:n}}
-    var widget = '';
-    var input = '';
-    setTimeout(()=>{
-        widget = window.document.querySelector("#request_signature_key");
-        input = window.document.querySelector("#request_signature_key");
-    }, 3000)
-    function run(){
-       //var request_signature_key = input.value;
-        if(widget){widget.unmount();}
-        widget = new Clicksign(signKey);
-
-        widget.endpoint = 'https://sandbox.clicksign.com';
-        widget.origin = 'https://nest-rental.herokuapp.com/produto/ecolift-50';
-        widget.mount('container');
-
-        widget.on('loaded', function(ev) { console.log('loaded!'); });
-        widget.on('signed', function(ev) { console.log('signed!'); });
-        widget.on('resized', function(height) {
-          console.log('resized!');
-          document.getElementById('container').style.height = height+'px';
-        });
-    }*/
-
-
+   
 
     return(
 
@@ -368,7 +348,7 @@ export const Checkout = () =>{
             </svg>
           </div>
           
-            }
+        }
       
    
             <section style={{
@@ -763,6 +743,7 @@ export const Checkout = () =>{
     </form>
      </>
     }
+    {console.log(keyDocumentSign)};
     {keyDocumentSign &&
         <div  style={{padding: '1rem 5rem'}}>
 
