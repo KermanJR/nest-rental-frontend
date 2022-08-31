@@ -329,11 +329,7 @@ export const Checkout = () =>{
         });
     }*/
 
-    React.useEffect(()=>{
-        //run();
-    }, [signKey])
 
-   
 
     return(
 
@@ -767,7 +763,6 @@ export const Checkout = () =>{
     </form>
      </>
     }
-    {console.log(keyDocumentSign)};
     {keyDocumentSign &&
         <div  style={{padding: '1rem 5rem'}}>
 
