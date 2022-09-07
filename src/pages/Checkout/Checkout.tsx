@@ -145,7 +145,7 @@ export const Checkout = () =>{
 
     const createDocumentKey = async (key_signer: string) =>{
         try{
-            let fetchGenerateDocumentKey = fetch('http://localhost:6800/create-document', {
+            let fetchGenerateDocumentKey = fetch('https://nestrental-back.herokuapp.com/create-document', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
