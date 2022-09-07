@@ -3,7 +3,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 
 
-export const Document = () =>{
+export const Document = (props) =>{
 
     let key = window.localStorage.getItem('document_key');
     var widget = '';
@@ -22,7 +22,7 @@ export const Document = () =>{
         widget = new Clicksign(key);
 
         widget.endpoint = 'https://sandbox.clicksign.com';
-        widget.origin = 'https://nest-rental.herokuapp.com/checkout';
+        widget.origin = 'https://nest-rental.herokuapp.com/produto/ecolift-50';
         widget.mount('container');
 
         widget.on('loaded', function(ev) { console.log('loaded!'); });

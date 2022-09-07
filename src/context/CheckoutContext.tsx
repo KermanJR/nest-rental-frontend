@@ -21,16 +21,18 @@ export type PropsContextType = {
     setEndDate:(endDate: string)=>void,
     nameLocataria: string,
     setNameLocataria: (name: string) =>void,
-    cnpj: string,
-    setCnpj: (cnpj: string) =>void,
     street: string,
     bairro: string,
     country: string,
+    state: string,
     setStreet: (street: string) =>void,
     setBairro: (bairro: string) =>void,
     setCountry: (country: string) =>void,
+    setState: (state: string)=>void;
     contact: string,
-    setContact: (contact: string)=>void
+    setContact: (contact: string)=>void,
+    dataCheckout: Array<{}>,
+    setDataCheckout: ()=> void;
 
 }
 export const checkContext = React.createContext<PropsContextType>({
@@ -51,16 +53,18 @@ export const checkContext = React.createContext<PropsContextType>({
     setEndDate: ()=> '',
     nameLocataria: '',
     setNameLocataria: ()=>'',
-    cnpj: '',
-    setCnpj: () =>'',
     street: '',
     bairro: '',
     country: '',
+    state: '',
     setStreet: () =>'',
     setBairro: () =>'',
     setCountry: () =>'',
+    setState: ()=>'',
     contact: '',
-    setContact: () => ''
+    setContact: () => '',
+    dataCheckout: [{}],
+    setDataCheckout: ()=>''
 });
 
 
@@ -74,11 +78,14 @@ export const checkContext = React.createContext<PropsContextType>({
     const [startDate, setStartDate] = React.useState<string>('');
     const [endDate, setEndDate] = React.useState<string>('');
     const [nameLocataria, setNameLocataria] = React.useState('')
-    const [cnpj, setCnpj] = React.useState<string>('');
     const [street, setStreet] = React.useState<string>('');
     const [bairro, setBairro] = React.useState<string>('');
     const [country, setCountry] = React.useState<string>('');
+    const [state, setState] = React.useState<string>('');
     const [contact, setContact] = React.useState<string>('');
+
+
+    const [dataCheckout, setDataCheckout] = React.useState('');
 
     let difference: number = 0
     let valor: number = 0
@@ -265,8 +272,6 @@ export const checkContext = React.createContext<PropsContextType>({
             setStartDate,
             nameLocataria,
             setNameLocataria,
-            cnpj,
-            setCnpj,
             street,
             setStreet,
             bairro,
@@ -274,7 +279,12 @@ export const checkContext = React.createContext<PropsContextType>({
             country,
             setCountry,
             contact,
-            setContact
+            setContact,
+            state,
+            setState,
+            dataCheckout: [],
+            setDataCheckout: () => ''
+
         }}>
             {children}
         </checkContext.Provider>

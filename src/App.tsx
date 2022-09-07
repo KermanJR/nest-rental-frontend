@@ -19,8 +19,7 @@ function App() {
             <Route path="produto/ecolift-50" element={<SingleProduct/>} />
             <Route path="demonstracao" element={<Demonstration/>} />
             <Route path="checkout" element={<Checkout/>} />
-            <Route path="/contrato" element={<Document/>} />
-
+            <Route path="contrato" element={<Document/>} />
           </Routes>
           <Footer/>
         </CheckoutContext>

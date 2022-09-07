@@ -32,8 +32,8 @@ const Rent = () => {
         setStartDate,
         setBairro,
         setContact,
-        setCnpj,
         setStreet,
+        setState,
         setCountry
     } = useContext(checkContext);
 
@@ -42,7 +42,7 @@ const Rent = () => {
 
 
 
-    function adicionaDias(){
+    /*function adicionaDias(){
         if(addDays && addDays === 1){
             setNewPrice(price + 137)
         }
@@ -133,11 +133,11 @@ const Rent = () => {
         if(addDays && addDays === 30){
             setNewPrice(price + 1688)
         }
-    }
+    }*/
 
-    React.useEffect(()=>{
+    /*React.useEffect(()=>{
         adicionaDias();
-    }, [addDays])
+    }, [addDays])*/
 
     React.useEffect(()=>{
         buscaCep();
@@ -152,11 +152,13 @@ const Rent = () => {
         })
         const response = await url_fetch;
         const json = await response.json();
+        console.log(json)
         const faixaCep = (json.cep).split('-', 1);
         setStreet(json.logradouro);
         setBairro(json.bairro);
         setCountry(json.localidade)
-        setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+        setState(json.uf)
+        setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade + ', ' + json.uf)
         if(faixaCep >= '11000' && faixaCep <= '11999'){
             setBilling(1800);
             setErrorCep('')
@@ -224,7 +226,7 @@ const Rent = () => {
             
             <div style={{padding: '1rem 0 0 0'}}>
                 <label >Quantidade de dias: {totalDays}</label>
-                <div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>
+                {/*<div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>
                 <p>Adicionar mais dias: </p>
                 <select onChange={(e:any)=>setAddDays(Number(e.target.value))}>
                 <option value={0}>0</option>
@@ -259,16 +261,11 @@ const Rent = () => {
                     <option value={29}>29 </option>
                     <option value={30}>30 </option>
                 </select>
-                </div>
-                <p>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                </div>*/}
+                <p style={{paddingTop: '.5rem'}}>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
                 <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
                 <p className={styles.rent__price}>
-                    TOTAL: 
-                     {
-                        addDays?  
-                            (newPrice + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
-                            price ?(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
-                    }
+                    TOTAL: {(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
                 </p>
             </div>
             <input type="submit" style={{
@@ -282,7 +279,7 @@ const Rent = () => {
                 fontSize: "1rem",
                 cursor: "pointer"
             }}
-            value="Ir para o checkout"
+            value="Alugar"
             onClick={(e)=>handleSubmit(e)}/>
         </form>
 
