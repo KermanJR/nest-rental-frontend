@@ -5,7 +5,7 @@ const API_URL_DEV_CLICKSIGN = 'http://localhost:6800/'
 //Cria documento de contrato
 export function CREATE_DOCUMENT(body: any){
     return{
-        url: API_URL_DEV_CLICKSIGN + 'create-model',
+        url: API_URL_CLICKSIGN + 'create-model',
         options: {
             method: 'POST',
             headers:{
@@ -20,7 +20,7 @@ export function CREATE_DOCUMENT(body: any){
 //Cria signatário do documento
 export function CREATE_DOCUMENT_SIGNER(body: any){
     return{
-        url: API_URL_DEV_CLICKSIGN + 'create-signer',
+        url: API_URL_CLICKSIGN + 'create-signer',
         options: {
             method: 'POST',
             headers:{
