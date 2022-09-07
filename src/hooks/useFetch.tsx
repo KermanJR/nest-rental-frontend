@@ -8,19 +8,21 @@ export const useFetch = () =>{
     const request = React.useCallback(async(url: any, options: any)=>{
         let response;
         let json;
+        let key;
         try{
             setError(null)
             setLoading(true)
             response = await fetch(url, options)
             json = await response.json()
+            key = await json.data;
             if(response.ok === false) throw new Error(json.message)
         }catch(err: any){
             json = null
             setError(err.message)
         }finally{
-            setData(json)
+            setData(json?.data)
             setLoading(false)
-            return {response, json}
+            return {response, key}
         }
     },[])
 
