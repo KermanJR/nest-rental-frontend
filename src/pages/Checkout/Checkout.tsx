@@ -9,7 +9,7 @@ import { Title } from "../../components/Title/Title";
 import { Document } from "../Document/Document";
 import { useAuth } from "../../hooks/useAuth";
 import { Loading } from "../../components/Loading/Loading";
-import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
+import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
 
 
 
@@ -107,7 +107,8 @@ export const Checkout = () =>{
 
     const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
         e.preventDefault();
-        if(cnpj.validate() && razaoSocial && fantasyName && inscEstadual && businessEmail && numberAddressPay && numberAddressPay){
+        if(cnpj.validate() && razaoSocial && fantasyName && inscEstadual 
+            && businessEmail && numberAddressPay && numberAddressBilling){
             const { url, options } = CREATE_DOCUMENT({
                 "document": {
                     "path": "/modelos/teste.docx",
@@ -129,7 +130,8 @@ export const Checkout = () =>{
                         "total": (price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
                         "machine_name": "Ecolift-50",
                         "code_contract": Math.floor(Math.random()*650),
-                        "price_product": price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})
+                        "price_product": price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+                        "phone_number": contact
                         }
                     },
                 }
@@ -143,67 +145,60 @@ export const Checkout = () =>{
     }
         
 
-    const createDocumentKey = async (key_signer: string) =>{
-        try{
-            let fetchGenerateDocumentKey = fetch('https://nestrental-back.herokuapp.com/create-document', {
+    const createDocumentKey = async (keySign: string) =>{
+            const fetchDocumentKey = fetch('https://nestrental-back.herokuapp.com/create-document', {
                 method: 'POST',
-                headers: {
+                headers:{
                     'Content-Type': 'application/json'
                 }, body: JSON.stringify({
                     "list": {
                         "document_key": keyDocument,
-                        "signer_key": key_signer,
+                        "signer_key": keySign,
                         "sign_as": "sign",
                         "refusable": true,
                         "message": `Prezado ${nameUser},\nPor favor assine o documento.\n\nQualquer dúvida estou à disposição.\n\nAtenciosamente,\nNest Rental.`
-                      }
+                    }
                 })
             })
-            let response = await fetchGenerateDocumentKey;
-            let json = await response.json();
-            setKeyDocumentSign(json.data);
-            if(json.data !== null || json.data !== undefined || json.data !== ''){
-                window.localStorage.setItem('document_key', json.data)
-                sendLead();
-            
-            }else{
-                window.localStorage.setItem('document_key', '')
-          
-            }     
-        }catch(err){
-            setKeyDocumentSign('');
-            console.log(err);
-        }
-    }
+            const response = await fetchDocumentKey;
+            const json = await response.json();
+            const key = await json?.data;
+            setKeyDocumentSign(key);
+            window.localStorage.setItem('document_key', key)
+        }      
+    
 
 
     const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
         e.preventDefault();
         if(cpfUser && email && dateBirthday && contact && nameUser){
-            const { url, options } = CREATE_DOCUMENT_SIGNER({
-                "signer": {
-                    "email": businessEmail,
-                    "phone_number": contact,
-                    "auths": [
-                    "email"
-                    ],
-                    "name": nameUser,
-                    "documentation": cpfUser,
-                    "birthday": dateBirthday,
-                    "has_documentation": true,
-                    "selfie_enabled": false,
-                    "handwritten_enabled": false,
-                    "official_document_enabled": false,
-                    "liveness_enabled": false,
-                    "facial_biometrics_enabled": false
-                }
-            })
-            
-            const  { key } = await request(url, options);
-            setKeySigner(key);
-            setTimeout(()=>{
-                createDocumentKey(key);
-            }, 5000)
+            if(!keyDocumentSign){
+                const { url, options } = CREATE_DOCUMENT_SIGNER({
+                    "signer": {
+                        "email": businessEmail,
+                        "phone_number": contact,
+                        "auths": [
+                        "email"
+                        ],
+                        "name": nameUser,
+                        "documentation": cpfUser,
+                        "birthday": dateBirthday,
+                        "has_documentation": true,
+                        "selfie_enabled": false,
+                        "handwritten_enabled": false,
+                        "official_document_enabled": false,
+                        "liveness_enabled": false,
+                        "facial_biometrics_enabled": false
+                    }
+                })
+                const  { key } = await request(url, options);
+                setKeySigner(key);
+                setTimeout(()=>{
+                    createDocumentKey(key);
+                }, 5000)
+            }else{
+                setErrorData('Este contrato já foi gerado...')
+            }
         }else{
             setErrorData('Preencha todos os campos obrigatórios.')
         }
@@ -211,11 +206,9 @@ export const Checkout = () =>{
 
 
     
-    //window.localStorage.setItem('access_token', '');
 
     const getTokenAuthorization = async () =>{
             try{
-
                 let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
                     method: 'POST'
                 })
@@ -355,7 +348,7 @@ export const Checkout = () =>{
                             label="Razão social"
                             name="razao_social"
                             id="razao_social"
-                            placeholder=""
+                            placeholder="Digite aqui"
                             {...razaoSocial}
                         />
               
@@ -364,7 +357,7 @@ export const Checkout = () =>{
                             label="Nome fantasia*"
                             name="fantasy_name"
                             id="fantasy_name"
-                            placeholder=""
+                            placeholder="Digite aqui"
                             {...fantasyName}
                         />
                     
@@ -393,7 +386,10 @@ export const Checkout = () =>{
                         <label>Email*</label>
                         <input 
                             type="email" 
-                            id="business_email" name="business_email" 
+                            id="business_email" 
+                            name="business_email"
+                            placeholder="Digite aqui"
+                            required
                             onChange={(e)=>setBusinessEmail(e.target.value)}
                         />
                     </div>
@@ -432,6 +428,7 @@ export const Checkout = () =>{
                         <input 
                             type="text" 
                             id="number" 
+                            placeholder="Digite aqui"
                             name="number"
                             onChange={(e)=>setNumberAddressPay(e.target.value)}
                         />
@@ -455,6 +452,7 @@ export const Checkout = () =>{
                             type="text" 
                             id="" 
                             name=""
+                            placeholder="Digite aqui"
                         />
                     </div>
                     
@@ -515,6 +513,7 @@ export const Checkout = () =>{
                             type="text" 
                             id="number" 
                             name="number"
+                            placeholder="Digite aqui"
                             onChange={(e)=>setNumberAddressBilling(e.target.value)}
                         />
                     </div>
@@ -537,6 +536,7 @@ export const Checkout = () =>{
                         <input 
                             type="text" 
                             id="" 
+                            placeholder="Digite aqui"
                             name=""
                         />
                     </div>
@@ -616,101 +616,138 @@ export const Checkout = () =>{
     </section>}
 
 
-    {keyDocument && !loading &&
-        <>
+    {keyDocument &&
+        <section style={{paddingRight: '5rem'}}>
             <div style={{padding: '.5rem 5rem'}}>
                 <Title level={3}>
                     Detalhes do usuário:
                 </Title>
             </div>
-    <form style={{
-        padding: "1rem 5rem"
-    }}>
-    <div className={styles.formCheckout__div}>
-         <div>
-             <label>Nome:*</label>
-             <input 
-                 type="text"
-                 id="name_user"
-                 name="name_user"
-                 onChange={(e)=>setNameUser(e.target.value)}
-                 placeholder="Digite seu nome"
-             />
-         </div>
-         
-         <div>
-             <label>CPF:*</label>
-             <input 
-                 type="text"
-                 id="cpf_user"
-                 name="cpf_user"
-                 placeholder="000.000.000-00"
-                 onChange={(e)=>setCpfUser(e.target.value)}
-             />
-         </div>
-         
-         <div>
-             <label>Data de nascimento:*</label>
-             <input 
-                 type="date"
-                 id="date_birthday"
-                 name="date_birthday"
-                 onChange={(e)=>setDateBirthday(e.target.value)}
-             />
-         </div>
-         
-    </div>
+            <section style={{display: 'flex', justifyContent: 'space-between'}}>
+            <form style={{padding: "1rem 5rem"}}>
+            <div className={styles.formCheckout__div}>
+                <div>
+                    <label>Nome*</label>
+                    <input 
+                        type="text"
+                        id="name_user"
+                        name="name_user"
+                        onChange={(e)=>setNameUser(e.target.value)}
+                        placeholder="Digite seu nome"
+                    />
+                </div>
+                
+                <div>
+                    <label>CPF*</label>
+                    <input 
+                        type="text"
+                        id="cpf_user"
+                        name="cpf_user"
+                        placeholder="000.000.000-00"
+                        onChange={(e)=>setCpfUser(e.target.value)}
+                    />
+                </div>
+                
+                <div>
+                    <label>Data de nascimento*</label>
+                    <input 
+                        type="date"
+                        id="date_birthday"
+                        name="date_birthday"
+                        onChange={(e)=>setDateBirthday(e.target.value)}
+                    />
+                </div>
+                
+            </div>
 
-    <div className={styles.formCheckout__div}> 
-        <div>
-             <label>E-mail:*</label>
-             <input 
-                 type="text" 
-                 id="email_user" 
-                 name="email_user"
-                 onChange={(e)=>setEmail(e.target.value)}
-                 placeholder="seuemail@gmail.com"
-             />
-        </div>
-        <div>
-             <label>Telefone:*</label>
-             <input 
-                 type="text" 
-                 id="contact" 
-                 name="contact"
-                 placeholder="67992658458"
-                 onChange={(e)=>setContact(e.target.value)}
-             />
-        </div>
-    </div>
-        <input type="submit" style={{
-            backgroundColor: "#125082",
-            color: "#fff",
-            width: "40%", 
-            padding: "1rem",
-            borderRadius: "9px",
-            border: "none",
-            marginTop: "1rem",
-            fontSize: "1rem",
-            cursor: "pointer"
-        }}
-            value="Continuar"
-        onClick={(e)=>createSignerDocument(e)}
+            <div className={styles.formCheckout__div}> 
+                <div>
+                    <label>E-mail*</label>
+                    <input 
+                        type="text" 
+                        id="email_user" 
+                        name="email_user"
+                        required
+                        onChange={(e)=>setEmail(e.target.value)}
+                        placeholder="seuemail@gmail.com"
+                    />
+                </div>
+                <div>
+                    <label>Telefone*</label>
+                    <input 
+                        type="text" 
+                        id="contact" 
+                        name="contact"
+                        placeholder="(00) 00000-0000"
+                        onChange={(e)=>setContact(e.target.value)}
+                    />
+                </div>
+            </div>
+              
+                {errorData && <p style={{color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem'}}>{errorData}</p>}
+            </form>
+            <div className={styles.formCheckout__div2}>
+            <form >
+                <div className={styles.formCheckout__date}>
+                    <div>
+                        <label htmlFor="start">início</label>
+                        <input type="date" name="start" value={startDate} disabled/>
+                    </div>
+                    <div>
+                        <label htmlFor="end">Devolução</label>
+                        <input type="date" name="end" value={endDate} disabled/>
+                    </div>
+                </div>
         
-        />
-         {errorData && <p style={{color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem'}}>{errorData}</p>}
-    </form>
+                
+                <div style={{padding: '1rem 0 0 0'}}>
+                    <p >Quantidade de dias: {totalDays}</p>
+                    <div style={{padding: ".7rem 0"}}>
+                        
+                        <p>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                        <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                        <p style={{
+                            paddingTop: '.5rem'
+                        }}>
+                            TOTAL: 
+                            {
+                                newPrice?
+                                    (newPrice + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
+                                    price ?(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
+                            }
+                        </p>
+                    </div>
+                </div>
+                <input type="submit" style={{
+                    backgroundColor: "#125082",
+                    color: "#fff",
+                    width: "100%", 
+                    padding: "1rem",
+                    borderRadius: "9px",
+                    border: "none",
+                    marginTop: "1rem",
+                    fontSize: "1rem",
+                    cursor: "pointer"
+                }}
+                value="Finalizar aluguel"
+                onClick={(e)=>createSignerDocument(e)}
+                />
+            </form> 
+        </div>
+        </section>
    
-     </>
+     </section>
     }
 
     {keyDocumentSign &&
+    <>
         <div  style={{padding: '1rem 5rem'}}>
             <Title level={1}>
-                Documento:
+                Visualização do contrato de aluguel:
             </Title>
             <Document/>
         </div>
+    </>
     }
 
     

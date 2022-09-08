@@ -3,8 +3,8 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 
 
-export const Document = (props) =>{
-
+export const Document = () =>{
+   
     let key = window.localStorage.getItem('document_key');
     var widget = '';
     var input = '';
@@ -31,11 +31,12 @@ export const Document = (props) =>{
           console.log('resized!');
           document.getElementById('container').style.height = height+'px';
         });
+        window.localStorage.setItem('document_key', '');
     }
 
     React.useEffect(()=>{
         run(key);
-    }, [key])
+    }, [])
 
     
    

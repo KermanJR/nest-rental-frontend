@@ -31,3 +31,18 @@ export function CREATE_DOCUMENT_SIGNER(body: any){
     }
 }
 
+//Relaciona signatário ao documento
+export function JOIN_DOCUMENT_SIGNER(body: any){
+    return{
+        url: API_URL_CLICKSIGN + 'create-document',
+        options: {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }
+    }
+}
+
+
