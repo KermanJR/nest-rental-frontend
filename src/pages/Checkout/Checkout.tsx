@@ -223,7 +223,7 @@ export const Checkout = () =>{
 
 
     const refreshToken = async ()=>{
-        if(tokenAuth){
+        
             try{
                 const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
                     method: 'POST',
@@ -240,8 +240,6 @@ export const Checkout = () =>{
             }catch(err){
                 console.log(err)
             }
-        }else{
-            console.log('Deu ruim')
         }
     }
 
