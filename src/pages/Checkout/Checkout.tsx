@@ -240,7 +240,7 @@ export const Checkout = () =>{
             }catch(err){
                 console.log(err)
             }
-        }
+        
     }
 
 
