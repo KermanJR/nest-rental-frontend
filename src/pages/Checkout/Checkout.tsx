@@ -304,7 +304,7 @@ export const Checkout = () =>{
         getTokenAuthorization();
     }, [])
 
-    setTimeout(()=>{
+    setTimeInterval(()=>{
         refreshToken();
     },100000)
 
