@@ -209,7 +209,7 @@ export const Checkout = () =>{
 
     const getTokenAuthorization = async () =>{
         try{
-            let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
+            let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
                 method: 'POST'
             })
             let response = await fetchGenerateToken;
@@ -225,7 +225,7 @@ export const Checkout = () =>{
     const refreshToken = async ()=>{
         if(tokenAuth){
             try{
-                const teste = fetch('http://localhost:6800/refresh-token', {
+                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
