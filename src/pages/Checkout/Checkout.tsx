@@ -216,13 +216,14 @@ export const Checkout = () =>{
             let json = await response.json();
             window.localStorage.setItem('access_token', json.access_token);
             setTokenAuth(json.access_token);
+            sendLead();
         }catch(error){
             console.log(error);
         }
     }
 
 
-    const refreshToken = async (tokenAuth: any)=>{
+    /*const refreshToken = async (tokenAuth: any)=>{
         
             try{
                 const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
@@ -241,58 +242,49 @@ export const Checkout = () =>{
                 console.log(err)
             }
         
-    }
+    }*/
 
 
     
-    /*const sendLead = async () =>{
-        let wtoken = window.localStorage.getItem('access_token');
-        if(wtoken != ''){
-            try{
-                const teste = fetch('http://localhost:6800/send-lead', {
-                    method: 'POST',
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },body: JSON.stringify({
-
-                        "xxx": {
-                            "data": [
-                            {
-                                "Company": nameLocataria,
-                                "Last_Name": nameUser,
-                                "First_Name": nameUser,
-                                "Email": businessEmail,
-                                "State": "Brasil",
-                                "$wizard_connection_path": [
-                                "3652397000003679053"
-                                ],
-                                "Wizard": {
-                                "id": "3652397000003677001"
-                                }
+    const sendLead = async () =>{
+        const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json',
+            },body: JSON.stringify({
+                "xxx": {
+                    "data": [
+                        {
+                            "Company": nameLocataria,
+                            "Last_Name": nameUser,
+                            "First_Name": nameUser,
+                            "Email": businessEmail,
+                            "State": "Brasil",
+                            "$wizard_connection_path": [
+                            "3652397000003679053"
+                            ],
+                            "Wizard": {
+                            "id": "3652397000003677001"
                             }
-                            ],
+                        }
+                    ],
 
-                            "lar_id": "3652397000002045001",
-                            "trigger": [
-                            "approval",
-                            "workflow",
-                            "blueprint"
-                            ],
-                        },
-                        "token": wtoken
+                    "lar_id": "3652397000002045001",
+                    "trigger": [
+                        "approval",
+                        "workflow",
+                        "blueprint"
+                        ],
+                    },
+                    "token": tokenAuth
 
-                      })
                 })
-                const response = await teste;
-                const json = await response.json();
-                console.log(json)
-                
-            }catch(err){
-                console.log(err)
-            }
-        }
-    }*/
-
+            })
+        const response = await teste;
+        const json = await response.json();
+        console.log(json)
+    }
+    
 
     
 
