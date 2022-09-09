@@ -222,7 +222,7 @@ export const Checkout = () =>{
     }
 
 
-    const refreshToken = async ()=>{
+    const refreshToken = async (tokenAuth: any)=>{
         
             try{
                 const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
@@ -305,8 +305,8 @@ export const Checkout = () =>{
     }, [])
 
     setInterval(()=>{
-        refreshToken();
-    },100000)
+        refreshToken(tokenAuth);
+    },10000)
 
     return(
 
