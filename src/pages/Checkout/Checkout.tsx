@@ -138,6 +138,7 @@ export const Checkout = () =>{
             })
             const  { key } = await request(url, options);
             setKeyDocument(key);
+            sendLead();
         }else{
             setErrorData('Preencha todos os campos obrigatórios.')
         }
@@ -216,7 +217,7 @@ export const Checkout = () =>{
             let json = await response.json();
             window.localStorage.setItem('access_token', json.access_token);
             setTokenAuth(json.access_token);
-            sendLead();
+            
         }catch(error){
             console.log(error);
         }
