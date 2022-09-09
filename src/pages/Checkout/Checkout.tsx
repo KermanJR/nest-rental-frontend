@@ -208,36 +208,35 @@ export const Checkout = () =>{
     
 
     const getTokenAuthorization = async () =>{
-            try{
-                let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
-                    method: 'POST'
-                })
-                let response = await fetchGenerateToken;
-                let json = await response.json();
-                window.localStorage.setItem('access_token', json.access_token);
-                setTokenAuth(json.message);
-            }catch(error){
-                console.log(error);
-            }
+        try{
+            let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
+                method: 'POST'
+            })
+            let response = await fetchGenerateToken;
+            let json = await response.json();
+            window.localStorage.setItem('access_token', json.access_token);
+            setTokenAuth(json.access_token);
+        }catch(error){
+            console.log(error);
+        }
     }
 
 
     const refreshToken = async ()=>{
-        let tkn = window.localStorage.getItem('access_token');
-        if(tkn != undefined || tkn !== null){
+        if(tokenAuth){
             try{
                 const teste = fetch('http://localhost:6800/refresh-token', {
                     method: 'POST',
                     headers:{
                         'Content-Type': 'application/json',
                     },body: JSON.stringify({
-                        "tkn": tkn
+                        "tkn": tokenAuth
                     })
                     
                 })
                 const response = await teste;
                 const json = await response.json();
-                setTokenAuth(json.tkn);
+                setTokenAuth(json.access_token);
             }catch(err){
                 console.log(err)
             }
@@ -248,7 +247,7 @@ export const Checkout = () =>{
 
 
     
-    const sendLead = async () =>{
+    /*const sendLead = async () =>{
         let wtoken = window.localStorage.getItem('access_token');
         if(wtoken != ''){
             try{
@@ -294,7 +293,7 @@ export const Checkout = () =>{
                 console.log(err)
             }
         }
-    }
+    }*/
 
 
     
@@ -305,8 +304,11 @@ export const Checkout = () =>{
 
     React.useEffect(()=>{
         getTokenAuthorization();
-       // refreshToken();
     }, [])
+
+    setTimeout(()=>{
+        refreshToken();
+    },100000)
 
     return(
 
