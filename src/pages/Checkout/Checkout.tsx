@@ -252,7 +252,8 @@ export const Checkout = () =>{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
-            },body: JSON.stringify({
+            },
+            body: JSON.stringify({
                 "xxx": {
                     "data": [
                         {
@@ -276,11 +277,10 @@ export const Checkout = () =>{
                         "workflow",
                         "blueprint"
                         ],
-                    },
                     "token": tokenAuth
-
-                })
+                },
             })
+        })
         const response = await teste;
         const json = await response.json();
         console.log(json)
