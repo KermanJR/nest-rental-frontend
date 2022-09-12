@@ -37,6 +37,7 @@ export const Checkout = () =>{
     const [dateBirthday, setDateBirthday] = React.useState('');
     const [signKey, setSignKey] = React.useState('');
     const [tokenAuth, setTokenAuth] = React.useState('');
+    const [tokenRefresh, setTokenRefresh] = React.useState('');
     const [keyDocument, setKeyDocument] = React.useState('');
     const [keySigner, setKeySigner] = React.useState('');
     const [keyDocumentSign, setKeyDocumentSign] = React.useState('');
@@ -205,50 +206,54 @@ export const Checkout = () =>{
         }
     }
 
-
     
 
     const getTokenAuthorization = async () =>{
-        try{
-            let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
-                method: 'POST'
-            })
-            let response = await fetchGenerateToken;
-            let json = await response.json();
-            window.localStorage.setItem('access_token', json.access_token);
-            setTokenAuth(json.access_token);
-            
-        }catch(error){
-            console.log(error);
+        //let readyToken = window.localStorage.getItem('access_token');
+        if(tokenAuth == null || tokenAuth == undefined || tokenAuth == ''){
+            try{
+                let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
+                    method: 'POST'
+                })
+                let response = await fetchGenerateToken;
+                let json = await response.json();
+                window.localStorage.setItem('access_token', json.access_token);
+                setTokenAuth(json.access_token);
+                
+            }catch(error){
+                console.log(error);
+            }
+        }else{
+            console.log('Token já definido.')
         }
+        
     }
 
+    console.log(tokenAuth)
 
-    /*const refreshToken = async (tokenAuth: any)=>{
-        
-            try{
-                const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
-                    method: 'POST',
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },body: JSON.stringify({
-                        "tkn": tokenAuth
-                    })
-                    
-                })
-                const response = await teste;
-                const json = await response.json();
-                setTokenAuth(json.access_token);
-            }catch(err){
-                console.log(err)
-            }
-        
-    }*/
+
+    const refreshToken = async ()=>{
+        try{
+            const teste = fetch('http://localhost:6800/refresh-token', {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                },body: JSON.stringify({
+                    "token": tokenRefresh
+                })   
+            })
+            const response = await teste;
+            const json = await response.json();
+            setTokenRefresh(json.refresh_token);
+        }catch(err){
+            console.log(err)
+        }  
+    }
 
 
     
     const sendLead = async () =>{
-        const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+        const teste = fetch('http://localhost:6800/send-lead', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
@@ -257,9 +262,9 @@ export const Checkout = () =>{
                 "xxx": {
                     "data": [
                         {
-                            "Company": nameLocataria,
-                            "Last_Name": nameUser,
-                            "First_Name": nameUser,
+                            "Company": fantasyName.value,
+                            "Last_Name": fantasyName.value,
+                            "First_Name": fantasyName.value,
                             "Email": businessEmail,
                             "State": "Brasil",
                             "$wizard_connection_path": [
@@ -270,15 +275,14 @@ export const Checkout = () =>{
                             }
                         }
                     ],
-
                     "lar_id": "3652397000002045001",
                     "trigger": [
                         "approval",
                         "workflow",
                         "blueprint"
-                        ],
-                    "token": tokenAuth
-                },
+                        ]
+                }, 
+                "token": tokenAuth
             })
         })
         const response = await teste;
@@ -297,9 +301,9 @@ export const Checkout = () =>{
         getTokenAuthorization();
     }, [])
 
-    /*setInterval(()=>{
-        refreshToken(tokenAuth);
-    },10000)*/
+    setInterval(()=>{
+        refreshToken();
+    },3600000)
 
     return(
 
