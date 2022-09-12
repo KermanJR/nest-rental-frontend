@@ -212,7 +212,7 @@ export const Checkout = () =>{
         //let readyToken = window.localStorage.getItem('access_token');
         if(tokenAuth == null || tokenAuth == undefined || tokenAuth == ''){
             try{
-                let fetchGenerateToken = fetch('http://localhost:6800/generate-token', {
+                let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
                     method: 'POST'
                 })
                 let response = await fetchGenerateToken;
@@ -234,7 +234,7 @@ export const Checkout = () =>{
 
     const refreshToken = async ()=>{
         try{
-            const teste = fetch('http://localhost:6800/refresh-token', {
+            const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ export const Checkout = () =>{
 
     
     const sendLead = async () =>{
-        const teste = fetch('http://localhost:6800/send-lead', {
+        const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
@@ -301,9 +301,9 @@ export const Checkout = () =>{
         getTokenAuthorization();
     }, [])
 
-    setInterval(()=>{
+    /*setInterval(()=>{
         refreshToken();
-    },3600000)
+    },3600000)*/
 
     return(
 
