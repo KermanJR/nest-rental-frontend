@@ -304,14 +304,14 @@ export const Checkout = () =>{
         getTokenAuthorization();
     }, [])
 
-    /*setInterval(()=>{
+    setInterval(()=>{
         if(tokenAuth && tokenRefresh){
             refreshToken();
         }else{
             console.log("Token inicial não definido.")
         }
         
-    }, 20000)*/
+    }, 20000)
 
     return(
 
