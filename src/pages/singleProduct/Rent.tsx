@@ -225,6 +225,7 @@ const Rent = () => {
             {errorCep? <p style={{color: 'red'}}>{errorCep}</p>: <p>{log}</p>}
             
             <div style={{padding: '1rem 0 0 0'}}>
+                <p style={{padding: '1rem 0', fontWeight: 'bold'}}>Resumo do pedido:</p>
                 <label >Quantidade de dias: {totalDays}</label>
                 {/*<div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>
                 <p>Adicionar mais dias: </p>

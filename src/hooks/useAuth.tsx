@@ -28,7 +28,6 @@ export const useAuth = (type: any) =>{
     }
 
     const validate = (value: any) =>{
-        console.log(value)
         if(type === false){
             return true
         }

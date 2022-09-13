@@ -21,7 +21,7 @@ export const Document = () =>{
         if(widget){widget.unmount();}
         widget = new Clicksign(key);
 
-        widget.endpoint = 'https://sandbox.clicksign.com';
+        widget.endpoint = 'https://app.clicksign.com';
         widget.origin = 'https://nest-rental.herokuapp.com/produto/ecolift-50';
         widget.mount('container');
 

@@ -311,7 +311,7 @@ export const Checkout = () =>{
             console.log("Token inicial não definido.")
         }
         
-    }, 3600000)
+    }, 10000)
 
     return(
 
@@ -627,48 +627,48 @@ export const Checkout = () =>{
         <section style={{paddingRight: '5rem'}}>
             <div style={{padding: '.5rem 5rem'}}>
                 <Title level={3}>
-                    Detalhes do usuário:
+                    Dados do contratante
                 </Title>
             </div>
             <section style={{display: 'flex', justifyContent: 'space-between'}}>
             <form style={{padding: "1rem 5rem"}}>
             <div className={styles.formCheckout__div}>
-                <div>
-                    <label>Nome*</label>
-                    <input 
-                        type="text"
-                        id="name_user"
-                        name="name_user"
-                        onChange={(e)=>setNameUser(e.target.value)}
-                        placeholder="Digite seu nome"
-                    />
-                </div>
+                <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div>
+                        <label>Nome*</label>
+                        <input 
+                            type="text"
+                            id="name_user"
+                            name="name_user"
+                            onChange={(e)=>setNameUser(e.target.value)}
+                            placeholder="Digite seu nome"
+                        />
+                    </div>
                 
-                <div>
-                    <label>CPF*</label>
-                    <input 
-                        type="text"
-                        id="cpf_user"
-                        name="cpf_user"
-                        placeholder="000.000.000-00"
-                        onChange={(e)=>setCpfUser(e.target.value)}
-                    />
+                    <div>
+                        <label>CPF*</label>
+                        <input 
+                            type="text"
+                            id="cpf_user"
+                            name="cpf_user"
+                            placeholder="000.000.000-00"
+                            onChange={(e)=>setCpfUser(e.target.value)}
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>Data de nascimento*</label>
+                        <input 
+                            type="date"
+                            id="date_birthday"
+                            name="date_birthday"
+                            onChange={(e)=>setDateBirthday(e.target.value)}
+                        />
+                    </div>
+            
                 </div>
-                
-                <div>
-                    <label>Data de nascimento*</label>
-                    <input 
-                        type="date"
-                        id="date_birthday"
-                        name="date_birthday"
-                        onChange={(e)=>setDateBirthday(e.target.value)}
-                    />
-                </div>
-                
-            </div>
-
-            <div className={styles.formCheckout__div}> 
-                <div>
+                <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                <div style={{width: '100%'}}>
                     <label>E-mail*</label>
                     <input 
                         type="text" 
@@ -676,18 +676,19 @@ export const Checkout = () =>{
                         name="email_user"
                         required
                         onChange={(e)=>setEmail(e.target.value)}
-                        placeholder="seuemail@gmail.com"
+                        placeholder=""
                     />
                 </div>
-                <div>
+                <div style={{width: '100%'}}>
                     <label>Telefone*</label>
                     <input 
                         type="text" 
                         id="contact" 
                         name="contact"
-                        placeholder="(00) 00000-0000"
+                        placeholder="(00) 000000000"
                         onChange={(e)=>setContact(e.target.value)}
                     />
+                </div>
                 </div>
             </div>
               
@@ -726,7 +727,7 @@ export const Checkout = () =>{
                     </div>
                 </div>
                 <input type="submit" style={{
-                    backgroundColor: "#125082",
+                    backgroundColor: "#44963b",
                     color: "#fff",
                     width: "100%", 
                     padding: "1rem",
@@ -734,9 +735,10 @@ export const Checkout = () =>{
                     border: "none",
                     marginTop: "1rem",
                     fontSize: "1rem",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    boxShadow: "1px 10px 15px 2px #ccc"
                 }}
-                value="Finalizar aluguel"
+                value="Gerar contrato"
                 onClick={(e)=>createSignerDocument(e)}
                 />
             </form> 

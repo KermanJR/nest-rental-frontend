@@ -110,7 +110,6 @@ export const checkContext = React.createContext<PropsContextType>({
 
     
     function calculaValorDias(totalDays: number){
-        console.log(totalDays)
         let result: number = 0;
         if(totalDays === 1){
             setPrice(137)
