@@ -10,6 +10,7 @@ import { Document } from "../Document/Document";
 import { useAuth } from "../../hooks/useAuth";
 import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
+import Button from "../../components/Button/Button";
 
 
 
@@ -165,8 +166,9 @@ export const Checkout = () =>{
             const response = await fetchDocumentKey;
             const json = await response.json();
             const key = await json?.data;
-            setKeyDocumentSign(key);
             window.localStorage.setItem('document_key', key)
+            setKeyDocumentSign(key);
+            
         }      
     
 
@@ -209,7 +211,6 @@ export const Checkout = () =>{
     
 
     const getTokenAuthorization = async () =>{
-        //let readyToken = window.localStorage.getItem('access_token');
         if(tokenAuth == null || tokenAuth == undefined || tokenAuth == ''){
             try{
                 let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
@@ -219,6 +220,7 @@ export const Checkout = () =>{
                 let json = await response.json();
                 window.localStorage.setItem('access_token', json.access_token);
                 setTokenAuth(json.access_token);
+                setTokenRefresh(json.token_refresh)
                 
             }catch(error){
                 console.log(error);
@@ -239,12 +241,13 @@ export const Checkout = () =>{
                 headers:{
                     'Content-Type': 'application/json',
                 },body: JSON.stringify({
-                    "token": tokenRefresh
+                    "token2": tokenRefresh
                 })   
             })
             const response = await teste;
             const json = await response.json();
-            setTokenRefresh(json.refresh_token);
+            setTokenAuth(json.refresh_token);
+            console.log('novo token: ' + json.refresh_token)
         }catch(err){
             console.log(err)
         }  
@@ -301,9 +304,14 @@ export const Checkout = () =>{
         getTokenAuthorization();
     }, [])
 
-    /*setInterval(()=>{
-        refreshToken();
-    },3600000)*/
+    setInterval(()=>{
+        if(tokenAuth && tokenRefresh){
+            refreshToken();
+        }else{
+            console.log("Token inicial não definido.")
+        }
+        
+    }, 3600000)
 
     return(
 
@@ -332,23 +340,24 @@ export const Checkout = () =>{
             marginTop: '2rem'
         }}>
             <form className={styles.formCheckout}>
-                <h3 className={styles.formCheckout__title}>Empresa</h3>
-                <div className={styles.formCheckout__div}>
-                   
-                        <input type="text" id="total_days" name="total_days" value={totalDays} style={{display: 'none'}}/>
-                        <input type="text" id="billing" name="billing" value={billing} style={{display: 'none'}}/>
-                        <input type="text" id="total" name="total" value={price? price: newPrice} style={{display: 'none'}}/>
-                        <input type="text" id="address_pay" name="address_pay" value={`${street}, ${bairro}, ${country}, ${number}`} style={{display: 'none'}}/>
+                <input type="text" id="total_days" name="total_days" value={totalDays} style={{display: 'none'}}/>
+                <input type="text" id="billing" name="billing" value={billing} style={{display: 'none'}}/>
+                <input type="text" id="total" name="total" value={price? price: newPrice} style={{display: 'none'}}/>
+                <input type="text" id="address_pay" name="address_pay" value={`${street}, ${bairro}, ${country}, ${number}`} style={{display: 'none'}}/>
 
-                        <Input
-                            type="text"
-                            label="Razão social"
-                            name="razao_social"
-                            id="razao_social"
-                            placeholder="Digite aqui"
-                            {...razaoSocial}
-                        />
-              
+                <h3 className={styles.formCheckout__title}>Empresa</h3>
+
+                <div className={styles.formCheckout__div}>
+                    <Input
+                        type="text"
+                        label="Razão social"
+                        name="razao_social"
+                        id="razao_social"
+                        placeholder="Digite aqui"
+                        {...razaoSocial}
+                    />
+
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
                         <Input
                             type="text"
                             label="Nome fantasia*"
@@ -357,7 +366,7 @@ export const Checkout = () =>{
                             placeholder="Digite aqui"
                             {...fantasyName}
                         />
-                    
+                        
                         <Input
                             type="text"
                             label="CNPJ*"
@@ -366,32 +375,34 @@ export const Checkout = () =>{
                             placeholder="xx.xxx.xxx/xxxx-xx"
                             {...cnpj}
                         />
-                    
-                </div>
-                
-                <div className={styles.formCheckout__div}>
-                    
-                    <div>
-                        <label>Inscrição Estadual*</label>
-                        <input 
-                            type="text" 
-                            id="insc_estadual" name="insc_estadual" 
-                            onChange={(e)=>setInscEstadual(e.target.value)}
-                        />
                     </div>
-                    <div>
-                        <label>Email*</label>
-                        <input 
-                            type="email" 
-                            id="business_email" 
-                            name="business_email"
-                            placeholder="Digite aqui"
-                            required
-                            onChange={(e)=>setBusinessEmail(e.target.value)}
-                        />
-                    </div>
-                </div>
 
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div style={{width:"100%"}}>
+                            <label>Inscrição Estadual*</label>
+                            <input 
+                                type="text" 
+                                id="insc_estadual" name="insc_estadual" 
+                                onChange={(e)=>setInscEstadual(e.target.value)}
+                                style={{width:"100%"}}
+                            />
+                        </div>
+                        <div style={{width:"100%"}}>
+                            <label>Email*</label>
+                            <input 
+                                type="email" 
+                                id="business_email" 
+                                name="business_email"
+                                placeholder="Digite aqui"
+                                required
+                                onChange={(e)=>setBusinessEmail(e.target.value)}
+                                style={{width:"100%"}}
+                            />
+                        </div>
+                    </div>
+                    
+                    
+                </div>
 
                 {/* DETALHES DO FATURAMENTO*/}
 
@@ -400,168 +411,163 @@ export const Checkout = () =>{
                 </Title>
 
                 <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>CEP</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            name="" 
-                            defaultValue={cep}
-                            disabled
-                        />
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block"}}>CEP</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name="" 
+                                defaultValue={cep}
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label>Rua/Av*</label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                value={street}
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label>Número*</label>
+                            <input 
+                                type="text" 
+                                id="number" 
+                                placeholder=""
+                                name="number"
+                                onChange={(e)=>setNumberAddressPay(e.target.value)}
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label>Rua/Av*</label>
-                        <input 
-                            type="text" 
-                            id="street" 
-                            name="street" 
-                            value={street}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>Número*</label>
-                        <input 
-                            type="text" 
-                            id="number" 
-                            placeholder="Digite aqui"
-                            name="number"
-                            onChange={(e)=>setNumberAddressPay(e.target.value)}
-                        />
-                    </div>
-                </div>
 
-                <div className={styles.formCheckout__div}>
-                <div>
-                        <label>Bairro*</label>
-                        <input 
-                            type="text" 
-                            id="bairro" 
-                            name="bairro" 
-                            value={bairro}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>Complemento</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            name=""
-                            placeholder="Digite aqui"
-                        />
-                    </div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div>
+                            <label>Cidade*</label>
+                            <input 
+                                type="text" 
+                                id="country" 
+                                name="country" 
+                                value={country}
+                            />
+                        </div>
+
+                        <div>
+                            <label>UF*</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name="" 
+                                defaultValue={state}
+                            />
+                        </div>
+
+                        <div>
+                            <label>Bairro*</label>
+                            <input 
+                                type="text" 
+                                id="bairro" 
+                                name="bairro" 
+                                value={bairro}
+                            />
+                        </div>
+                        <div>
+                            <label>Complemento</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name=""
+                                placeholder=""
+                            />
+                        </div>
                     
-                </div>
-
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Cidade*</label>
-                        <input 
-                            type="text" 
-                            id="country" 
-                            name="country" 
-                            value={country}
-                            disabled
-                        />
                     </div>
-                    <div>
-                        <label>UF*</label>
-                        <input type="text" id="" name="" defaultValue={state}/>
-                    </div>
-                    
                 </div>
+            
 
-                
-                
-
-
-                <Title 
-                    level={3}
-                    >
+                <Title level={3}>
                     Detalhes de entrega
                 </Title>
 
                 <div className={styles.formCheckout__div}>
-                <div>
-                        <label>CEP*</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            name="" 
-                            placeholder="Digite seu CEP"
-                            onChange={(e)=>setBillingCep(e.target.value)}
-                        />
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div style={{width:"100%"}}>
+                            <label>CEP*</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name="" 
+                                placeholder="Digite seu CEP"
+                                onChange={(e)=>setBillingCep(e.target.value)}
+                            />
+                        </div>
+                        <div style={{width:"100%"}}>
+                            <label>Rua/Av*</label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                value={billingStreet}
+                            />
+                        </div>
+                        <div style={{width:"100%"}}>
+                            <label>Número*</label>
+                            <input 
+                                type="text" 
+                                id="number" 
+                                name="number"
+                                placeholder=""
+                                onChange={(e)=>setNumberAddressBilling(e.target.value)}
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label>Rua/Av*</label>
-                        <input 
-                            type="text" 
-                            id="street" 
-                            name="street" 
-                            value={billingStreet}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>Número*</label>
-                        <input 
-                            type="text" 
-                            id="number" 
-                            name="number"
-                            placeholder="Digite aqui"
-                            onChange={(e)=>setNumberAddressBilling(e.target.value)}
-                        />
-                    </div>
-                    
-                </div>
 
-                <div className={styles.formCheckout__div}>
-                <div>
-                        <label>Bairro*</label>
-                        <input 
-                            type="text" 
-                            id="bairro" 
-                            name="bairro" 
-                            value={billingBairro}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>Complemento</label>
-                        <input 
-                            type="text" 
-                            id="" 
-                            placeholder="Digite aqui"
-                            name=""
-                        />
-                    </div>
-                    
-                </div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div>
+                            <label>Cidade*</label>
+                            <input 
+                                type="text" 
+                                id="country" 
+                                name="country" 
+                                value={billingCity}
+                            />
+                        </div>
 
-                <div className={styles.formCheckout__div}>
-                    <div>
-                        <label>Cidade*</label>
-                        <input 
-                            type="text" 
-                            id="country" 
-                            name="country" 
-                            value={billingCity}
-                            disabled
-                        />
+                        <div>
+                            <label>UF*</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name="" 
+                                defaultValue={billingState}
+                            />
+                        </div>
+                        <div>
+                            <label>Bairro*</label>
+                            <input 
+                                type="text" 
+                                id="bairro" 
+                                name="bairro" 
+                                value={billingBairro}
+                            />
+                        </div>
+                        <div>
+                            <label>Complemento</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                placeholder=""
+                                name=""
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label>UF*</label>
-                        <input type="text" id="" name="" defaultValue={billingState}/>
-                    </div>
-                    
                 </div>
-                
             </form>
 
         {/***********************************************************/}
         <div className={styles.formCheckout__div2}>
+            <Title>Resumo do pedido</Title>
             <form >
                 <div className={styles.formCheckout__date}>
                     <div>
@@ -594,7 +600,7 @@ export const Checkout = () =>{
                     </div>
                 </div>
                 <input type="submit" style={{
-                    backgroundColor: "#125082",
+                    backgroundColor: "#44963b",
                     color: "#fff",
                     width: "100%", 
                     padding: "1rem",
@@ -602,7 +608,11 @@ export const Checkout = () =>{
                     border: "none",
                     marginTop: "1rem",
                     fontSize: "1rem",
-                    cursor: "pointer"
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    letterSpacing: "1px",
+                    cursor: "pointer",
+                    boxShadow: "1px 10px 15px 2px #ccc"
                 }}
                 value="Finalizar aluguel"
                 onClick={(e)=>createModelDocument(e)}
