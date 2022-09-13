@@ -311,7 +311,7 @@ export const Checkout = () =>{
             console.log("Token inicial não definido.")
         }
         
-    }, 10000)
+    }, 20000)
 
     return(
 
