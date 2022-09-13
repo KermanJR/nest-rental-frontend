@@ -152,7 +152,6 @@ const Rent = () => {
         })
         const response = await url_fetch;
         const json = await response.json();
-        console.log(json)
         const faixaCep = (json.cep).split('-', 1);
         setStreet(json.logradouro);
         setBairro(json.bairro);
@@ -199,6 +198,7 @@ const Rent = () => {
 
   return (
     <div className={styles.rent}>
+        <p className={styles.rent__title}>R$<label style={{fontSize: "2rem"}}> 239,00</label>/dia</p>
         <p className={styles.rent__title}>Escolha o período de locação</p>
         <form className={styles.rent__form}>
             <div className={styles.rent__form__date}>
@@ -269,7 +269,8 @@ const Rent = () => {
                 </p>
             </div>
             <input type="submit" style={{
-                backgroundColor: "#125082",
+                backgroundColor: "#44963b",
+                boxShadow: "1px 10px 15px 2px #ccc",
                 color: "#fff",
                 width: "100%", 
                 padding: "1rem",
@@ -277,7 +278,10 @@ const Rent = () => {
                 border: "none",
                 marginTop: "1rem",
                 fontSize: "1rem",
-                cursor: "pointer"
+                cursor: "pointer",
+                textTransform: "uppercase",
+                fontWeight: "600",
+                letterSpacing: "1px"
             }}
             value="Alugar"
             onClick={(e)=>handleSubmit(e)}/>
