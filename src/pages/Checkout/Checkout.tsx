@@ -212,7 +212,7 @@ export const Checkout = () =>{
 
     
     const sendLead = async () =>{
-        const teste = fetch('http://localhost:6800/send-lead', {
+        const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
