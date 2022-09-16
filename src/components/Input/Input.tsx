@@ -15,8 +15,8 @@ interface InputProps{
 
 export const Input = ({label, type, name, value, placeholder, onChange, error, onBlur}: InputProps) => {
     return (
-        <div style={{display: 'block', width: '100%', padding: ".5rem 0"}}>
-          <label htmlFor={name}>{label}</label>
+        <div style={{display: 'block', width: '100%'}}>
+          <label htmlFor=''>{label}</label>
           <input 
               type={type}
               id={name}
@@ -25,7 +25,7 @@ export const Input = ({label, type, name, value, placeholder, onChange, error, o
               value={value}
               placeholder={placeholder}
               onBlur={onBlur}
-              style={{width: "100%", padding: ".7rem", borderRadius: "8px"}} 
+              style={{width: "100%"}} 
             />
           {error && <p style={{color: 'red', fontSize: '.75rem'}}>{error}</p>}
         </div>
