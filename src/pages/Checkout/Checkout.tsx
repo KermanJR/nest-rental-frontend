@@ -208,53 +208,7 @@ export const Checkout = () =>{
         }
     }
 
-    
 
-    const getTokenAuthorization = async () =>{
-        if(tokenAuth == null || tokenAuth == undefined || tokenAuth == ''){
-            try{
-                let fetchGenerateToken = fetch('https://nestrental-back.herokuapp.com/generate-token', {
-                    method: 'POST'
-                })
-                let response = await fetchGenerateToken;
-                let json = await response.json();
-                window.localStorage.setItem('access_token', json.access_token);
-                setTokenAuth(json.access_token);
-                setTokenRefresh(json.token_refresh)
-                
-            }catch(error){
-                console.log(error);
-            }
-        }else{
-            console.log('Token já definido.')
-        }
-        
-    }
-
-    console.log(tokenAuth)
-
-
-    const refreshToken = async ()=>{
-        try{
-            const teste = fetch('https://nestrental-back.herokuapp.com/refresh-token', {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json',
-                },body: JSON.stringify({
-                    "token2": tokenRefresh
-                })   
-            })
-            const response = await teste;
-            const json = await response.json();
-            setTokenAuth(json.refresh_token);
-            console.log('novo token: ' + json.refresh_token)
-        }catch(err){
-            console.log(err)
-        }  
-    }
-
-
-    
     const sendLead = async () =>{
         const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
             method: 'POST',
@@ -262,31 +216,28 @@ export const Checkout = () =>{
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "xxx": {
-                    "data": [
-                        {
-                            "Company": fantasyName.value,
-                            "Last_Name": fantasyName.value,
-                            "First_Name": fantasyName.value,
-                            "Email": businessEmail,
-                            "State": "Brasil",
-                            "$wizard_connection_path": [
+                "data": [
+                    {
+                        "Company": fantasyName.value,
+                        "Last_Name": fantasyName.value,
+                        "First_Name": fantasyName.value,
+                        "Email": businessEmail,
+                        "State": "Brasil",
+                        "$wizard_connection_path": [
                             "3652397000003679053"
-                            ],
-                            "Wizard": {
+                        ],
+                        "Wizard": {
                             "id": "3652397000003677001"
-                            }
                         }
-                    ],
-                    "lar_id": "3652397000002045001",
-                    "trigger": [
-                        "approval",
-                        "workflow",
-                        "blueprint"
-                        ]
-                }, 
-                "token": tokenAuth
-            })
+                    }
+                ],
+                "lar_id": "3652397000002045001",
+                "trigger": [
+                    "approval",
+                    "workflow",
+                    "blueprint"
+                    ]
+                })
         })
         const response = await teste;
         const json = await response.json();
@@ -300,18 +251,6 @@ export const Checkout = () =>{
         buscaCep();
     }, [billingCep])
 
-    React.useEffect(()=>{
-        getTokenAuthorization();
-    }, [])
-
-    setInterval(()=>{
-        if(tokenAuth && tokenRefresh){
-            refreshToken();
-        }else{
-            console.log("Token inicial não definido.")
-        }
-        
-    }, 10000)
 
     return(
 
