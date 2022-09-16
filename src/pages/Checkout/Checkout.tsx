@@ -6,7 +6,7 @@ import { Input } from "../../components/Input/Input";
 import { useFetch } from "../../hooks/useFetch";
 import { Title } from "../../components/Title/Title";
 import { Document } from "../Document/Document";
-import { useAuth } from "../../hooks/useAuth";
+import { useForm } from "../../hooks/useForm";
 import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
 
@@ -22,9 +22,9 @@ export const Checkout = () =>{
 
 
 
-    const razaoSocial = useAuth('');
-    const fantasyName = useAuth('');
-    const cnpj = useAuth('cnpj');
+    const razaoSocial = useForm('');
+    const fantasyName = useForm('');
+    const cnpj = useForm('cnpj');
 
  
     const [inscEstadual, setInscEstadual] = React.useState('');
