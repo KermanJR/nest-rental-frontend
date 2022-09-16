@@ -5,6 +5,7 @@ import { useForm } from '../../hooks/useForm'
 import Button from '../../components/Button/Button';
 import { Link } from 'react-router-dom';
 import MachineLogin from '../../assets/images/machine-login.png';
+import Logo from '../../assets/logo.jpg'
 import React from 'react';
 
 export const LoginCreate = () => {
@@ -19,6 +20,7 @@ export const LoginCreate = () => {
                 <img src={MachineLogin}/>
             </div>
             <div className={styles.loginForm__divForm}>
+                <img src={Logo}/>
                 <Title>Crie sua conta</Title>
                 <form>
                     <Input
