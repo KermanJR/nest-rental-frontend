@@ -15,7 +15,7 @@ function App() {
     <>
       <BrowserRouter>
       <CheckoutContext>
-        {location === "https://nest-rental.herokuapp.com/login" || location === "https://nest-rental.herokuapp.com/login/cadastro"? 
+        {location === "https://nest-rental.herokuapp.com/login/" || location === "https://nest-rental.herokuapp.com/login/cadastro/"? 
         <Routes>
           <Route path="/login/*" element={<Login/>}/>
         </Routes>
