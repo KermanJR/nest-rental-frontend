@@ -1,0 +1,39 @@
+@import '../../default/variables.scss';
+
+.loginForm{
+    width: 100%;
+    height: 100%;
+    margin: 3rem auto;
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    align-items: center;
+    
+    &__background{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $primary-color;
+        height: 100%;
+    }
+
+    &__divForm{
+        padding: 0 7rem;
+        width: 100%;
+        hr{
+            margin-top: 1.5rem;
+            box-sizing: border-box;
+        }
+        &__recoveryPassword{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-content: center;
+            align-items: center;
+        }
+        &__forgetPassword{
+            padding-top: 1rem;
+        }
+        form{
+            width: 100%;
+        }
+    }
+}
