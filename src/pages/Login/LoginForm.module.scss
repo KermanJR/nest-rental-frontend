@@ -24,16 +24,45 @@
             box-sizing: border-box;
         }
         &__recoveryPassword{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            justify-content: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
+            div{
+                width:60%;
+                text-align: right;
+            }
+
         }
         &__forgetPassword{
             padding-top: 1rem;
+            display: block;
+            justify-content: space-between;
+            align-items: center;
+            p{
+                color: $primary-color;
+                font-weight: 500;
+            }
+
         }
         form{
             width: 100%;
         }
+    }
+}
+
+@media (max-width: 780px) {
+    .loginForm{
+        grid-template-columns: 1fr;
+        &__background{
+            display: none;
+        }
+        &__divForm{
+            padding: 2rem;
+            &__forgetPassword p a{
+                display: block;
+            }
+        }
+        
     }
 }
