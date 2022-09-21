@@ -1,7 +1,8 @@
 import React from 'react';
 import styles from './Header.module.scss';
+import LogoMobile from '../../assets/logo-mobile.jpg';
 import Logo from '../../assets/logo.jpg';
-import { Link, Routes } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FiPhoneCall } from 'react-icons/fi';
 import { FaWhatsapp, FaYoutube, FaFacebook, FaLinkedin, FaInstagram  } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
@@ -18,7 +19,7 @@ const Header = () => {
     {mobile && (
         <>
             <section className={styles.headerMobile}>
-                <img src={Logo} style={{width: '80px', height: "50px", objectFit: 'contain'}}/>
+                <img src={LogoMobile} style={{width: '100px', height: "50px", objectFit: 'contain'}}/>
                 <div className={styles.headerMobile__nav}>
                     <ul className={styles.headerMobile__nav__ul}>
                         <li><FiPhoneCall color='white'/></li>
@@ -37,7 +38,7 @@ const Header = () => {
             
             </section> 
             <section className={`${mobile ? styles.navMobile : styles.nav} ${mobileMenu && styles.navMobileActive}`}>
-                <img src={Logo} alt="Logo - Nest Rental" style={{width: '80px', height: "50px", objectFit: 'contain'}}/>
+                <img src={LogoMobile} alt="Logo - Nest Rental" style={{width: '80px', height: "50px", objectFit: 'contain'}}/>
                 <ul className={styles.navMobile__menu}>
                     <Link to="/">Home</Link>
                     <Link to="/como-funciona">Como funciona</Link>
