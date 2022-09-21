@@ -19,12 +19,12 @@ const Header = () => {
     {mobile && (
         <>
             <section className={styles.headerMobile}>
-                <img src={LogoMobile} style={{width: '100px', height: "50px", objectFit: 'contain'}}/>
+                <img src={LogoMobile} style={{width: '120px', height: "50px", objectFit: 'contain'}}/>
                 <div className={styles.headerMobile__nav}>
                     <ul className={styles.headerMobile__nav__ul}>
-                        <li><FiPhoneCall color='white'/></li>
-                        <li><FaWhatsapp color='white'/></li>
-                        <li><MdOutlineEmail color='white'/></li>
+                        <li><FiPhoneCall style={{width: '25px', height:"25px", color: "#fff"}}/></li>
+                        <li><FaWhatsapp style={{width: '25px', height:"25px", color: "#fff"}}/></li>
+                        <li><MdOutlineEmail style={{width: '25px', height:"25px", color: "#fff"}}/></li>
                     </ul>
                 </div>
                 <div className={styles.headerMobile__divButton}>
