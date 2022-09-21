@@ -12,3 +12,19 @@
         width: 400px;
     }
 }
+
+@media (max-width: 760px) {
+    .singleProduct{
+        grid-template-columns: 1fr;
+        padding: 0;
+        width: 85%;
+        margin: 3rem auto;
+        &__img img{
+            object-fit: contain;
+            width: 280px;
+            display: flex;
+            align-items: center;
+            margin: 0 auto;
+        }
+    }
+}
