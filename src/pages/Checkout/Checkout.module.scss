@@ -1,60 +1,99 @@
 
 @import '../../default/variables.scss';
-.formCheckout{
-    border-radius: 1rem;
-    padding: 1rem 2rem;
-    width: 50%;
-    &__title{
-        margin-top: 1rem;
-        color: $primary-color;
-    }
-
-    &__div{
-        width: 100%;
-        margin-top: 1rem;
-        background-color: #f1f1f1;
-        padding: 1rem 1rem;
-        border-radius: 8px;
-        label{
-            display: block;
-        }
-        input{
-            width: 100%;
-            border: 1px solid #ccc;
-            padding: .5rem .5rem;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-    }
-
-    &__div2{
-        background-color: #f1f1f1;
-        width: auto;
+.divCheckout{
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 5rem;
+    margin-top: 2rem;
+    .formCheckout{
         border-radius: 1rem;
-        padding: 2rem 2rem 2rem 2rem;
-        height: 40%;
-        p{
-            color: $primary-color
+        padding: 1rem 2rem;
+        width: 50%;
+        &__title{
+            margin-top: 1rem;
+            color: $primary-color;
+        }
+
+        &__div{
+            width: 100%;
+            margin-top: 1rem;
+            background-color: #f1f1f1;
+            padding: 1rem 1rem;
+            border-radius: 8px;
+            &__inputs{
+                display: flex;
+                justify-content: space-between;
+                padding: 1rem 0;
+                gap: 1rem;
+                div{
+                   padding: .5rem 0;
+                }
+            }
+            label{
+                display: block;
+            }
+            input{
+                width: 100%;
+                border: 1px solid #ccc;
+                padding: .5rem .5rem;
+                background-color: transparent;
+                border-radius: 8px;
+            }
+        }
+
+        &__div2{
+            background-color: #f1f1f1;
+            width: auto;
+            border-radius: 1rem;
+            padding: 2rem 2rem 2rem 2rem;
+            height: 40%;
+            p{
+                color: $primary-color
+            }
+        }
+        &__date{
+            display: flex;
+            grid-gap: 2rem;
+            width: 100%;
+            div{
+                width: 100%;
+            }
+            label{
+                color: $primary-color;
+                font-weight: 600;
+                display: block;
+            }
+            input{
+                width: 100%;
+                border: none;
+                padding: .5rem .5rem;
+                background-color: #c2c2c2;
+                border-radius: 8px;
+            }
         }
     }
-    &__date{
-        display: flex;
-        grid-gap: 2rem;
+}
+
+/*mobile*/
+@media (max-width: 760px) {
+    .divCheckout{
         width: 100%;
-        div{
+        padding: 0;
+        display: block;
+        .formCheckout{
             width: 100%;
-        }
-        label{
-            color: $primary-color;
-            font-weight: 600;
-            display: block;
-        }
-        input{
-            width: 100%;
-            border: none;
-            padding: .5rem .5rem;
-            background-color: #c2c2c2;
-            border-radius: 8px;
+            &__div{
+                div{
+                    display: block;
+                }
+            }
+            &__div2{
+                &__date{
+                    div{
+                        display: block;
+                    }
+                }
+            }
         }
     }
 }
