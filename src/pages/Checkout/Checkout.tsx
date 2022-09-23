@@ -48,11 +48,18 @@ export const Checkout = () =>{
     const [billingBairro, setBillingBairro] = React.useState('');
     const [billingCity, setBillingCity] = React.useState('');
     const [billingState, setBillingState] = React.useState('');
-    const [ numberAddressBilling, setNumberAddressBilling] = React.useState('');
-    const [ numberAddressPay, setNumberAddressPay] = React.useState('');
-
-    const [billingAddress, setBillingAddress] = React.useState('');
+    const [numberAddressBilling, setNumberAddressBilling] = React.useState('');
     const [billingCep, setBillingCep] = React.useState('');
+    const [billingAddress, setBillingAddress] = React.useState('');
+
+    //Pay address
+    const [payStreet, setPayStreet] = React.useState('');
+    const [payBairro, setPayBairro] = React.useState('');
+    const [PayCity, setPayCity] = React.useState('');
+    const [PayState, setPayState] = React.useState('');
+    const [numberAddressPay, setNumberAddressPay] = React.useState('');
+    const [payCep, setPayCep] = React.useState('');
+
 
     const [errorData, setErrorData] = React.useState('');
 
@@ -116,7 +123,7 @@ export const Checkout = () =>{
                     "template": {
                         "data": {
                         "fantasy_name": fantasyName.value,
-                        "address_pay": `${street}, ${bairro}, ${country}, N°${numberAddressPay}`, 
+                        "address_pay": `${payStreet}, ${payBairro}, ${payBairro}, N°${numberAddressPay}`, 
                         "address_billing": `${billingStreet}, ${billingBairro}, ${billingCity}, N°${numberAddressBilling}`,
                         "contact": businessEmail,
                         "business_email": businessEmail,
@@ -261,9 +268,15 @@ export const Checkout = () =>{
           setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
       }
 
+
+
+
       React.useEffect(()=>{
         formataCPF(cpfUser)
       }, [cpfUser])
+
+
+
 
 
     return(
@@ -365,10 +378,11 @@ export const Checkout = () =>{
                         <div  style={{width:"100%"}}>
                             <label style={{display: "block"}}>CEP</label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 id="" 
                                 name="" 
-                                defaultValue={cep}
+                                pattern="[0-9]+"
+                                onChange={(e)=>setPayCep(e.target.value)}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
@@ -377,13 +391,13 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="street" 
                                 name="street" 
-                                value={street}
+                                onChange={(e)=>setPayStreet(e.target.value)}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
                             <label>Número*</label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 id="number" 
                                 placeholder=""
                                 name="number"
@@ -399,7 +413,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="country" 
                                 name="country" 
-                                value={country}
+                                onChange={(e)=>setPayCity(e.target.value)}
                             />
                         </div>
 
@@ -409,7 +423,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="" 
                                 name="" 
-                                defaultValue={state}
+                                onChange={(e)=>setPayState(e.target.value)}
                             />
                         </div>
 
@@ -419,7 +433,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="bairro" 
                                 name="bairro" 
-                                value={bairro}
+                                onChange={(e)=>setPayBairro(e.target.value)}
                             />
                         </div>
                         <div>
@@ -448,15 +462,16 @@ export const Checkout = () =>{
                                     type="text" 
                                     id="" 
                                     name="" 
-                                    placeholder="Digite aqui"
                                 />
                             </div>
                             <div style={{width:"100%"}}>
                                 <label>Telefone*</label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     id="" 
                                     name="" 
+                                    pattern="[0-9]+"
+                                    
                                 />
                             </div>
                         </div>
@@ -464,10 +479,10 @@ export const Checkout = () =>{
                         <div style={{width:"100%"}}>
                             <label>CEP*</label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 id="" 
                                 name="" 
-                                placeholder="Digite seu CEP"
+                                pattern="[0-9]+"
                                 onChange={(e)=>setBillingCep(e.target.value)}
                             />
                         </div>
@@ -478,13 +493,13 @@ export const Checkout = () =>{
                                 id="street" 
                                 name="street" 
                                 onChange={(e)=>setBillingStreet(e.target.value)}
-                                value={billingStreet}
+                             
                             />
                         </div>
                         <div style={{width:"100%"}}>
                             <label>Número*</label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 id="number" 
                                 name="number"
                                 placeholder=""
@@ -501,7 +516,7 @@ export const Checkout = () =>{
                                 id="country" 
                                 name="country" 
                                 onChange={(e)=>setBillingCity(e.target.value)}
-                                value={billingCity}
+                               
                             />
                         </div>
 
@@ -512,7 +527,7 @@ export const Checkout = () =>{
                                 id="" 
                                 name="" 
                                 onChange={(e)=>setBillingState(e.target.value)}
-                                defaultValue={billingState}
+                              
                             />
                         </div>
                         <div>
@@ -522,7 +537,7 @@ export const Checkout = () =>{
                                 id="bairro" 
                                 name="bairro" 
                                 onChange={(e)=>setBillingBairro(e.target.value)}
-                                value={billingBairro}
+                                
                             />
                         </div>
                         <div>
@@ -702,7 +717,7 @@ export const Checkout = () =>{
                         <div style={{width: '100%'}}>
                             <label  style={{display: "block"}}>Telefone*</label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 id="contact" 
                                 name="contact"
                                 placeholder="(00) 000000000"
@@ -715,6 +730,7 @@ export const Checkout = () =>{
                                     borderRadius:'8px' 
 
                                 }}
+                               pattern="[0-9]+"
                             />
                         </div>
                         </div>
