@@ -60,6 +60,9 @@ export const Checkout = () =>{
     const [numberAddressPay, setNumberAddressPay] = React.useState('');
     const [payCep, setPayCep] = React.useState('');
 
+    //Receive
+    const []
+
 
     const [errorData, setErrorData] = React.useState('');
 
@@ -698,7 +701,7 @@ export const Checkout = () =>{
                         <div style={{width: '100%'}}>
                             <label  style={{display: "block"}}>E-mail*</label>
                             <input 
-                                type="text" 
+                                type="email" 
                                 id="email_user" 
                                 name="email_user"
                                 required
