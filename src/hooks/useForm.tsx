@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { cnpj } from 'cpf-cnpj-validator';
-
+import { validateBr } from 'js-brasil';
+import { maskBr } from 'js-brasil/src/mask';
+import { MASKSIE } from 'js-brasil/src/mask';
 
 
 export const useForm = (type: any) =>{
@@ -42,7 +44,8 @@ export const useForm = (type: any) =>{
         }else if(types[type] && !types[type].regex.test(value)){
             setError(types[type].message)
             return false
-        }else{
+        }
+        else{
             setError('')
             return true
         }
@@ -51,20 +54,27 @@ export const useForm = (type: any) =>{
    
     const onChange = ({target}:any) =>{
         let newCnpj = '';
-        let newInscEst = '';
+        let newTel = '';
         if(type === 'cnpj'){
             const cnpjOld = target.value;
             newCnpj = cnpj.format(cnpjOld);
         }
-        if(type === 'insc_estadual'){
-            const inscEst = target.value;
-            // newInscEst = maskBr.inscricaoestadual('MS', inscEst)
+        if(type == 'telefone'){
+            const telOld = target.value;
+            newTel = telOld
+            .replace(/\D/g, "")
+            .replace(/(\d{2})(\d)/, "($1) $2")
+            .replace(/(\d{5})(\d{4})(\d)/, "$1-$2");
         }
        
         if(error) validate(target.value)
         if(type === 'cnpj'){
             setValue(newCnpj)
-        }else{
+        }else if(type === 'telefone'){
+            setValue(newTel)
+        }
+        
+        else{
             setValue(target.value)
         }
     }   

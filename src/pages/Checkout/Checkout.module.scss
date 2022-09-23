@@ -28,6 +28,7 @@
                 gap: 1rem;
                 div{
                    padding: .5rem 0;
+                   width: 100%;
                 }
             }
             label{
@@ -89,6 +90,7 @@
                 }
             }
             &__div2{
+                padding: 2rem;
                 &__date{
                     div{
                         display: block;
