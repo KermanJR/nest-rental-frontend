@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import { cnpj } from 'cpf-cnpj-validator';
 
 
 
@@ -24,6 +25,10 @@ export const useForm = (type: any) =>{
         cnpj:{
             regex: /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/,
             message: 'Preencha um CNPJ válido.'
+        },
+        insc_estadual:{
+            regex: /^\d{2}\.\d{3}\.\d{3}\-\d{1}$/,
+            message: 'Preencha uma inscrição válida.'
         }
     }
 
@@ -43,10 +48,25 @@ export const useForm = (type: any) =>{
         }
     }
 
+   
     const onChange = ({target}:any) =>{
-        console.log(target.value)
+        let newCnpj = '';
+        let newInscEst = '';
+        if(type === 'cnpj'){
+            const cnpjOld = target.value;
+            newCnpj = cnpj.format(cnpjOld);
+        }
+        if(type === 'insc_estadual'){
+            const inscEst = target.value;
+            // newInscEst = maskBr.inscricaoestadual('MS', inscEst)
+        }
+       
         if(error) validate(target.value)
-        setValue(target.value)
+        if(type === 'cnpj'){
+            setValue(newCnpj)
+        }else{
+            setValue(target.value)
+        }
     }   
     
 

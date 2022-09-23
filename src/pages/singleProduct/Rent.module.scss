@@ -72,3 +72,26 @@
         }
     }
 }
+
+@media (max-width: 780px) {
+    .rent{
+        width: 100%;
+        margin: 0 auto;
+        &__form{
+            padding: 1rem .875rem;
+        }
+        &__form__date{
+            display: block;
+            width: 100%;
+            justify-content: space-between;
+        }
+    
+        &__form__date div{
+            width: 100%;
+            padding:  1rem 0;
+            input{
+                width: 100%;
+            }
+        }
+    }
+}

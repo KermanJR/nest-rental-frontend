@@ -62,6 +62,11 @@
         }
     }
     }
+}
 
-    
+@media (max-width: 40rem) {
+    .footer{
+        display: block;
+        padding: 2rem 2rem;
+    }
 }

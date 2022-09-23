@@ -5,7 +5,9 @@ import { MdOutlineEmail } from 'react-icons/md';
 
 
 const Footer = () => {
+
   return (
+    <>
     <section className={styles.footer}>
         <div className={styles.footer__company}>
             <h4>Empresa</h4>
@@ -35,6 +37,7 @@ const Footer = () => {
             </ul>
         </div>
     </section>
+    </>
   )
 }
 

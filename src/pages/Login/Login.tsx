@@ -7,12 +7,10 @@ import { LoginForm } from "./LoginForm";
 export const Login = () => {
   return (
     <section className={styles.login}>
-        <div>
-          <Routes>
-            <Route path="/" element={<LoginForm/>}/>
-            <Route path="/cadastro" element={<LoginCreate/>}/>
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<LoginForm/>}/>
+          <Route path="/cadastro" element={<LoginCreate/>}/>
+        </Routes>
     </section>
   )
 }

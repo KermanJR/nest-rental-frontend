@@ -5,6 +5,7 @@ import { useForm } from '../../hooks/useForm'
 import Button from '../../components/Button/Button';
 import { Link } from 'react-router-dom';
 import MachineLogin from '../../assets/images/machine-login.png'
+import Logo from '../../assets/logo.jpg'
 
 export const LoginForm = () => {
 
@@ -16,6 +17,7 @@ export const LoginForm = () => {
                 <img src={MachineLogin}/>
             </div>
             <div className={styles.loginForm__divForm}>
+                <img src={Logo}/>
                 <Title>Bem vindo de volta!</Title>
                 <form>
                     <Input
@@ -37,12 +39,19 @@ export const LoginForm = () => {
                     />
                 </form>
                 <div className={styles.loginForm__divForm__recoveryPassword}>
-                    <Link to="/recuperar-senha">Esqueceu sua senha?</Link>
-                    <Button>Entrar</Button>
+                    <div><Button>Entrar</Button></div>
+                    <div><Link to="/recuperar-senha" style={{color: "rgba(18, 80, 130, 1)"}}>Esqueceu sua senha?</Link></div>
+                   
                 </div>
                 <hr/>
                 <div className={styles.loginForm__divForm__forgetPassword}>
-                    <p>Você não tenha uma conta?<Link to="/cadastro"> Inscreva-se</Link></p>
+                    <p>Você não tenha uma conta?
+                        <Link to="/login/cadastro" style={{color: "rgba(18, 80, 130, 1)", fontWeight: "bold"}}> Inscreva-se</Link>
+                    </p>
+                    <p style={{textAlign: 'right', marginTop: '1rem'}}>Voltar ao site
+                        <Link to="/" style={{color: "rgba(18, 80, 130, 1)", fontWeight: "bold"}}></Link>
+                    </p>
+                
                     
                 </div>
                 

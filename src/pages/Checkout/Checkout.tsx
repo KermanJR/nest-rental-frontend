@@ -2,15 +2,13 @@ import React from "react";
 import styles from './Checkout.module.scss';
 import { checkContext, CheckoutContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { Input } from "../../components/Input/Input";
 import { useFetch } from "../../hooks/useFetch";
 import { Title } from "../../components/Title/Title";
 import { Document } from "../Document/Document";
-import { useAuth } from "../../hooks/useAuth";
+import { useForm } from "../../hooks/useForm";
 import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
-import Button from "../../components/Button/Button";
 
 
 
@@ -24,9 +22,9 @@ export const Checkout = () =>{
 
 
 
-    const razaoSocial = useAuth('');
-    const fantasyName = useAuth('');
-    const cnpj = useAuth('cnpj');
+    const razaoSocial = useForm('');
+    const fantasyName = useForm('');
+    const cnpj = useForm('cnpj');
 
  
     const [inscEstadual, setInscEstadual] = React.useState('');
@@ -208,7 +206,11 @@ export const Checkout = () =>{
         }
     }
 
+    
 
+
+
+    
     const sendLead = async () =>{
         const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
             method: 'POST',
@@ -243,8 +245,14 @@ export const Checkout = () =>{
         const json = await response.json();
         console.log(json)
     }
-    
 
+    function formatMaskCnpj(cnpj: string){
+        var x = cnpj.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
+        console.log(x)
+
+    }
+
+    
     
 
     React.useEffect(()=>{
@@ -261,6 +269,7 @@ export const Checkout = () =>{
       
             <section style={{
                 backgroundColor: "#125082",
+                width: '100%',
                 padding: "1rem 5rem",
                 height: "150px",
                 display: "flex",
@@ -272,12 +281,7 @@ export const Checkout = () =>{
             }}>Pedido</h1>
             </section>
 
-    {!keyDocument && <section style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '2rem 5rem',
-            marginTop: '2rem'
-        }}>
+    {!keyDocument && <section className={styles.divCheckout}>
             <form className={styles.formCheckout}>
                 <input type="text" id="total_days" name="total_days" value={totalDays} style={{display: 'none'}}/>
                 <input type="text" id="billing" name="billing" value={billing} style={{display: 'none'}}/>
@@ -296,7 +300,7 @@ export const Checkout = () =>{
                         {...razaoSocial}
                     />
 
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}> 
                         <Input
                             type="text"
                             label="Nome fantasia*"
@@ -313,10 +317,11 @@ export const Checkout = () =>{
                             id="cnpj"
                             placeholder="xx.xxx.xxx/xxxx-xx"
                             {...cnpj}
+                            onChange={(e)=>formatMaskCnpj(e.target.value)}
                         />
                     </div>
 
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div style={{width:"100%"}}>
                             <label>Inscrição Estadual*</label>
                             <input 
@@ -350,7 +355,7 @@ export const Checkout = () =>{
                 </Title>
 
                 <div className={styles.formCheckout__div}>
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div  style={{width:"100%"}}>
                             <label style={{display: "block"}}>CEP</label>
                             <input 
@@ -381,7 +386,7 @@ export const Checkout = () =>{
                         </div>
                     </div>
 
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div>
                             <label>Cidade*</label>
                             <input 
@@ -430,7 +435,7 @@ export const Checkout = () =>{
                 </Title>
 
                 <div className={styles.formCheckout__div}>
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div style={{width:"100%"}}>
                             <label>CEP*</label>
                             <input 
@@ -462,7 +467,7 @@ export const Checkout = () =>{
                         </div>
                     </div>
 
-                    <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div>
                             <label>Cidade*</label>
                             <input 
