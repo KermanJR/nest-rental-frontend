@@ -592,118 +592,199 @@ export const Checkout = () =>{
                 </Title>
             </div>
             <section style={{display: 'flex', justifyContent: 'space-between'}}>
-            <form style={{padding: "1rem 5rem"}}>
-            <div className={styles.formCheckout__div}>
-                <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
-                    <div>
-                        <label>Nome*</label>
-                        <input 
-                            type="text"
-                            id="name_user"
-                            name="name_user"
-                            onChange={(e)=>setNameUser(e.target.value)}
-                            placeholder="Digite seu nome"
-                        />
-                    </div>
-                
-                    <div>
-                        <label>CPF*</label>
-                        <input 
-                            type="text"
-                            id="cpf_user"
-                            name="cpf_user"
-                            placeholder="000.000.000-00"
-                            onChange={(e)=>setCpfUser(e.target.value)}
-                        />
-                    </div>
+                <form style={{marginLeft: "5rem"}}>
+                    <div style={{
+                        width: '100%',
+                        marginTop: '1rem',
+                        background: "#f1f1f1",
+                        padding: '1rem 1rem',
+                        borderRadius: '8px'
+
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '1rem  0',
+                            gap: '1rem'
+                        }}>
+                            <div>
+                                <label style={{display: "block"}}>Nome*</label>
+                                <input 
+                                    type="text"
+                                    id="name_user"
+                                    name="name_user"
+                                    onChange={(e)=>setNameUser(e.target.value)}
+                                    placeholder="Digite seu nome"
+                                    style={{
+                                        width: '100%',
+                                        border: '1px solid #ccc',
+                                        padding: '.5rem .5rem',
+                                        background: 'transparent',
+                                        borderRadius:'8px' 
+
+                                    }}
+                                />
+                            </div>
+                        
+                            <div>
+                                <label  style={{display: "block"}}>CPF*</label>
+                                <input 
+                                    type="text"
+                                    id="cpf_user"
+                                    name="cpf_user"
+                                    placeholder="000.000.000-00"
+                                    onChange={(e)=>setCpfUser(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        border: '1px solid #ccc',
+                                        padding: '.5rem .5rem',
+                                        background: 'transparent',
+                                        borderRadius:'8px' 
+
+                                    }}
+                                />
+                            </div>
+                            
+                            <div>
+                                <label  style={{display: "block"}}>Data de nascimento*</label>
+                                <input 
+                                    type="date"
+                                    id="date_birthday"
+                                    name="date_birthday"
+                                    onChange={(e)=>setDateBirthday(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        border: '1px solid #ccc',
+                                        padding: '.5rem .5rem',
+                                        background: 'transparent',
+                                        borderRadius:'8px' 
+
+                                    }}
+                                />
+                            </div>
                     
-                    <div>
-                        <label>Data de nascimento*</label>
-                        <input 
-                            type="date"
-                            id="date_birthday"
-                            name="date_birthday"
-                            onChange={(e)=>setDateBirthday(e.target.value)}
-                        />
+                        </div>
+
+                        <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
+                        <div style={{width: '100%'}}>
+                            <label  style={{display: "block"}}>E-mail*</label>
+                            <input 
+                                type="text" 
+                                id="email_user" 
+                                name="email_user"
+                                required
+                                onChange={(e)=>setEmail(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    border: '1px solid #ccc',
+                                    padding: '.5rem .5rem',
+                                    background: 'transparent',
+                                    borderRadius:'8px' 
+
+                                }}
+                                placeholder=""
+                            />
+                        </div>
+                        <div style={{width: '100%'}}>
+                            <label  style={{display: "block"}}>Telefone*</label>
+                            <input 
+                                type="text" 
+                                id="contact" 
+                                name="contact"
+                                placeholder="(00) 000000000"
+                                onChange={(e)=>setContact(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    border: '1px solid #ccc',
+                                    padding: '.5rem .5rem',
+                                    background: 'transparent',
+                                    borderRadius:'8px' 
+
+                                }}
+                            />
+                        </div>
+                        </div>
+                    </div>
+                    {errorData && <p style={{color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem'}}>{errorData}</p>}
+                </form>
+
+            <div style={{
+                backgroundColor: "#f1f1f1",
+                width: "auto",
+                borderRadius: "1rem",
+                padding: "2rem 2rem 2rem 2rem",
+                height: "40%"
+            }}>
+                <form >
+                    <div style={{
+                        display: "flex",
+                        gridGap: "2rem",
+                        width: "100%",
+                        color: 'rgb(18, 80, 130)'
+                    }}>
+                        <div style={{width: "100%"}}>
+                            <label htmlFor="start" style={{display: 'block', fontWeight: '600'}}>início</label>
+                            <input type="date" name="start" value={startDate} disabled 
+                                style={{
+                                    width: "100%",
+                                    border: 'none',
+                                    padding: '.5rem .5rem',
+                                    background: '#c2c2c2',
+                                    borderRadius: '8px'
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="end" style={{display: 'block', fontWeight: '600'}}>Devolução</label>
+                            <input type="date" name="end" value={endDate} disabled
+                                style={{
+                                    width: "100%",
+                                    border: 'none',
+                                    padding: '.5rem .5rem',
+                                    background: '#c2c2c2',
+                                    borderRadius: '8px'
+                                }}
+                            />
+                        </div>
                     </div>
             
-                </div>
-                <div style={{display: 'flex', justifyContent: 'space-between', padding: '1rem 0', gap: '1rem'}}>
-                <div style={{width: '100%'}}>
-                    <label>E-mail*</label>
-                    <input 
-                        type="text" 
-                        id="email_user" 
-                        name="email_user"
-                        required
-                        onChange={(e)=>setEmail(e.target.value)}
-                        placeholder=""
+                    
+                    <div style={{padding: '1rem 0 0 0'}}>
+                        <p >Quantidade de dias: {totalDays}</p>
+                        <div style={{padding: ".7rem 0"}}>
+                            
+                            <p>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                            <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                            <p style={{
+                                paddingTop: '.5rem'
+                            }}>
+                                TOTAL: 
+                                {
+                                    newPrice?
+                                        (newPrice + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
+                                        price ?(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <input type="submit" style={{
+                        backgroundColor: "#44963b",
+                        color: "#fff",
+                        width: "100%", 
+                        padding: "1rem",
+                        borderRadius: "9px",
+                        border: "none",
+                        marginTop: "1rem",
+                        fontSize: "1rem",
+                        cursor: "pointer",
+                        boxShadow: "1px 10px 15px 2px #ccc"
+                    }}
+                        value="Gerar contrato"
+                        onClick={(e)=>createSignerDocument(e)}
                     />
-                </div>
-                <div style={{width: '100%'}}>
-                    <label>Telefone*</label>
-                    <input 
-                        type="text" 
-                        id="contact" 
-                        name="contact"
-                        placeholder="(00) 000000000"
-                        onChange={(e)=>setContact(e.target.value)}
-                    />
-                </div>
-                </div>
+                </form> 
             </div>
-              
-                {errorData && <p style={{color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem'}}>{errorData}</p>}
-            </form>
-            <div className={styles.formCheckout__div2}>
-            <form >
-                <div className={styles.formCheckout__date}>
-                    <div>
-                        <label htmlFor="start">início</label>
-                        <input type="date" name="start" value={startDate} disabled/>
-                    </div>
-                    <div>
-                        <label htmlFor="end">Devolução</label>
-                        <input type="date" name="end" value={endDate} disabled/>
-                    </div>
-                </div>
-        
-                
-                <div style={{padding: '1rem 0 0 0'}}>
-                    <p >Quantidade de dias: {totalDays}</p>
-                    <div style={{padding: ".7rem 0"}}>
-                        
-                        <p>Frete: {billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
-                        <p style={{padding: '0.5rem 0 0 0'}}>Aluguel: {price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
-                        <p style={{
-                            paddingTop: '.5rem'
-                        }}>
-                            TOTAL: 
-                            {
-                                newPrice?
-                                    (newPrice + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): 
-                                    price ?(price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ''
-                            }
-                        </p>
-                    </div>
-                </div>
-                <input type="submit" style={{
-                    backgroundColor: "#44963b",
-                    color: "#fff",
-                    width: "100%", 
-                    padding: "1rem",
-                    borderRadius: "9px",
-                    border: "none",
-                    marginTop: "1rem",
-                    fontSize: "1rem",
-                    cursor: "pointer",
-                    boxShadow: "1px 10px 15px 2px #ccc"
-                }}
-                value="Gerar contrato"
-                onClick={(e)=>createSignerDocument(e)}
-                />
-            </form> 
-        </div>
         </section>
    
      </section>
