@@ -253,6 +253,18 @@ export const Checkout = () =>{
         buscaCep();
     }, [billingCep])
 
+    function formataCPF(cpf: string){
+        //retira os caracteres indesejados...
+        cpf = cpf.replace(/[^\d]/g, "");
+        
+        //realizar a formatação...
+          setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
+      }
+
+      React.useEffect(()=>{
+        formataCPF(cpfUser)
+      }, [cpfUser])
+
 
     return(
 
@@ -635,6 +647,7 @@ export const Checkout = () =>{
                                     name="cpf_user"
                                     placeholder="000.000.000-00"
                                     onChange={(e)=>setCpfUser(e.target.value)}
+                                    value={cpfUser}
                                     style={{
                                         width: '100%',
                                         border: '1px solid #ccc',
