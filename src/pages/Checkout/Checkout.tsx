@@ -430,6 +430,26 @@ export const Checkout = () =>{
 
                 <div className={styles.formCheckout__div}>
                     <div className={styles.formCheckout__div__inputs}>
+                            <div style={{width:"100%"}}>
+                                <label>Nome(responsável por receber):*</label>
+                                <input 
+                                    type="text" 
+                                    id="" 
+                                    name="" 
+                                    placeholder="Digite aqui"
+                                />
+                            </div>
+                            <div style={{width:"100%"}}>
+                                <label>Telefone*</label>
+                                <input 
+                                    type="text" 
+                                    id="street" 
+                                    name="street" 
+                                    value={billingStreet}
+                                />
+                            </div>
+                        </div>
+                    <div className={styles.formCheckout__div__inputs}>
                         <div style={{width:"100%"}}>
                             <label>CEP*</label>
                             <input 
@@ -446,6 +466,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="street" 
                                 name="street" 
+                                onChange={(e)=>setBillingStreet(e.target.value)}
                                 value={billingStreet}
                             />
                         </div>
@@ -468,6 +489,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="country" 
                                 name="country" 
+                                onChange={(e)=>setBillingCity(e.target.value)}
                                 value={billingCity}
                             />
                         </div>
@@ -478,6 +500,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="" 
                                 name="" 
+                                onChange={(e)=>setBillingState(e.target.value)}
                                 defaultValue={billingState}
                             />
                         </div>
@@ -487,6 +510,7 @@ export const Checkout = () =>{
                                 type="text" 
                                 id="bairro" 
                                 name="bairro" 
+                                onChange={(e)=>setBillingBairro(e.target.value)}
                                 value={billingBairro}
                             />
                         </div>
