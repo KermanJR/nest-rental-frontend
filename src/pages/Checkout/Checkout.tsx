@@ -443,9 +443,8 @@ export const Checkout = () =>{
                                 <label>Telefone*</label>
                                 <input 
                                     type="text" 
-                                    id="street" 
-                                    name="street" 
-                                    value={billingStreet}
+                                    id="" 
+                                    name="" 
                                 />
                             </div>
                         </div>
