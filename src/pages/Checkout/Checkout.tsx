@@ -25,6 +25,7 @@ export const Checkout = () =>{
     const razaoSocial = useForm('');
     const fantasyName = useForm('');
     const cnpj = useForm('cnpj');
+    const insc_estadual = useForm('insc_estadual');
 
  
     const [inscEstadual, setInscEstadual] = React.useState('');
@@ -107,7 +108,7 @@ export const Checkout = () =>{
 
     const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
         e.preventDefault();
-        if(cnpj.validate() && razaoSocial && fantasyName && inscEstadual 
+        if(cnpj.validate() && razaoSocial && fantasyName
             && businessEmail && numberAddressPay && numberAddressBilling){
             const { url, options } = CREATE_DOCUMENT({
                 "document": {
@@ -245,13 +246,6 @@ export const Checkout = () =>{
         const json = await response.json();
         console.log(json)
     }
-
-    function formatMaskCnpj(cnpj: string){
-        var x = cnpj.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
-        console.log(x)
-
-    }
-
     
     
 
@@ -317,18 +311,18 @@ export const Checkout = () =>{
                             id="cnpj"
                             placeholder="xx.xxx.xxx/xxxx-xx"
                             {...cnpj}
-                            onChange={(e)=>formatMaskCnpj(e.target.value)}
                         />
                     </div>
 
                     <div className={styles.formCheckout__div__inputs}>
                         <div style={{width:"100%"}}>
-                            <label>Inscrição Estadual*</label>
-                            <input 
-                                type="text" 
-                                id="insc_estadual" name="insc_estadual" 
-                                onChange={(e)=>setInscEstadual(e.target.value)}
-                                style={{width:"100%"}}
+                            <Input
+                                type="text"
+                                label="Inscrição Estadual*"
+                                name="insc_estadual"
+                                id="insc_estadual"
+                                placeholder="xx.xxx.xxx-x"
+                                {...insc_estadual}
                             />
                         </div>
                         <div style={{width:"100%"}}>
