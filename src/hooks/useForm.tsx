@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { cnpj } from 'cpf-cnpj-validator';
-import { validateBr } from 'js-brasil';
-import { maskBr } from 'js-brasil/src/mask';
-import { MASKSIE } from 'js-brasil/src/mask';
+
 
 
 export const useForm = (type: any) =>{
