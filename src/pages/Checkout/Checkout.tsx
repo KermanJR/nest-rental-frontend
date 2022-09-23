@@ -55,13 +55,10 @@ export const Checkout = () =>{
     //Pay address
     const [payStreet, setPayStreet] = React.useState('');
     const [payBairro, setPayBairro] = React.useState('');
-    const [PayCity, setPayCity] = React.useState('');
-    const [PayState, setPayState] = React.useState('');
+    const [payCity, setPayCity] = React.useState('');
+    const [payState, setPayState] = React.useState('');
     const [numberAddressPay, setNumberAddressPay] = React.useState('');
     const [payCep, setPayCep] = React.useState('');
-
-    //Receive
-    const []
 
 
     const [errorData, setErrorData] = React.useState('');
@@ -126,7 +123,7 @@ export const Checkout = () =>{
                     "template": {
                         "data": {
                         "fantasy_name": fantasyName.value,
-                        "address_pay": `${payStreet}, ${payBairro}, ${payBairro}, N°${numberAddressPay}`, 
+                        "address_pay": `${payStreet}, ${payBairro}, ${payCity}, ${payState} N°${numberAddressPay}`, 
                         "address_billing": `${billingStreet}, ${billingBairro}, ${billingCity}, N°${numberAddressBilling}`,
                         "contact": businessEmail,
                         "business_email": businessEmail,
