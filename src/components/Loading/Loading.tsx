@@ -14,7 +14,7 @@ export const Loading  = () =>{
             backgroundColor: 'rgba(0, 0, 0, .5)'
         }}>
             <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-             width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xmlSpace="preserve" style={{
+             width="40px" height="40px" viewBox="0 0 40 40" enableBackground="new 0 0 40 40" xmlSpace="preserve" style={{
                 position: 'relative',
                 top: 0,
                 left: 0

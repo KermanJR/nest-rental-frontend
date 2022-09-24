@@ -1,4 +1,5 @@
 import React from "react";
+import styles from './Input.module.scss';
 
 interface InputProps{
     label: string;
@@ -17,7 +18,7 @@ export const Input = ({label, type, name, value, placeholder, onChange, error, o
     return (
         <div style={{display: 'block', width: '100%', padding: ".5rem 0"}}>
           <label htmlFor={name}>{label}</label>
-          <input 
+          <input className={styles.input}
               type={type}
               id={name}
               name={name}
@@ -25,7 +26,7 @@ export const Input = ({label, type, name, value, placeholder, onChange, error, o
               value={value}
               placeholder={placeholder}
               onBlur={onBlur}
-              style={{width: "100%", padding: ".7rem", borderRadius: "8px"}} 
+              style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}} 
             />
           {error && <p style={{color: 'red', fontSize: '.75rem'}}>{error}</p>}
         </div>

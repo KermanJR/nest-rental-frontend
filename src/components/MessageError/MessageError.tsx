@@ -9,7 +9,7 @@ export const MessageError = ({message}: Props) =>{
     return (
         <div className={styles.divMessage}>
             {message.map(item=>(
-                <p className={styles.divMessage__message}>{item}</p>
+                <p className={styles.divMessage__message} key=''>{item}</p>
             ))}
         </div>
 

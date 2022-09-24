@@ -22,7 +22,6 @@ const SingleProduct = () => {
 
     </section>
     <Container>
-      
       <section className={styles.singleProduct}>
           <div className={styles.singleProduct__img}>
               <img src={Ecolift70}></img>

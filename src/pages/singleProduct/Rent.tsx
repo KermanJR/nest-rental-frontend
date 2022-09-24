@@ -1,10 +1,9 @@
 import React, { FormEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageError } from '../../components/MessageError/MessageError';
 import styles from './Rent.module.scss';
 import { useContext } from 'react';
 import { checkContext } from '../../context/CheckoutContext';
-
+import { MessageError } from 'src/components/MessageError/MessageError';
 
 
 const Rent = () => {

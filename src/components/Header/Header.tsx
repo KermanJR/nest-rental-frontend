@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { FiPhoneCall } from 'react-icons/fi';
 import { FaWhatsapp, FaYoutube, FaFacebook, FaLinkedin, FaInstagram  } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
-import { useMedia } from '../../hooks/useMedia';
+import { useMedia } from 'src/hooks/useMedia';
 
 
 const Header = () => {
@@ -22,9 +22,9 @@ const Header = () => {
                 <img src={LogoMobile} style={{width: '120px', height: "50px", objectFit: 'contain'}}/>
                 <div className={styles.headerMobile__nav}>
                     <ul className={styles.headerMobile__nav__ul}>
-                        <li><FiPhoneCall style={{width: '25px', height:"25px", color: "#fff"}}/></li>
-                        <li><FaWhatsapp style={{width: '25px', height:"25px", color: "#fff"}}/></li>
-                        <li><MdOutlineEmail style={{width: '25px', height:"25px", color: "#fff"}}/></li>
+                        <li><FiPhoneCall /></li>
+                        <li><FaWhatsapp /></li>
+                        <li><MdOutlineEmail /></li>
                     </ul>
                 </div>
                 <div className={styles.headerMobile__divButton}>

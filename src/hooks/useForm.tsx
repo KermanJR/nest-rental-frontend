@@ -42,8 +42,7 @@ export const useForm = (type: any) =>{
         }else if(types[type] && !types[type].regex.test(value)){
             setError(types[type].message)
             return false
-        }
-        else{
+        }else{
             setError('')
             return true
         }
@@ -52,27 +51,20 @@ export const useForm = (type: any) =>{
    
     const onChange = ({target}:any) =>{
         let newCnpj = '';
-        let newTel = '';
+        let newInscEst = '';
         if(type === 'cnpj'){
             const cnpjOld = target.value;
             newCnpj = cnpj.format(cnpjOld);
         }
-        if(type == 'telefone'){
-            const telOld = target.value;
-            newTel = telOld
-            .replace(/\D/g, "")
-            .replace(/(\d{2})(\d)/, "($1) $2")
-            .replace(/(\d{5})(\d{4})(\d)/, "$1-$2");
+        if(type === 'insc_estadual'){
+            const inscEst = target.value;
+            // newInscEst = maskBr.inscricaoestadual('MS', inscEst)
         }
        
         if(error) validate(target.value)
         if(type === 'cnpj'){
             setValue(newCnpj)
-        }else if(type === 'telefone'){
-            setValue(newTel)
-        }
-        
-        else{
+        }else{
             setValue(target.value)
         }
     }   

@@ -33,6 +33,8 @@ export type PropsContextType = {
     setContact: (contact: string)=>void,
     dataCheckout: Array<{}>,
     setDataCheckout: ()=> void;
+    login: Boolean,
+    setLogin: (login: boolean)=>boolean
 
 }
 export const checkContext = React.createContext<PropsContextType>({
@@ -64,7 +66,9 @@ export const checkContext = React.createContext<PropsContextType>({
     contact: '',
     setContact: () => '',
     dataCheckout: [{}],
-    setDataCheckout: ()=>''
+    setDataCheckout: ()=>'',
+    login: null,
+    setLogin: (login: boolean)=>null
 });
 
 
@@ -83,6 +87,7 @@ export const checkContext = React.createContext<PropsContextType>({
     const [country, setCountry] = React.useState<string>('');
     const [state, setState] = React.useState<string>('');
     const [contact, setContact] = React.useState<string>('');
+    const [login, setLogin] = React.useState<Boolean>(false);
 
 
     const [dataCheckout, setDataCheckout] = React.useState('');
@@ -282,7 +287,9 @@ export const checkContext = React.createContext<PropsContextType>({
             state,
             setState,
             dataCheckout: [],
-            setDataCheckout: () => ''
+            setDataCheckout: () => '',
+            login,
+            setLogin: ()=> null
 
         }}>
             {children}
