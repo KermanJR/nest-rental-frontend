@@ -1,4 +1,4 @@
-const API_URL_CLICKSIGN = 'https://nestrental-back.herokuapp.com/'
+const API_URL_CLICKSIGN = 'https://nest-rental-backend-api.herokuapp.com/'
 const API_URL_DEV_CLICKSIGN = 'http://localhost:6800/'
 
 
