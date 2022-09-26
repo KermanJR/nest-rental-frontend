@@ -1,0 +1,29 @@
+
+import styles from '../Modal.module.scss';
+import  {AiFillCloseCircle} from 'react-icons/ai'
+
+interface ModalProps{
+  openModal: Boolean;
+  setModal: React.Dispatch<React.SetStateAction<Boolean>>
+}
+
+export const ListProductsModal = ({openModal, setModal}: ModalProps) => {
+  return (
+    <>
+      {openModal && (
+        <div className={styles.modal}>
+          <div className={styles.modal__divCloseButton}>
+          <button 
+              className={styles.modal__divCloseButton__closeButton}
+              onClick={(e)=>setModal(!openModal)}
+            >
+              <AiFillCloseCircle/>
+            </button>
+          </div>
+          
+            
+        </div>
+      )}
+    </>
+  )
+}

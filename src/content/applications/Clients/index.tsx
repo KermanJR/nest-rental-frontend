@@ -10,7 +10,7 @@ function ApplicationsTransactions() {
   return (
     <>
       <Helmet>
-        <title>Vendas - Gerenciar</title>
+        <title>Vendas - Clientes</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />

@@ -286,13 +286,7 @@ export const Checkout = () =>{
           setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
       }
 
-      const maskPhone = (tel: string) => {
-        return tel
-          .replace(/\D/g, "")
-          .replace(/(\d{2})(\d)/, "($1) $2")
-          .replace(/(\d{5})(\d{4})(\d)/, "$1-$2");
-      };
-
+      
 
 
 
