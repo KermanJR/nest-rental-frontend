@@ -295,8 +295,8 @@ export const PureLightTheme = createTheme({
       disabled: colors.alpha.black[50]
     },
     background: {
-      paper: colors.alpha.white[100],
-      default: colors.layout.general.bodyBg
+      paper: "#fff",
+      default: "#fff"
     },
     action: {
       active: colors.alpha.black[100],
@@ -350,7 +350,7 @@ export const PureLightTheme = createTheme({
       styleOverrides: {
         'html, body': {
           width: '100%',
-          height: '100%'
+          height: '100%',
         },
         body: {
           display: 'flex',
