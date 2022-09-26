@@ -170,7 +170,7 @@ function WatchListColumn() {
               </AvatarWrapper>
               <Box>
                 <Typography variant="h4" noWrap>
-                ECOLIFT70
+                Clientes
                 </Typography>
                 <Typography variant="subtitle1" noWrap>
                   
@@ -245,7 +245,7 @@ function WatchListColumn() {
               </AvatarWrapper>
               <Box>
                 <Typography variant="h4" noWrap>
-                Toucan T26 E
+                Valor Total
                 </Typography>
                 <Typography variant="subtitle1" noWrap>
                  
@@ -320,7 +320,7 @@ function WatchListColumn() {
               </AvatarWrapper>
               <Box>
                 <Typography variant="h4" noWrap>
-                LiftPod FT140
+                Mais Alugado
                 </Typography>
                 <Typography variant="subtitle1" noWrap>
                

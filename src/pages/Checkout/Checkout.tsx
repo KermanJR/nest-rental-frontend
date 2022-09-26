@@ -9,6 +9,8 @@ import { Document } from "../Document/Document";
 import { useForm } from "../../hooks/useForm";
 import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
+import Header from "src/components/Header/Header";
+import Footer from "src/components/Footer/Footer";
 
 
 
@@ -67,19 +69,37 @@ export const Checkout = () =>{
     const [errorData, setErrorData] = React.useState('');
 
 
-    /* Busca CEP*/
-    async function buscaCep(){
-        const url_fetch = fetch(`https://viacep.com.br/ws/${billingCep}/json/`, {
+    /* Busca CEP 01*/
+    async function buscaCep(cep: string){
+        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
             method: 'GET',
         })
         const response = await url_fetch;
         const json = await response.json();
+        console.log(json)
         const faixaCep = (json.cep).split('-', 1);
-        setBillingStreet(json.logradouro);
-        setBillingBairro(json.bairro);
-        setBillingCity(json.localidade)
-        setBillingState(json.uf);
-        setBillingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+            setPayStreet(json.logradouro);
+            setPayCity(json.localidade);
+            setPayState(json.uf)
+            setPayBairro(json.bairro)
+        
+    }
+
+    /* Busca CEP 02*/
+    async function buscaCep2(cep: string){
+        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+            method: 'GET',
+        })
+        const response = await url_fetch;
+        const json = await response.json();
+        console.log(json)
+        const faixaCep = (json.cep).split('-', 1);
+            setBillingStreet(json.logradouro);
+            setBillingBairro(json.bairro);
+            setBillingCity(json.localidade)
+            setBillingState(json.uf);
+            setBillingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+        
     }
 
     const {
@@ -119,7 +139,7 @@ export const Checkout = () =>{
     const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
         e.preventDefault();
         if(cnpj.validate() && razaoSocial && fantasyName
-            && email_company && numberAddressPay && numberAddressBilling){
+            && email_company.value && numberAddressPay && numberAddressBilling){
             const { url, options } = CREATE_DOCUMENT({
                 "document": {
                     "path": "/modelos/teste.docx",
@@ -130,12 +150,9 @@ export const Checkout = () =>{
                         "address_billing": `Rua ${billingStreet}, ${billingBairro}, ${billingCity}, ${billingState} N°${numberAddressBilling}`,
                         "contact": email_company.value,
                         "business_email": email_company.value,
-                        "name_user": nameUser,
-                        "date_birthday": dateBirthday,
                         "total_days": totalDays,
                         "initial_date": dataAtualFormatada(startDate),
                         "final_date": dataAtualFormatada(endDate),
-                        "documentation": cpfUser,
                         "cnpj": cnpj.value,
                         "billing": billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
                         "total": (price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
@@ -158,7 +175,7 @@ export const Checkout = () =>{
         
 
     const createDocumentKey = async (keySign: string) =>{
-            const fetchDocumentKey = fetch('https://nestrental-back.herokuapp.com/create-document', {
+            const fetchDocumentKey = fetch('https://nest-rental-backend-api.herokuapp.com/create-document', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -223,7 +240,7 @@ export const Checkout = () =>{
 
     
     const sendLead = async () =>{
-        const teste = fetch('https://nestrental-back.herokuapp.com/send-lead', {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
@@ -282,6 +299,15 @@ export const Checkout = () =>{
         formataCPF(cpfUser)
       }, [cpfUser])
 
+      React.useEffect(()=>{
+        buscaCep(payCep);
+      }, [payCep])
+
+      React.useEffect(()=>{
+        buscaCep2(billingCep);
+      }, [billingCep])
+
+
 
 
     return(
@@ -290,6 +316,7 @@ export const Checkout = () =>{
         {loading && 
             <Loading/>
         }
+            <Header/>
       
             <section style={{
                 backgroundColor: "#125082",
@@ -397,6 +424,7 @@ export const Checkout = () =>{
                                 name="street" 
                                 placeholder="Digite sua rua ou avenida"
                                 onChange={(e)=>setPayStreet(e.target.value)}
+                                value={payStreet}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
@@ -407,6 +435,7 @@ export const Checkout = () =>{
                                 placeholder="Digite o número"
                                 name="number"
                                 onChange={(e)=>setNumberAddressPay(e.target.value)}
+                                value={numberAddressPay}
                             />
                         </div>
                     </div>
@@ -420,6 +449,7 @@ export const Checkout = () =>{
                                 placeholder="Digite sua cidade"
                                 name="country" 
                                 onChange={(e)=>setPayCity(e.target.value)}
+                                value={payCity}
                             
                             />
                         </div>
@@ -432,6 +462,7 @@ export const Checkout = () =>{
                                 placeholder="Digite seu estado"
                                 name="" 
                                 onChange={(e)=>setPayState(e.target.value)}
+                                value={payState}
                             />
                         </div>
 
@@ -443,6 +474,7 @@ export const Checkout = () =>{
                                 placeholder="Digite seu bairro"
                                 name="bairro" 
                                 onChange={(e)=>setPayBairro(e.target.value)}
+                                value={payBairro}
                             />
                         </div>
                         <div>
@@ -505,6 +537,7 @@ export const Checkout = () =>{
                                 id="street" 
                                 name="street" 
                                 onChange={(e)=>setBillingStreet(e.target.value)}
+                                value={billingAddress}
                              
                             />
                         </div>
@@ -516,6 +549,7 @@ export const Checkout = () =>{
                                 name="number"
                                 placeholder="Digite o número"
                                 onChange={(e)=>setNumberAddressBilling(e.target.value)}
+                                
                             />
                         </div>
                     </div>
@@ -529,6 +563,7 @@ export const Checkout = () =>{
                                 placeholder="Digite sua cidade"
                                 name="country" 
                                 onChange={(e)=>setBillingCity(e.target.value)}
+                                value={billingCity}
                                
                             />
                         </div>
@@ -541,6 +576,7 @@ export const Checkout = () =>{
                                 name="" 
                                 placeholder="Digite seu estado"
                                 onChange={(e)=>setBillingState(e.target.value)}
+                                value={billingState}
                               
                             />
                         </div>
@@ -552,6 +588,7 @@ export const Checkout = () =>{
                                 name="bairro" 
                                 placeholder="Digite seu bairro"
                                 onChange={(e)=>setBillingBairro(e.target.value)}
+                                value={billingBairro}
                                 
                             />
                         </div>
@@ -828,7 +865,7 @@ export const Checkout = () =>{
         </div>
     </>
     }
-
+<Footer/>
     
 </>
     );

@@ -118,80 +118,6 @@ function SecurityTab() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Box pb={2}>
-          <Typography variant="h3">Redes Sociais</Typography>
-          <Typography variant="subtitle2">
-            Gerencie suas contas de redes sociais
-          </Typography>
-        </Box>
-        <Card>
-          <List>
-            <ListItem sx={{ p: 3 }}>
-              <ListItemAvatar sx={{ pr: 2 }}>
-                <AvatarWrapper src="/static/images/logo/google.svg" />
-              </ListItemAvatar>
-              <ListItemText
-                primaryTypographyProps={{ variant: 'h5', gutterBottom: true }}
-                secondaryTypographyProps={{
-                  variant: 'subtitle2',
-                  lineHeight: 1
-                }}
-                primary="Google"
-                secondary="A Google account hasn’t been yet added to your account"
-              />
-              <Button color="secondary" size="large" variant="contained">
-                Conectar
-              </Button>
-            </ListItem>
-          </List>
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <List>
-            <ListItem sx={{ p: 3 }}>
-              <ListItemAvatar sx={{ pr: 2 }}>
-                <AvatarSuccess>
-                  <DoneTwoToneIcon />
-                </AvatarSuccess>
-              </ListItemAvatar>
-              <ListItemText
-                primaryTypographyProps={{ variant: 'h5', gutterBottom: true }}
-                secondaryTypographyProps={{
-                  variant: 'subtitle2',
-                  lineHeight: 1
-                }}
-                primary="Facebook"
-                secondary="Your Facebook account has been successfully connected"
-              />
-              <ButtonError size="large" variant="contained">
-                Revogar acesso
-              </ButtonError>
-            </ListItem>
-            <Divider component="li" />
-            <ListItem sx={{ p: 3 }}>
-              <ListItemAvatar sx={{ pr: 2 }}>
-                <AvatarSuccess>
-                  <DoneTwoToneIcon />
-                </AvatarSuccess>
-              </ListItemAvatar>
-              <ListItemText
-                primaryTypographyProps={{ variant: 'h5', gutterBottom: true }}
-                secondaryTypographyProps={{
-                  variant: 'subtitle2',
-                  lineHeight: 1
-                }}
-                primary="Twitter"
-                secondary="Your Twitter account was last syncronized 6 days ago"
-              />
-              <ButtonError size="large" variant="contained">
-              Revogar acesso
-              </ButtonError>
-            </ListItem>
-          </List>
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Box pb={2}>
           <Typography variant="h3">Segurança</Typography>
           <Typography variant="subtitle2">
             Altere suas preferências de segurança abaixo
@@ -206,7 +132,7 @@ function SecurityTab() {
                   variant: 'subtitle2',
                   lineHeight: 1
                 }}
-                primary="Change Password"
+                primary="Alterar senha"
                 secondary="Altere sua senha aqui"
               />
               <Button size="large" variant="outlined">

@@ -23,9 +23,7 @@ function ManagementUserSettings() {
   const [currentTab, setCurrentTab] = useState<string>('activity');
 
   const tabs = [
-    { value: 'activity', label: 'Atividades' },
     { value: 'edit_profile', label: 'Editar Perfil' },
-    { value: 'notifications', label: 'Notificações' },
     { value: 'security', label: 'Senhas/Segurança' }
   ];
 
@@ -36,7 +34,7 @@ function ManagementUserSettings() {
   return (
     <>
       <Helmet>
-        <title>User Settings - Applications</title>
+        <title>Configurações de usuário</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />

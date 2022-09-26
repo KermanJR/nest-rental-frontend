@@ -223,7 +223,6 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>Fonte</TableCell>
               <TableCell align="right">Valor</TableCell>
               <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -295,16 +294,12 @@ const RecentOrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       noWrap
                     >
 
-                      {cryptoOrder.cryptoCurrency}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
                       {numeral(cryptoOrder.amount).format(
                         `${cryptoOrder.currency}0,0.00`
                       )}
                     </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    {getStatusLabel(cryptoOrder.status)}
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Editar produto" arrow>

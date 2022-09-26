@@ -79,7 +79,7 @@ function WatchList() {
             }}
             gutterBottom
           >
-            Click something, anything!
+            Adicione novos campos aqui!
           </Typography>
           <Button
             variant="contained"
@@ -88,7 +88,7 @@ function WatchList() {
               mt: 4
             }}
           >
-            Maybe, a button?
+            Voltar para o Painel
           </Button>
         </Card>
       )}

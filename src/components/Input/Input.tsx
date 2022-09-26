@@ -27,6 +27,7 @@ export const Input = ({label, type, name, value, placeholder, onChange, error, o
               placeholder={placeholder}
               onBlur={onBlur}
               style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}} 
+  
             />
           {error && <p style={{color: 'red', fontSize: '.75rem'}}>{error}</p>}
         </div>

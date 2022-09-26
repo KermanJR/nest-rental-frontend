@@ -79,10 +79,10 @@ function BulkActions() {
       >
         <List sx={{ p: 1 }} component="nav">
           <ListItem button>
-            <ListItemText primary="Bulk delete selected" />
+            <ListItemText primary="Excluir geral" />
           </ListItem>
           <ListItem button>
-            <ListItemText primary="Bulk edit selected" />
+            <ListItemText primary="Editar geral" />
           </ListItem>
         </List>
       </Menu>

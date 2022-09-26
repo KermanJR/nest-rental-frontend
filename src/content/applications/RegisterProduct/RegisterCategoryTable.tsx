@@ -220,10 +220,9 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                 />
               </TableCell>
               <TableCell>Produto</TableCell>
-              <TableCell>ID Produto</TableCell>
-              <TableCell>Fonte</TableCell>
-              <TableCell align="right">Valor</TableCell>
-              <TableCell align="right">Status</TableCell>
+              <TableCell>Marca</TableCell>
+              <TableCell>Categoria</TableCell>
+              <TableCell align="right">Valor Diário</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -296,16 +295,12 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                       noWrap
                     >
 
-                      {productOrder.productCurrency}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
                       {numeral(productOrder.amount).format(
                         `${productOrder.currency}0,0.00`
                       )}
                     </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    {getStatusLabel(productOrder.status)}
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Editar produto" arrow>

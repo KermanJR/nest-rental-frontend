@@ -303,7 +303,7 @@ function WatchListRow() {
               </AvatarWrapper>
               <Box>
                 <Typography variant="h4" noWrap>
-                  ECOLIFT70
+                  Clientes
                 </Typography>
                 <Typography variant="subtitle1" noWrap>
                   

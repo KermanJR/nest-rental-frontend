@@ -59,7 +59,26 @@ export const LoginForm = () => {
                     />
                 </form>
                 <div className={styles.loginForm__divForm__recoveryPassword}>
-                    <div><input type="submit" value="Entrar" onClick={handleSubmit}/></div>
+                    <div><input  style={{
+                            backgroundColor: 'rgba(18, 80, 130)',
+                            padding: '1rem',
+                            width: '100%',
+                            height: '50px',
+                            borderRadius: '9px',
+                            border: 'none',
+                            color: '#fff',
+                            fontSize: '1rem',
+                            textTransform: 'uppercase',
+                            fontWeight: 'bold',
+                            letterSpacing: '1px',
+                            cursor: 'pointer',
+                            marginTop: '2rem',
+                            boxShadow: '1px 2px 5px 2px #ccc'}}
+                            type="submit"
+                            value="Entrar"
+                            onClick={handleSubmit}
+                        />
+                    </div>
                     <div><Link to="/recuperar-senha" style={{color: "rgba(18, 80, 130, 1)"}}>Esqueceu sua senha?</Link></div>
                    
                 </div>
@@ -68,8 +87,8 @@ export const LoginForm = () => {
                     <p>Você não tenha uma conta?
                         <Link to="/cadastro" style={{color: "rgba(18, 80, 130, 1)", fontWeight: "bold"}}> Inscreva-se</Link>
                     </p>
-                    <p style={{textAlign: 'right', marginTop: '1rem'}}>Voltar ao site
-                        <Link to="/" style={{color: "rgba(18, 80, 130, 1)", fontWeight: "bold"}}></Link>
+                    <p style={{textAlign: 'right', marginTop: '1rem'}}>
+                        <Link to="/" style={{color: "rgba(18, 80, 130, 1)", fontWeight: "bold"}}>Voltar ao site</Link>
                     </p>
                 
                     
