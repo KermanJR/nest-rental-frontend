@@ -11,6 +11,7 @@ import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
 import Header from "src/components/Header/Header";
 import Footer from "src/components/Footer/Footer";
+import { Link } from "react-router-dom";
 
 
 
@@ -339,9 +340,23 @@ export const Checkout = () =>{
                 <input type="text" id="total" name="total" value={price? price: newPrice} style={{display: 'none'}}/>
                 <input type="text" id="address_pay" name="address_pay" value={`${street}, ${bairro}, ${country}, ${number}`} style={{display: 'none'}}/>
 
-                <h3 className={styles.formCheckout__title}>Empresa</h3>
+                
 
                 <div className={styles.formCheckout__div}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <Title level={3}>
+                        Empresa
+                        </Title>
+                        <div>
+                            <p style={{color: 'rgba(18, 80,130)', fontWeight: '600'}}>Já possui cadastro? <Link to="/login" style={{fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem'}}>Faça Login</Link></p>
+                            
+                        </div>
+                    </div>
+                    
                     <Input
                         type="text"
                         label="Razão social"
@@ -399,11 +414,12 @@ export const Checkout = () =>{
 
                 {/* DETALHES DO FATURAMENTO*/}
 
-                <Title level={3}>
-                    Detalhes do faturamento
-                </Title>
+                
 
                 <div className={styles.formCheckout__div}>
+                    <Title level={3}>
+                        Detalhes do faturamento
+                    </Title>
                     <div className={styles.formCheckout__div__inputs}>
                         <div  style={{width:"100%"}}>
                             <label style={{display: "block"}}>CEP</label>
@@ -491,11 +507,12 @@ export const Checkout = () =>{
                 </div>
             
 
-                <Title level={3}>
-                    Detalhes de entrega
-                </Title>
+                
 
                 <div className={styles.formCheckout__div}>
+                    <Title level={3}>
+                        Detalhes de entrega
+                    </Title>
                     <div className={styles.formCheckout__div__inputs}>
                             <div style={{width:"100%"}}>
                                 <label>Nome(responsável por receber):*</label>
