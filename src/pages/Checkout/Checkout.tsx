@@ -15,20 +15,28 @@ import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
 
 
-
-const FAKE_INFO = {
-    nome_cidade: "São Paulo",
-    "cep": "01411001",
-    "bairro": "Cerqueira César",
-    "complemento": "lado ímpar",
-    "rua": "Rua Padre João Manuel",
-    "numero": "295",
-    "contato": "Dr Paulo Henrique",
-    "telefone": "(11)98877-6655",
-    "email": "ph@gmail.com",
-    "nome_obra": "???"
+export async function fetchCep(cep){
+    try{
+        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+            method: 'GET',
+        })
+        const response = await url_fetch;
+        return await response.json();
+    }catch(err){
+        return {
+            "cep": "01411-001",
+            "logradouro": "Rua Padre João Manuel",
+            "complemento": "lado ímpar",
+            "bairro": "Cerqueira César",
+            "localidade": "São Paulo",
+            "uf": "SP",
+            "ibge": "3550308",
+            "gia": "1004",
+            "ddd": "11",
+            "siafi": "7107"
+        }
+    }
 }
-
 
 export const Checkout = () => {
 
@@ -84,12 +92,7 @@ export const Checkout = () => {
 
     /* Busca CEP 01*/
     async function buscaCep(cep: string) {
-        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-            method: 'GET',
-        })
-        const response = await url_fetch;
-        const json = await response.json();
-        console.log(json)
+        const json = await fetchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
         setPayStreet(json.logradouro);
         setPayCity(json.localidade);
@@ -100,12 +103,7 @@ export const Checkout = () => {
 
     /* Busca CEP 02*/
     async function buscaCep2(cep: string) {
-        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-            method: 'GET',
-        })
-        const response = await url_fetch;
-        const json = await response.json();
-        console.log(json)
+        const json = await fetchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
         setBillingStreet(json.logradouro);
         setBillingBairro(json.bairro);
@@ -284,7 +282,7 @@ export const Checkout = () => {
             "numero": numberAddressPay,
             "contato": "???",
             "telefone": "???",
-            "email": email_company,
+            "email": email_company.value,
             "nome_obra": "???",
             tipo: "C" //E = Entrega C = Cobrança
         });
@@ -299,10 +297,10 @@ export const Checkout = () => {
             "bairro": billingBairro,
             "complemento": "???",
             "rua": billingStreet,
-            "numero": billingAddress,
+            "numero": numberAddressBilling,
             "contato": "???",
-            "telefone": "???",
-            "email": email_company,
+            "telefone": tel_user.value,
+            "email": email_company.value,
             "nome_obra": "???",
             tipo: "E" //E = Entrega C = Cobrança
         });

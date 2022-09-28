@@ -4,6 +4,7 @@ import styles from './Rent.module.scss';
 import { useContext } from 'react';
 import { checkContext } from '../../context/CheckoutContext';
 import { MessageError } from 'src/components/MessageError/MessageError';
+import { fetchCep } from '../Checkout/Checkout';
 
 
 const Rent = ({valor}) => {
@@ -146,11 +147,7 @@ const Rent = ({valor}) => {
     
     /* Busca CEP*/
     async function buscaCep(){
-        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-            method: 'GET',
-        })
-        const response = await url_fetch;
-        const json = await response.json();
+        const json = await fetchCep(cep)
         const faixaCep = (json.cep).split('-', 1);
         setStreet(json.logradouro);
         setBairro(json.bairro);
