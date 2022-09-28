@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Rent from './Rent';
 import styles from './SingleProduct.module.scss';
-import Ecolift70 from '../../assets/images/ecolift-70.png';
+//import Ecolift70 from '../../assets/images/ecolift-70.png';
 import ProductDescription from './ProductDescription/ProductDescription';
 import Container from '../../components/Container/Container';
 import Header from 'src/components/Header/Header';
@@ -10,20 +10,12 @@ import { useParams } from 'react-router';
 import { api } from 'src/api/api';
 
 
-//Não há busca por nome, nem campo image na API
-const produtos = {
-  "ecolift-50": { id: 1, imagem: Ecolift70 },
-}
-
 const SingleProduct = () => {
   const { id } = useParams();
-
   const [produto, setProduto] = useState(null);
 
   async function carregar() {
-    const idBanco = produtos[id].id;
-    const { data } = await api.get(`/produtos/${idBanco}`);
-    data.imagem = produtos[id].imagem;
+    const { data } = await api.get(`/produtos/${id}`);
     setProduto(data)
   }
 
@@ -59,7 +51,7 @@ const SingleProduct = () => {
       <Container>
         <section className={styles.singleProduct}>
           <div className={styles.singleProduct__img}>
-            <img src={produto?.imagem}></img>
+            <img src={produto?.prod_image}></img>
           </div>
           <Rent valor={dinheiro(produto?.valor)} />
         </section>
