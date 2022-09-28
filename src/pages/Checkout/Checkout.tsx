@@ -251,7 +251,7 @@ const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
 
     async function criar_usuario() {
         const { data } = await api.post("/usuarios", {
-            "nome": responsavel.value,
+            "nome": "responsavel.value",
             "documento": cnpj.value,
             "tipo": "J",
             "razao_social": razaoSocial.value,

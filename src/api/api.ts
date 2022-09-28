@@ -3,7 +3,7 @@ import axios from 'axios';
 let token = null;
 
 export const api = axios.create({
-    baseURL: 'http://localhost:4003/api'
+    baseURL: 'https://nest-rental-backend.herokuapp.com/api'
 })
 
 api.interceptors.request.use((config) => {
