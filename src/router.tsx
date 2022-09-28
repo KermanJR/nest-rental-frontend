@@ -114,7 +114,7 @@ const routes: RouteObject[] = [
         element: <Navigate to="/overview" replace />
       },
       {
-        path: '/produto/ecolift-50',
+        path: '/produto/:id',
         element: <SingleProduct />
       },
       {

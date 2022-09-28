@@ -10,6 +10,8 @@ import Logo from '../../assets/logo.jpg'
 import { checkContext } from 'src/context/CheckoutContext';
 import { Navigate } from 'react-router-dom';
 
+import { logar, api } from 'src/api/api';
+
 export const LoginForm = () => {
 
 
@@ -18,15 +20,25 @@ export const LoginForm = () => {
     const password = useForm("password");
     const [loginError, setLoginError] = React.useState<String>('');
 
-    const {login, setLogin} = React.useContext(checkContext);
-    console.log(login)
-    const handleSubmit = (e: any)=>{
+    const { login, setLogin } = React.useContext(checkContext);
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        console.log(e)
-        if(password.value && email.value){
-            console.log(!login)
-            setLogin(!login);
-            navigate('/dashboard/geral')
+        if (password.value && email.value) {
+
+            try {
+                const { data } = await api.post("/usuarios/login", {
+                    login: email.value,
+                    password: password.value
+                });
+
+                logar(data.token);
+
+                //setLogin(!login);
+                navigate('/dashboard/geral')
+            } catch (err) {
+                alert(err?.response?.data || err);
+            }
         }
     }
 

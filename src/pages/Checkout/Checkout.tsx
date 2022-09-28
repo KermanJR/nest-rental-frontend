@@ -9,19 +9,30 @@ import { Document } from "../Document/Document";
 import { useForm } from "../../hooks/useForm";
 import { Loading } from "../../components/Loading/Loading";
 import { CREATE_DOCUMENT, CREATE_DOCUMENT_SIGNER, JOIN_DOCUMENT_SIGNER } from "../../api/Clicksign/ApiClicksign";
+import { api } from "src/api/api";
 import Header from "src/components/Header/Header";
 import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
 
 
 
+const FAKE_INFO = {
+    nome_cidade: "São Paulo",
+    "cep": "01411001",
+    "bairro": "Cerqueira César",
+    "complemento": "lado ímpar",
+    "rua": "Rua Padre João Manuel",
+    "numero": "295",
+    "contato": "Dr Paulo Henrique",
+    "telefone": "(11)98877-6655",
+    "email": "ph@gmail.com",
+    "nome_obra": "???"
+}
 
 
+export const Checkout = () => {
 
-
-export const Checkout = () =>{
-
-    const { request, error, data, loading} = useFetch();
+    const { request, error, data, loading } = useFetch();
 
 
 
@@ -36,7 +47,7 @@ export const Checkout = () =>{
 
     const passwordClient = useForm('password')
 
- 
+
     const [inscEstadual, setInscEstadual] = React.useState('');
     const [number, setNumber] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -128,120 +139,187 @@ export const Checkout = () =>{
     } = useContext(checkContext);
 
     function dataAtualFormatada(date: string){
-            var data = new Date(date),
-            dia  = data.getDate().toString(),
-            diaF = (dia.length == 1) ? '0'+dia : dia,
-            mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
-            mesF = (mes.length == 1) ? '0'+mes : mes,
-            anoF = data.getFullYear();
-        return diaF+"/"+mesF+"/"+anoF;
+        var data = new Date(date),
+        dia  = data.getDate().toString(),
+        diaF = (dia.length == 1) ? '0'+dia : dia,
+        mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+        mesF = (mes.length == 1) ? '0'+mes : mes,
+        anoF = data.getFullYear();
+    return diaF+"/"+mesF+"/"+anoF;
+}
+
+
+
+const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
+    e.preventDefault();
+    if(cnpj.validate() && razaoSocial && fantasyName
+        && email_company.value && numberAddressPay && numberAddressBilling){
+        const { url, options } = CREATE_DOCUMENT({
+            "document": {
+                "path": "/modelos/teste.docx",
+                "template": {
+                    "data": {
+                    "fantasy_name": fantasyName.value,
+                    "address_pay": `Rua ${payStreet}, ${payBairro}, ${payCity}, ${payState}, N°${numberAddressPay}`, 
+                    "address_billing": `Rua ${billingStreet}, ${billingBairro}, ${billingCity}, ${billingState} N°${numberAddressBilling}`,
+                    "contact": email_company.value,
+                    "business_email": email_company.value,
+                    "total_days": totalDays,
+                    "initial_date": dataAtualFormatada(startDate),
+                    "final_date": dataAtualFormatada(endDate),
+                    "cnpj": cnpj.value,
+                    "billing": billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+                    "total": (price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+                    "machine_name": "Ecolift-50",
+                    "code_contract": Math.floor(Math.random()*650),
+                    "price_product": price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+                    "phone_number": tel_company.value
+                    }
+                },
+            }
+        })
+        const  { key } = await request(url, options);
+        setKeyDocument(key);
+        sendLead();
+    }else{
+        setErrorData('Preencha todos os campos obrigatórios.')
     }
+     
+}
+    
+
+const createDocumentKey = async (keySign: string) =>{
+        const fetchDocumentKey = fetch('https://nest-rental-backend-api.herokuapp.com/create-document', {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            }, body: JSON.stringify({
+                "list": {
+                    "document_key": keyDocument,
+                    "signer_key": keySign,
+                    "sign_as": "sign",
+                    "refusable": true,
+                    "message": `Prezado ${nameUser},\nPor favor assine o documento.\n\nQualquer dúvida estou à disposição.\n\nAtenciosamente,\nNest Rental.`
+                }
+            })
+        })
+        const response = await fetchDocumentKey;
+        const json = await response.json();
+        const key = await json?.data;
+        window.localStorage.setItem('document_key', key)
+        setKeyDocumentSign(key);
+        
+    }      
 
 
 
-    const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) =>{
-        e.preventDefault();
-        if(cnpj.validate() && razaoSocial && fantasyName
-            && email_company.value && numberAddressPay && numberAddressBilling){
-            const { url, options } = CREATE_DOCUMENT({
-                "document": {
-                    "path": "/modelos/teste.docx",
-                    "template": {
-                        "data": {
-                        "fantasy_name": fantasyName.value,
-                        "address_pay": `Rua ${payStreet}, ${payBairro}, ${payCity}, ${payState}, N°${numberAddressPay}`, 
-                        "address_billing": `Rua ${billingStreet}, ${billingBairro}, ${billingCity}, ${billingState} N°${numberAddressBilling}`,
-                        "contact": email_company.value,
-                        "business_email": email_company.value,
-                        "total_days": totalDays,
-                        "initial_date": dataAtualFormatada(startDate),
-                        "final_date": dataAtualFormatada(endDate),
-                        "cnpj": cnpj.value,
-                        "billing": billing.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
-                        "total": (price + billing).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
-                        "machine_name": "Ecolift-50",
-                        "code_contract": Math.floor(Math.random()*650),
-                        "price_product": price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
-                        "phone_number": tel_company.value
-                        }
-                    },
+const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
+    e.preventDefault();
+    if(cpfUser && email_user.value && dateBirthday && nameUser && tel_user.value){
+        if(!keyDocumentSign){
+            const { url, options } = CREATE_DOCUMENT_SIGNER({
+                "signer": {
+                    "email": email_user.value,
+                    "phone_number": tel_user.value,
+                    "auths": [
+                    "email"
+                    ],
+                    "name": nameUser,
+                    "documentation": cpfUser,
+                    "birthday": dateBirthday,
+                    "has_documentation": true,
+                    "selfie_enabled": false,
+                    "handwritten_enabled": false,
+                    "official_document_enabled": false,
+                    "liveness_enabled": false,
+                    "facial_biometrics_enabled": false
                 }
             })
             const  { key } = await request(url, options);
-            setKeyDocument(key);
-            sendLead();
+            setKeySigner(key);
+            setTimeout(()=>{
+                createDocumentKey(key);
+            }, 5000)
         }else{
-            setErrorData('Preencha todos os campos obrigatórios.')
+            setErrorData('Este contrato já foi gerado...')
         }
-         
+    }else{
+        setErrorData('Preencha todos os campos obrigatórios.')
     }
-        
-
-    const createDocumentKey = async (keySign: string) =>{
-            const fetchDocumentKey = fetch('https://nest-rental-backend-api.herokuapp.com/create-document', {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                }, body: JSON.stringify({
-                    "list": {
-                        "document_key": keyDocument,
-                        "signer_key": keySign,
-                        "sign_as": "sign",
-                        "refusable": true,
-                        "message": `Prezado ${nameUser},\nPor favor assine o documento.\n\nQualquer dúvida estou à disposição.\n\nAtenciosamente,\nNest Rental.`
-                    }
-                })
-            })
-            const response = await fetchDocumentKey;
-            const json = await response.json();
-            const key = await json?.data;
-            window.localStorage.setItem('document_key', key)
-            setKeyDocumentSign(key);
-            
-        }      
-    
+}
 
 
-    const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) =>{
+    async function criar_usuario() {
+        const { data } = await api.post("/usuarios", {
+            "nome": responsavel.value,
+            "documento": cnpj.value,
+            "tipo": "J",
+            "razao_social": razaoSocial.value,
+            "email": email_company.value,
+            "nome_fantasia": fantasyName.value,
+            "inscricao_estadual": insc_estadual.value,
+            "login": email_company.value,
+            "password": "???",
+            "id_perfil": 2
+        });
+    }
+
+
+    async function buscar_cidade(nome_cidade: string) {
+        //Considerando apenas cidades de sao paulo.
+        const nome = encodeURI(nome_cidade);
+        const { data } = await api.get(`/cidades/${nome}`);
+
+        return data?.id;
+    }
+
+    async function criar_endereco(id_entidade) {
+        const {
+            nome_cidade,
+            cep,
+            bairro,
+            complemento,
+            rua,
+            numero,
+            contato,
+            telefone,
+            nome_obra,
+            email
+        } = FAKE_INFO;
+
+        const id_cidade = await buscar_cidade(nome_cidade);
+
+        const { data } = await api.post(`/enderecos/${id_entidade}`, {
+            "id_cidade": id_cidade,
+            "cep": cep,
+            "bairro": bairro,
+            "complemento": complemento,
+            "rua": rua,
+            "numero": numero,
+            "contato": contato,
+            "telefone": telefone,
+            "email": email,
+            "nome_obra": nome_obra
+        });
+
+        console.log(data);
+
+        return data;
+    }
+
+
+    async function salvar(e) {
         e.preventDefault();
-        if(cpfUser && email_user.value && dateBirthday && nameUser && tel_user.value){
-            if(!keyDocumentSign){
-                const { url, options } = CREATE_DOCUMENT_SIGNER({
-                    "signer": {
-                        "email": email_user.value,
-                        "phone_number": tel_user.value,
-                        "auths": [
-                        "email"
-                        ],
-                        "name": nameUser,
-                        "documentation": cpfUser,
-                        "birthday": dateBirthday,
-                        "has_documentation": true,
-                        "selfie_enabled": false,
-                        "handwritten_enabled": false,
-                        "official_document_enabled": false,
-                        "liveness_enabled": false,
-                        "facial_biometrics_enabled": false
-                    }
-                })
-                const  { key } = await request(url, options);
-                setKeySigner(key);
-                setTimeout(()=>{
-                    createDocumentKey(key);
-                }, 5000)
-            }else{
-                setErrorData('Este contrato já foi gerado...')
-            }
-        }else{
-            setErrorData('Preencha todos os campos obrigatórios.')
+        try {
+            const usuario = await criar_usuario();
+            const endereco = await criar_endereco(usuario);
+        } catch (err) {
+            console.log(err);
         }
     }
 
-    
 
 
-
-    
     const sendLead = async () =>{
         const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
             method: 'POST',
