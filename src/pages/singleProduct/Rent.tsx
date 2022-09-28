@@ -6,7 +6,7 @@ import { checkContext } from '../../context/CheckoutContext';
 import { MessageError } from 'src/components/MessageError/MessageError';
 
 
-const Rent = () => {
+const Rent = ({valor}) => {
 
     const [addDays, setAddDays] = React.useState<number>(0)
     const [log, setLog] = React.useState('');
@@ -197,7 +197,7 @@ const Rent = () => {
 
   return (
     <div className={styles.rent}>
-        <p className={styles.rent__title}>R$<label style={{fontSize: "2rem"}}> 239,00</label>/dia</p>
+        <p className={styles.rent__title}>R$<label style={{fontSize: "2rem"}}> {valor}</label>/dia</p>
         <p className={styles.rent__title}>Escolha o período de locação</p>
         <form className={styles.rent__form}>
             <div className={styles.rent__form__date}>
