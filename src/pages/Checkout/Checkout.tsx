@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from './Checkout.module.scss';
 import { checkContext, CheckoutContext } from "../../context/CheckoutContext";
 import { useContext } from "react";
@@ -13,16 +13,17 @@ import { api } from "src/api/api";
 import Header from "src/components/Header/Header";
 import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
+import { UserContext } from "src/context/UserContext";
 
 
-export async function fetchCep(cep){
-    try{
+export async function fetchCep(cep) {
+    try {
         const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
             method: 'GET',
         })
         const response = await url_fetch;
         return await response.json();
-    }catch(err){
+    } catch (err) {
         return {
             "cep": "01411-001",
             "logradouro": "Rua Padre João Manuel",
@@ -132,8 +133,15 @@ export const Checkout = () => {
         setContact,
         dataCheckout,
         state,
-        setDataCheckout
+        setDataCheckout,
+        login //está logado
     } = useContext(checkContext);
+
+    const {
+        emailUser,
+    } = useContext(UserContext);
+
+    console.log(emailUser);
 
     function dataAtualFormatada(date: string) {
         var data = new Date(date),
@@ -245,6 +253,52 @@ export const Checkout = () => {
         }
     }
 
+
+    async function carregar_usuario_logado() {
+        const id_usuario = 104;
+
+        const { data } = await api.get(`/usuarios/${id_usuario}`);
+
+        const {
+            razao_social,
+            inscricao_estadual,
+            nome_fantasia,
+            nome,
+            email,
+            documento
+        } = data.entidade;
+
+        cnpj.setValue(documento);
+        razaoSocial.setValue(razao_social);
+        email_company.setValue(email);
+        fantasyName.setValue(nome_fantasia);
+        insc_estadual.setValue(inscricao_estadual);
+    }
+
+    async function carregar_endereco() {
+        const id_usuario = 104;
+
+        const { data } = await api.get(`/enderecos`);
+
+        const endereco_entrega = data.find(e => e.tipo == "E");
+
+        setBillingCep(endereco_entrega.cep);
+        setBillingBairro(endereco_entrega.bairro);
+        setBillingStreet(endereco_entrega.rua);
+        setNumberAddressBilling(endereco_entrega.numero);
+
+        const endereco_cobranca = data.find(e => e.tipo == "C");
+
+        setPayCep(endereco_cobranca.cep);
+        setPayBairro(endereco_cobranca.bairro);
+        setPayStreet(endereco_cobranca.rua);
+        setNumberAddressPay(endereco_cobranca.numero);
+    }
+
+    useEffect(()=>{
+        carregar_usuario_logado();
+        carregar_endereco();
+    }, []);
 
     async function criar_usuario() {
         const { data } = await api.post("/usuarios", {
@@ -415,9 +469,6 @@ export const Checkout = () => {
     }, [billingCep])
 
 
-    console.log(razaoSocial)
-
-
 
     return (
 
@@ -459,10 +510,14 @@ export const Checkout = () => {
                             <Title level={3}>
                                 Empresa
                             </Title>
-                            <div>
-                                <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro? <Link to="/login" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link></p>
+                            {
+                                !login && <div>
+                                    <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro?
+                                        <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link>
+                                    </p>
+                                </div>
+                            }
 
-                            </div>
                         </div>
 
                         <Input
