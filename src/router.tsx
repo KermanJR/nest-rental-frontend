@@ -9,6 +9,7 @@ import { Checkout } from './pages/Checkout/Checkout';
 import { LoginForm } from './pages/Login/LoginForm';
 import { LoginCreate } from './pages/Login/LoginCreate';
 import { ProtectedRoute } from './helpers/ProtectedRoute';
+import { UserStorage } from './context/UserContext';
 
 
 const Loader = (Component) => (props) =>
@@ -107,7 +108,9 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <LoginForm />
+        element: <UserStorage>
+                  <LoginForm/>
+                </UserStorage>
       },
       {
         path: 'overview',
@@ -119,7 +122,10 @@ const routes: RouteObject[] = [
       },
       {
         path: '/login',
-        element: <LoginForm />
+        element: 
+              <UserStorage>
+                <LoginForm/>
+              </UserStorage>
       },
       {
         path: '/cadastro',
@@ -173,9 +179,13 @@ const routes: RouteObject[] = [
       },
       {
         path: 'geral',
-        element:  <ProtectedRoute>
-                    <Overview/>
-                  </ProtectedRoute>
+        element:  
+            <ProtectedRoute>
+              <UserStorage>
+                <Overview/>
+              </UserStorage>
+            </ProtectedRoute>
+        
       },
       {
         path: 'pedidos',

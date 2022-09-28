@@ -9,7 +9,10 @@ import MachineLogin from '../../assets/images/machine-login.png'
 import Logo from '../../assets/logo.jpg'
 import { checkContext } from 'src/context/CheckoutContext';
 import { Navigate } from 'react-router-dom';
-
+import { useContext } from 'react';
+import { UserContext } from 'src/context/UserContext';
+import { logar, api } from 'src/api/api';
+import { ErrorRounded } from '@mui/icons-material';
 export const LoginForm = () => {
 
 
@@ -18,15 +21,16 @@ export const LoginForm = () => {
     const password = useForm("password");
     const [loginError, setLoginError] = React.useState<String>('');
 
-    const {login, setLogin} = React.useContext(checkContext);
-    console.log(login)
-    const handleSubmit = (e: any)=>{
+
+    const {
+        userLogin,
+        error
+    } = useContext(UserContext);
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
-        console.log(e)
-        if(password.value && email.value){
-            console.log(!login)
-            setLogin(!login);
-            navigate('/dashboard/geral')
+        if (password.validate() && email.validate()) {
+            userLogin(email.value, password.value);
         }
     }
 
@@ -58,6 +62,9 @@ export const LoginForm = () => {
                        {...password}
                     />
                 </form>
+                {error && (
+                    <p style={{color: 'red', fontSize: '.7rem'}}>{error}</p>
+                )}
                 <div className={styles.loginForm__divForm__recoveryPassword}>
                     <div><input  style={{
                             backgroundColor: 'rgba(18, 80, 130)',

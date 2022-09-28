@@ -4,6 +4,7 @@ import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import React from 'react';
 import { ClientsModal } from 'src/components/Modals/ClientsModal/ClientsModal';
 import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
+import { BudgetsModal } from 'src/components/Modals/BudgetsModal/BudgetsModal';
 
 function PageHeaderOrders() {
   const user = {
@@ -30,10 +31,10 @@ function PageHeaderOrders() {
           style={{backgroundColor: "rgb(18, 80, 130)"}}
           onClick={(e)=>setModal(!modal)}
         >
-          Cadastrar pedido
+          Cadastrar orçamento
         </Button>
       </Grid>
-      <RegisterOrderModal setModal={setModal} openModal={modal}/>
+      <BudgetsModal setModal={setModal} openModal={modal}/>
     </Grid>
   );
 }

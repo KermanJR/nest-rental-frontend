@@ -30,6 +30,7 @@ import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
+import {FaCloudDownloadAlt} from 'react-icons/fa'
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -185,7 +186,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
         <CardHeader
           action={
             <Box width={150}>
-              <FormControl fullWidth variant="outlined">
+              {/*<FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
@@ -199,7 +200,15 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+                  </FormControl>*/}
+                <FaCloudDownloadAlt style={{
+                    textAlign: 'right',
+                    position: 'relative',
+                    left: '7rem',
+                    height: '25px',
+                    width: '25px',
+                    cursor: 'pointer'
+                }}/>
             </Box>
           }
           title="Orçamentos cadastrados"
@@ -310,7 +319,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Editar pedido" arrow>
+                    <Tooltip title="Editar orçamento" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -324,7 +333,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Excluir pedido" arrow>
+                    {/*<Tooltip title="Excluir pedido" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -335,7 +344,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       >
                         <DeleteTwoToneIcon fontSize="small" />
                       </IconButton>
-                    </Tooltip>
+                      </Tooltip>*/}
                   </TableCell>
                 </TableRow>
               );

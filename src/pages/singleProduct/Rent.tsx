@@ -208,7 +208,7 @@ const Rent = () => {
                 <div>
                     <label htmlFor="end">Devolução</label>
                     <input type="date" name="end" onChange={(e)=>setEndDate(e.target.value)}/>
-                </div>
+                </div>e
             </div>
             <div className={styles.rent__form__calc}>
                 <label>Calcule o frete:</label>

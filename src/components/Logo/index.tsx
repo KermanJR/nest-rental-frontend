@@ -112,9 +112,9 @@ function Logo() {
       >
         <LogoTextWrapper>
           <Tooltip title="Version 2.0" arrow placement="right">
-            <VersionBadge>3.1</VersionBadge>
+            <VersionBadge>1.0</VersionBadge>
           </Tooltip>
-          <LogoText>Tokyo Free White</LogoText>
+          <LogoText>Nest Rental</LogoText>
         </LogoTextWrapper>
       </Box>
     </LogoWrapper>

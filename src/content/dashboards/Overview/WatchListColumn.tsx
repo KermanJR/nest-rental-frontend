@@ -217,12 +217,6 @@ function WatchListColumn() {
               </Typography>
             </Box>
           </Box>
-          <Chart
-            options={chartOptions}
-            series={chart1Data}
-            type="area"
-            height={200}
-          />
         </Card>
       </Grid>
       <Grid item md={4} xs={12}>
@@ -292,12 +286,6 @@ function WatchListColumn() {
               </Typography>
             </Box>
           </Box>
-          <Chart
-            options={chartOptions}
-            series={chart2Data}
-            type="area"
-            height={200}
-          />
         </Card>
       </Grid>
       <Grid item md={4} xs={12}>
@@ -367,12 +355,6 @@ function WatchListColumn() {
               </Typography>
             </Box>
           </Box>
-          <Chart
-            options={chartOptions}
-            series={chart3Data}
-            type="area"
-            height={200}
-          />
         </Card>
       </Grid>
     </Grid>

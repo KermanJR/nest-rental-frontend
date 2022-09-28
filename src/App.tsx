@@ -11,6 +11,7 @@ function App() {
   const content = useRoutes(router);
 
   return (
+
     <ThemeProvider>
       <CheckoutContext>
       <LocalizationProvider dateAdapter={AdapterDateFns}>

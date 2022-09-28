@@ -33,7 +33,6 @@ export const Checkout = () =>{
     const email_user = useForm('email');
     const tel_company = useForm('telefone');
     const tel_user = useForm('telefone');
-
     const passwordClient = useForm('password')
 
  
@@ -68,7 +67,7 @@ export const Checkout = () =>{
     const [payState, setPayState] = React.useState('');
     const [numberAddressPay, setNumberAddressPay] = React.useState('');
     const [payCep, setPayCep] = React.useState('');
-
+    const [nameResp, setNameResp] = React.useState('');
     const [errorData, setErrorData] = React.useState('');
 
 
@@ -305,6 +304,8 @@ export const Checkout = () =>{
       }, [billingCep])
 
 
+      console.log(razaoSocial)
+
 
 
     return(
@@ -410,7 +411,7 @@ export const Checkout = () =>{
                                 label="Senha*"
                                 name="new_pass_client"
                                 id="new_pass_client"
-                                placeholder=""
+                                placeholder="Digite sua senha"
                                 {...passwordClient}
                             />
                     
@@ -435,6 +436,7 @@ export const Checkout = () =>{
                                 pattern="[0-9]+"
                                 placeholder="Digite seu CEP"
                                 onChange={(e)=>setPayCep(e.target.value)}
+                                value={payCep}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
@@ -526,6 +528,7 @@ export const Checkout = () =>{
                                     id="" 
                                     name="" 
                                     placeholder="Digite o nome do responsável"
+                                    onChange={(e)=>setNameResp(e.target.value)}
                                 />
                             </div>
                             <div style={{width:"100%"}}>
@@ -549,6 +552,7 @@ export const Checkout = () =>{
                                 pattern="[0-9]+"
                                 placeholder="Digite seu CEP"
                                 onChange={(e)=>setBillingCep(e.target.value)}
+                                value={billingCep}
                             />
                         </div>
                         <div style={{width:"100%"}}>
@@ -571,7 +575,7 @@ export const Checkout = () =>{
                                 name="number"
                                 placeholder="Digite o número"
                                 onChange={(e)=>setNumberAddressBilling(e.target.value)}
-                                
+                                value={numberAddressBilling}
                             />
                         </div>
                     </div>

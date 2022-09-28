@@ -30,6 +30,7 @@ import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
+import { FaCloudDownloadAlt } from 'react-icons/fa'
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -186,7 +187,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
           action={
             <Box width={150}>
               <FormControl fullWidth variant="outlined">
-                <InputLabel>Status</InputLabel>
+                {/*<InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
                   onChange={handleStatusChange}
@@ -198,11 +199,23 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       {statusOption.name}
                     </MenuItem>
                   ))}
-                </Select>
+                  </Select>*/}
+                  
               </FormControl>
+              <FaCloudDownloadAlt style={{
+                textAlign: 'right',
+                position: 'relative',
+                left: '7rem',
+                height: '25px',
+                width: '25px',
+                cursor: 'pointer'
+               }}/>
             </Box>
+            
+            
           }
           title="Pedidos cadastrados"
+          
         />
       )}
       <Divider />
@@ -324,7 +337,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Excluir pedido" arrow>
+                    {/*<Tooltip title="Excluir pedido" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -335,7 +348,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       >
                         <DeleteTwoToneIcon fontSize="small" />
                       </IconButton>
-                    </Tooltip>
+                      </Tooltip>*/}
                   </TableCell>
                 </TableRow>
               );

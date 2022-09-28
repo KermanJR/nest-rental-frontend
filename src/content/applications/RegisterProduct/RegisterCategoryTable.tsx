@@ -30,6 +30,7 @@ import { ProductOrder, ProductOrderStatus } from 'src/models/product_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from './BulkActions';
+import { FaCloudDownloadAlt } from 'react-icons/fa'
 
 
 interface RecentOrdersTableProps {
@@ -186,7 +187,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
         <CardHeader
           action={
             <Box width={150}>
-              <FormControl fullWidth variant="outlined">
+              {/*<FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
@@ -200,7 +201,15 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+                  </FormControl>*/}
+                  <FaCloudDownloadAlt style={{
+                  textAlign: 'right',
+                  position: 'relative',
+                  left: '7rem',
+                  height: '25px',
+                  width: '25px',
+                  cursor: 'pointer'
+               }}/>
             </Box>
           }
           title="Produtos cadastrados"
@@ -317,7 +326,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Excluir produto" arrow>
+                    {/*<Tooltip title="Excluir produto" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -328,7 +337,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                       >
                         <DeleteTwoToneIcon fontSize="small" />
                       </IconButton>
-                    </Tooltip>
+                    </Tooltip>*/}
                   </TableCell>
                 </TableRow>
               );

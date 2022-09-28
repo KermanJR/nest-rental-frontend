@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
+import { UserContext } from 'src/context/UserContext';
 import { checkContext } from 'src/context/CheckoutContext';
 import React from 'react';
 import {
@@ -23,6 +24,9 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+
+
+
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -66,6 +70,14 @@ function HeaderUserbox() {
     jobtitle: 'Administrador'
   };
 
+  const {
+    emailUser,
+    passwordUser,
+    levelUser
+  } = useContext(UserContext);
+
+  console.log(emailUser)
+
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
 
@@ -93,12 +105,12 @@ function HeaderUserbox() {
   return (
     <>
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen}>
-        <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+        <Avatar variant="rounded" alt={emailUser} src={user.avatar} />
         <Hidden mdDown>
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">{emailUser}</UserBoxLabel>
             <UserBoxDescription variant="body2">
-              {user.jobtitle}
+              {levelUser}
             </UserBoxDescription>
           </UserBoxText>
         </Hidden>
@@ -120,11 +132,11 @@ function HeaderUserbox() {
         }}
       >
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
-          <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+          <Avatar variant="rounded" alt={emailUser} src={user.avatar} />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">{emailUser}</UserBoxLabel>
             <UserBoxDescription variant="body2">
-              {user.jobtitle}
+              {levelUser}
             </UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
