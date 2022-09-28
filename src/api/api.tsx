@@ -4,7 +4,7 @@ export const API_URL = 'https://nest-rental-backend.herokuapp.com/api'
 let token = null;
 
 export const api = axios.create({
-    baseURL: 'https://nest-rental-backend.herokuapp.com/api'
+    baseURL: API_URL
 })
 
 api.interceptors.request.use((config) => {
