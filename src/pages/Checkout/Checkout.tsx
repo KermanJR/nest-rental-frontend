@@ -34,6 +34,8 @@ export const Checkout = () =>{
     const tel_company = useForm('telefone');
     const tel_user = useForm('telefone');
 
+    const passwordClient = useForm('password')
+
  
     const [inscEstadual, setInscEstadual] = React.useState('');
     const [number, setNumber] = React.useState('');
@@ -402,6 +404,15 @@ export const Checkout = () =>{
                             />
                         </div>
                     </div>
+                  
+                            <Input
+                                type="password"
+                                label="Senha*"
+                                name="new_pass_client"
+                                id="new_pass_client"
+                                placeholder=""
+                                {...passwordClient}
+                            />
                     
                     
                 </div>

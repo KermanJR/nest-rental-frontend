@@ -30,8 +30,13 @@
 
     &__main{
         display: flex;
+        grid-gap: 7rem;
         align-items: center;
+        justify-content: space-between;
         padding: 1rem 5rem;
+        ul{
+            width: 100%;
+        }
     }
     &__links{
         display: flex;

@@ -29,7 +29,7 @@ import Label from 'src/components/Label';
 import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import BulkActions from '../RegisterCategory/BulkActions';
+import BulkActions from '../Clients/BulkActions';
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -84,7 +84,7 @@ const applyPagination = (
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
+const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -202,7 +202,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               </FormControl>
             </Box>
           }
-          title="Clientes cadastrados"
+          title="Orçamentos cadastrados"
         />
       )}
       <Divider />
@@ -218,10 +218,11 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   onChange={handleSelectAllCryptoOrders}
                 />
               </TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>CNPJ</TableCell>
-              <TableCell>Contato</TableCell>
+              <TableCell>Empresa</TableCell>
+              <TableCell>ID pedido</TableCell>
+              <TableCell>Início e Devolução</TableCell>
               <TableCell align="right">Valor</TableCell>
+              {/*<TableCell align="right">Status</TableCell>*/}
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -281,7 +282,13 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     >
                       {cryptoOrder.sourceName}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
+                    <Typography 
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.secondary"
+                        gutterBottom 
+                        noWrap
+                    >
                       {cryptoOrder.sourceDesc}
                     </Typography>
                   </TableCell>
@@ -294,7 +301,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       noWrap
                     >
 
-                      
+                    
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
                       {numeral(cryptoOrder.amount).format(
@@ -303,7 +310,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Editar cliente" arrow>
+                    <Tooltip title="Editar pedido" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -317,7 +324,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Excluir cliente" arrow>
+                    <Tooltip title="Excluir pedido" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -351,12 +358,12 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   );
 };
 
-ClientsTable.propTypes = {
+BudgetTable.propTypes = {
   cryptoOrders: PropTypes.array.isRequired
 };
 
-ClientsTable.defaultProps = {
+BudgetTable.defaultProps = {
   cryptoOrders: []
 };
 
-export default ClientsTable;
+export default BudgetTable;

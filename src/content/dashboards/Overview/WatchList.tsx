@@ -33,28 +33,6 @@ function WatchList() {
 
   return (
     <>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{
-          pb: 3
-        }}
-      >
-        <Typography variant="h3">Gráficos </Typography>
-        <ToggleButtonGroup
-          value={tabs}
-          exclusive
-          onChange={handleViewOrientation}
-        >
-          <ToggleButton disableRipple value="watch_list_columns">
-            <ViewWeekTwoToneIcon />
-          </ToggleButton>
-          <ToggleButton disableRipple value="watch_list_rows">
-            <TableRowsTwoToneIcon />
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
 
       {tabs === 'watch_list_columns' && <WatchListColumn />}
 

@@ -1,6 +1,6 @@
 .modal{
     width: 73%;
-    height: auto;
+    height: 500px;
     margin: 0 auto;
     position: fixed;
     bottom: 0;
@@ -9,8 +9,7 @@
     right: -18rem;
     left: 0;
     top: 15vh;
-    padding: 1rem;
-    height: 450px;
+    padding: 1rem 2.5rem;
     box-shadow: 1px 1px 2px 1px #ccc;
     background-color: rgb(243, 243, 243);
     &__divCloseButton{
@@ -21,6 +20,10 @@
         button{
             border: none;
             cursor: pointer;
+            svg{
+                height: 1.5rem;
+                width: 1.5rem;
+            }
         }
     }&__closeButton{
         width: 40px;

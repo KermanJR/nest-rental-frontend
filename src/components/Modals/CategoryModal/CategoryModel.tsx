@@ -1,11 +1,7 @@
 
 import styles from '../Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
-
-interface ModalProps{
-  openModal: Boolean;
-  setModal: React.Dispatch<React.SetStateAction<Boolean>>
-}
+import { ModalProps } from 'src/default/interfaces/Interfaces';
 
 export const CategoryModal = ({openModal, setModal}: ModalProps) => {
   return (

@@ -5,11 +5,7 @@ import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
 import Button from 'src/components/Button/Button';
 import React from 'react';
-
-interface ModalProps{
-  openModal: Boolean;
-  setModal: React.Dispatch<React.SetStateAction<Boolean>>
-}
+import { ModalProps } from 'src/default/interfaces/Interfaces';
 
 export const RegisterOrderModal = ({openModal, setModal}: ModalProps) => {
 
@@ -25,7 +21,7 @@ export const RegisterOrderModal = ({openModal, setModal}: ModalProps) => {
               className={styles.modal__divCloseButton__closeButton}
               onClick={(e)=>setModal(!openModal)}
             >
-              <AiFillCloseCircle width="40px" height="40px"/>
+              <AiFillCloseCircle/>
             </button>
           </div>
           <section>

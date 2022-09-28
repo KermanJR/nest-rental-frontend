@@ -36,6 +36,9 @@ const RegisterProduct = Loader(
   lazy(() => import('src/content/applications/RegisterProduct'))
 );
 
+const Budget = Loader(
+  lazy(() => import('src/content/applications/Budgets'))
+);
 const Clients = Loader(
   lazy(() => import('src/content/applications/Clients'))
 );
@@ -197,6 +200,13 @@ const routes: RouteObject[] = [
         path: 'cadastrar-produto',
         element:  <ProtectedRoute>
                     <RegisterProduct />
+                  </ProtectedRoute>
+      },
+
+      {
+        path: 'orcamentos',
+        element:  <ProtectedRoute>
+                    <Budget />
                   </ProtectedRoute>
       },
       {

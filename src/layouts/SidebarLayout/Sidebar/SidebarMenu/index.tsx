@@ -229,6 +229,17 @@ function SidebarMenu() {
                   Clientes
                 </Button>
               </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/dashboard/orcamentos"
+                  startIcon={<MmsTwoToneIcon />}
+                >
+                  Orçamentos
+                </Button>
+              </ListItem>
             </List>
           </SubMenuWrapper>
         </List>

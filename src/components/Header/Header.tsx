@@ -7,12 +7,15 @@ import { FiPhoneCall } from 'react-icons/fi';
 import { FaWhatsapp, FaYoutube, FaFacebook, FaLinkedin, FaInstagram  } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
 import { useMedia } from 'src/hooks/useMedia';
+import { checkContext } from 'src/context/CheckoutContext';
+import HeaderUserbox from 'src/layouts/SidebarLayout/Header/Userbox';
 
 
 const Header = () => {
 
     const [mobileMenu, setMobileMenu] = React.useState(false);
     const mobile = useMedia('(max-width: 40rem)');
+    const { login } = React.useContext(checkContext);
 
   return (
     <>
@@ -83,6 +86,28 @@ const Header = () => {
                     <Link to="/demonstracao">Demonstração</Link>
                     <Link to="/aluguel">Aluguel</Link>
                 </ul>
+
+                {login ? 
+                <HeaderUserbox /> : 
+                <div>
+                    <Link to="/login">
+                        <button 
+                            style={{
+                                background: 'rgb(18, 80, 130)',
+                                padding: '.8rem',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: '#ddd',
+                                borderRadius: '8px',
+                                width:'120px'
+                            }}
+                        >
+                            Login
+                        </button>
+                    </Link>
+                </div>
+                }
+                
             </header>
         </section>
     )}
