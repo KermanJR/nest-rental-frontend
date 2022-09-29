@@ -26,16 +26,17 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { ProductOrder, ProductOrderStatus } from 'src/models/product_order';
+import { ProductOrderStatus } from 'src/models/product_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from './BulkActions';
 import { FaCloudDownloadAlt } from 'react-icons/fa'
+import { Produto } from 'src/models/crypto_order';
 
 
 interface RecentOrdersTableProps {
   className?: string;
-  productOrders: ProductOrder[];
+  productOrders: Produto[];
 }
 
 interface Filters {
@@ -64,25 +65,26 @@ const getStatusLabel = (cryptoOrderStatus: ProductOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  productOrders: ProductOrder[],
+  productOrders: Produto[],
   filters: Filters
-): ProductOrder[] => {
+): Produto[] => {
   return productOrders.filter((productOrder) => {
     let matches = true;
 
+    /*
     if (filters.status && productOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  productOrders: ProductOrder[],
+  productOrders: Produto[],
   page: number,
   limit: number
-): ProductOrder[] => {
+): Produto[] => {
   return productOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -264,10 +266,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                       gutterBottom
                       noWrap
                     >
-                      {productOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {productOrder.orderDate}
+                      {productOrder.nome}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -278,7 +277,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                       gutterBottom
                       noWrap
                     >
-                      {productOrder.orderID}
+                      {productOrder.fabricante}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -289,10 +288,7 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
                       gutterBottom
                       noWrap
                     >
-                      {productOrder.sourceName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {productOrder.sourceDesc}
+                      {productOrder.categoria.descricao}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -306,8 +302,8 @@ const RegisterCategoryTable: FC<RecentOrdersTableProps> = ({ productOrders }) =>
 
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(productOrder.amount).format(
-                        `${productOrder.currency}0,0.00`
+                      R${numeral(productOrder.valor).format(
+                        `0,0.00`
                       )}
                     </Typography>
                   </TableCell>

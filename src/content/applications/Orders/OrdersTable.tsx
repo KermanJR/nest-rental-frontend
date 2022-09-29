@@ -1,5 +1,7 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
+import parseISO from 'date-fns/parseISO';
+
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
@@ -26,7 +28,7 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
+import { Pedido, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
@@ -34,54 +36,34 @@ import { FaCloudDownloadAlt } from 'react-icons/fa'
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  cryptoOrders: Pedido[];
 }
 
 interface Filters {
   status?: CryptoOrderStatus;
 }
 
-const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
-  const map = {
-    failed: {
-      text: 'Failed',
-      color: 'error'
-    },
-    completed: {
-      text: 'Completed',
-      color: 'success'
-    },
-    pending: {
-      text: 'Pending',
-      color: 'warning'
-    }
-  };
-
-  const { text, color }: any = map[cryptoOrderStatus];
-
-  return <Label color={color}>{text}</Label>;
-};
 
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Pedido[],
   filters: Filters
-): CryptoOrder[] => {
+): Pedido[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
-    if (filters.status && cryptoOrder.status !== filters.status) {
+    /*if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Pedido[],
   page: number,
   limit: number
-): CryptoOrder[] => {
+): Pedido[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -96,37 +78,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     status: null
   });
 
-  const statusOptions = [
-    {
-      id: 'all',
-      name: 'Todos'
-    },
-    {
-      id: 'completed',
-      name: 'Opção 2'
-    },
-    {
-      id: 'pending',
-      name: 'Opção 3'
-    },
-    {
-      id: 'failed',
-      name: 'Opção 4'
-    }
-  ];
 
-  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    let value = null;
-
-    if (e.target.value !== 'all') {
-      value = e.target.value;
-    }
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      status: value
-    }));
-  };
 
   const handleSelectAllCryptoOrders = (
     event: ChangeEvent<HTMLInputElement>
@@ -232,7 +184,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                 />
               </TableCell>
               <TableCell>Empresa</TableCell>
-              <TableCell>ID pedido</TableCell>
+              <TableCell>Contato</TableCell>
               <TableCell>Início e Devolução</TableCell>
               <TableCell align="right">Valor</TableCell>
               {/*<TableCell align="right">Status</TableCell>*/}
@@ -268,10 +220,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {(cryptoOrder.orderDate)}
+                      {cryptoOrder.razao_social}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -282,7 +231,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
+                      {cryptoOrder.email}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -293,7 +242,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.sourceName}
+                      {format(parseISO(cryptoOrder.data_inicio), 'dd/MM/yyyy')}
                     </Typography>
                     <Typography 
                         variant="body1"
@@ -302,7 +251,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         gutterBottom 
                         noWrap
                     >
-                      {cryptoOrder.sourceDesc}
+                      {format(parseISO(cryptoOrder.data_entrega), 'dd/MM/yyyy')}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -317,8 +266,8 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                     
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(cryptoOrder.amount).format(
-                        `${cryptoOrder.currency}0,0.00`
+                    R${numeral(cryptoOrder.vr_total).format(
+                        `0,0.00`
                       )}
                     </Typography>
                   </TableCell>

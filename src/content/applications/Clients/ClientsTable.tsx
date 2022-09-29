@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
+import { Cliente, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../RegisterCategory/BulkActions';
@@ -34,7 +34,7 @@ import {FaCloudDownloadAlt} from 'react-icons/fa'
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  cryptoOrders: Cliente[];
 }
 
 interface Filters {
@@ -63,25 +63,25 @@ const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Cliente[],
   filters: Filters
-): CryptoOrder[] => {
+): Cliente[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
-    if (filters.status && cryptoOrder.status !== filters.status) {
+    /*if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Cliente[],
   page: number,
   limit: number
-): CryptoOrder[] => {
+): Cliente[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -230,7 +230,6 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>Cliente</TableCell>
               <TableCell>CNPJ</TableCell>
               <TableCell>Contato</TableCell>
-              <TableCell align="right">Valor</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -263,10 +262,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {(cryptoOrder.orderDate)}
+                      {cryptoOrder.razao_social}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -277,7 +273,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
+                      {cryptoOrder.documento}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -288,27 +284,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.sourceName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {cryptoOrder.sourceDesc}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-
-                      
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(cryptoOrder.amount).format(
-                        `${cryptoOrder.currency}0,0.00`
-                      )}
+                      {cryptoOrder.email}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

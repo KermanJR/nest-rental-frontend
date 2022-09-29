@@ -362,7 +362,7 @@ export const Checkout = () => {
         return data;
     }
 
-    async function criar_pedido(id_endereco, id_usuario,) {
+    async function criar_pedido(id_endereco, id_usuario, id_entidade) {
         const total = (newPrice || price) + billing;
         const id_produto = 1;
 
@@ -373,7 +373,7 @@ export const Checkout = () => {
             "vr_total": total,
             "id_endereco": id_endereco,
             "id_cupom_desconto": null,
-            "id_cliente": null,
+            "id_cliente": id_entidade,
             "id_usuario": id_usuario,
             "itens": [
                 {
@@ -395,7 +395,7 @@ export const Checkout = () => {
             const { entidade, user } = await criar_usuario();
             const { endereco } = await criar_endereco_cobranca(entidade.id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade.id);
-            const pedido = await criar_pedido(endereco, entidade.id);
+            const pedido = await criar_pedido(endereco, user.id, entidade.id);
         } catch (err) {
             alert(
                 JSON.stringify(err?.response?.data || err, null, 3)
