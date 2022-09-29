@@ -42,8 +42,8 @@ export async function fetchCep(cep) {
 export const Checkout = () => {
 
     const { request, error, data, loading } = useFetch();
-
-
+    const userStorage = window.localStorage.getItem('user')
+    const userTmp =  userStorage!== null ? JSON.parse(userStorage) : {id: 0}
 
     const razaoSocial = useForm('');
     const fantasyName = useForm('');
@@ -569,15 +569,15 @@ export const Checkout = () => {
                                 />
                             </div>
                         </div>
-
-                        <Input
+                        { !isLogged &&  <Input
                             type="password"
                             label="Senha*"
                             name="new_pass_client"
                             id="new_pass_client"
                             placeholder="Digite sua senha"
                             {...passwordClient}
-                        />
+                        />}
+                       
 
 
                     </div>
