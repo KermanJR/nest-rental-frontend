@@ -133,6 +133,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const selectedAllCryptoOrders =
     selectedCryptoOrders.length === cryptoOrders.length;
   const theme = useTheme();
+  const { id_perfil } = JSON.parse(window.localStorage.getItem('user'))
 
   return (
     <Card>
@@ -161,6 +162,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   </Select>*/}
                   
               </FormControl>
+                  {![2].includes(id_perfil) &&
               <FaCloudDownloadAlt onClick={exportFile}  style={{
                 textAlign: 'right',
                 position: 'relative',
@@ -169,6 +171,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                 width: '25px',
                 cursor: 'pointer'
                }}/>
+              }
             </Box>
             
             
