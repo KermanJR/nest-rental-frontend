@@ -54,8 +54,8 @@ export const Checkout = () => {
     const tel_company = useForm('telefone');
     const tel_user = useForm('telefone');
     const passwordClient = useForm('password')
-
-    const [userData] = React.useState(window.localStorage.getItem('token'))
+    const dataTmp = window.localStorage.getItem('token')
+    const [isLogged] = React.useState<boolean>(dataTmp !== null)
     const [inscEstadual, setInscEstadual] = React.useState('');
     const [number, setNumber] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -509,7 +509,7 @@ export const Checkout = () => {
                                 Empresa
                             </Title>
                             {
-                                !userData.length && <div>
+                                !isLogged && <div>
                                     <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro?
                                         <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link>
                                     </p>
