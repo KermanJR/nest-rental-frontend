@@ -250,7 +250,7 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
-
+        {[1, 3].includes(id_perfil) && <>
         <List
           component="div"
           subheader={
@@ -320,6 +320,7 @@ function SidebarMenu() {
           </SubMenuWrapper>
           
         </List>
+        </> }
         {/*<List
           component="div"
           subheader={
