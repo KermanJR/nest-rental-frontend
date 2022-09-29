@@ -55,7 +55,7 @@ export const Checkout = () => {
     const tel_user = useForm('telefone');
     const passwordClient = useForm('password')
 
-
+    const [userData] = React.useState(window.localStorage.getItem('token'))
     const [inscEstadual, setInscEstadual] = React.useState('');
     const [number, setNumber] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -90,7 +90,7 @@ export const Checkout = () => {
     const [nameResp, setNameResp] = React.useState('');
     const [errorData, setErrorData] = React.useState('');
 
-
+    
     /* Busca CEP 01*/
     async function buscaCep(cep: string) {
         const json = await fetchCep(cep);
@@ -140,9 +140,7 @@ export const Checkout = () => {
     const {
         emailUser,
     } = useContext(UserContext);
-
-    console.log(emailUser);
-
+    console.log(emailUser)
     function dataAtualFormatada(date: string) {
         var data = new Date(date),
             dia = data.getDate().toString(),
@@ -267,7 +265,7 @@ export const Checkout = () => {
             email,
             documento
         } = data.entidade;
-
+        
         cnpj.setValue(documento);
         razaoSocial.setValue(razao_social);
         email_company.setValue(email);
@@ -511,7 +509,7 @@ export const Checkout = () => {
                                 Empresa
                             </Title>
                             {
-                                !login && <div>
+                                !userData.length && <div>
                                     <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro?
                                         <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link>
                                     </p>

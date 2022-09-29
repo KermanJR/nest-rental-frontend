@@ -1,6 +1,7 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
+import { read, utils, writeFileXLSX } from 'xlsx';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
@@ -114,6 +115,12 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
       name: 'Opção 4'
     }
   ];
+  const exportFile = useCallback(() => {
+    const ws = utils.json_to_sheet(cryptoOrders);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFileXLSX(wb, "Clientes.xlsx");
+  }, [cryptoOrders]);
 
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
@@ -201,7 +208,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                <FaCloudDownloadAlt style={{
+                <FaCloudDownloadAlt onClick={exportFile} style={{
                   textAlign: 'right',
                   position: 'relative',
                   left: '7rem',

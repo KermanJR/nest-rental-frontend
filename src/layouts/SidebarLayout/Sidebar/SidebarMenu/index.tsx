@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { SidebarContext } from 'src/context/SidebarContext';
-
+import { UserContext } from 'src/context/UserContext';
 import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
 import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
@@ -176,7 +176,8 @@ const SubMenuWrapper = styled(Box)(
 
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
-
+  // const { idPerfil } = useContext(UserContext)
+  const { id_perfil } = JSON.parse(window.localStorage.getItem('user'))
   return (
     <>
       <MenuWrapper>
@@ -218,28 +219,34 @@ function SidebarMenu() {
                   Pedidos
                 </Button>
               </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/dashboard/clientes"
-                  startIcon={<MmsTwoToneIcon />}
-                >
-                  Clientes
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/dashboard/orcamentos"
-                  startIcon={<MmsTwoToneIcon />}
-                >
-                  Orçamentos
-                </Button>
-              </ListItem>
+              {[1, 3].includes(id_perfil) && 
+              
+                <ListItem component="div">
+                  <Button
+                    disableRipple
+                    component={RouterLink}
+                    onClick={closeSidebar}
+                    to="/dashboard/clientes"
+                    startIcon={<MmsTwoToneIcon />}
+                  >
+                    Clientes
+                  </Button>
+                </ListItem>
+              }
+
+              {[1, 3].includes(id_perfil) && 
+                <ListItem component="div">
+                  <Button
+                    disableRipple
+                    component={RouterLink}
+                    onClick={closeSidebar}
+                    to="/dashboard/orcamentos"
+                    startIcon={<MmsTwoToneIcon />}
+                  >
+                    Orçamentos
+                  </Button>
+                </ListItem>
+              }
             </List>
           </SubMenuWrapper>
         </List>

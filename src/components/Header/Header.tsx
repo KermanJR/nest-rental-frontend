@@ -15,7 +15,8 @@ const Header = () => {
 
     const [mobileMenu, setMobileMenu] = React.useState(false);
     const mobile = useMedia('(max-width: 40rem)');
-    const { login } = React.useContext(checkContext);
+    // const { login } = React.useContext(checkContext);
+    const login = window.localStorage.getItem('token').length > 0
 
   return (
     <>
