@@ -2,7 +2,7 @@ import { Card } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { api } from 'src/api/api';
 import { Pedido } from 'src/models/crypto_order';
-import OrdersTable from './OrdersTable';
+import RecentOrdersTable from './OrdersTable';
 
 
 function Orders() {
@@ -19,7 +19,7 @@ function Orders() {
 
   return (
     <Card>
-      <OrdersTable cryptoOrders={dados} panel={false}/>
+      <RecentOrdersTable cryptoOrders={dados} />
     </Card>
   );
 }
