@@ -96,7 +96,8 @@ function HeaderUserbox() {
     const {login, setLogin} = React.useContext(checkContext);
     const handleSubmit = (e: any)=>{
         e.preventDefault();
-        setLogin(!login);
+        window.localStorage.clear()
+        setLogin(false);
         navigate('/login')
   
     }
