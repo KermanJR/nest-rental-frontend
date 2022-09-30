@@ -1,7 +1,7 @@
 import { Card } from '@mui/material';
 import { CryptoOrder } from 'src/models/crypto_order';
 import BrandsTable from './BrandsTable';
-import RecentOrdersTable from './BrandsTable';
+
 
 
 function Brands() {
@@ -70,7 +70,7 @@ function Brands() {
 
   return (
     <Card>
-      <BrandsTable cryptoOrders={cryptoOrders} />
+      <BrandsTable cryptoOrders={cryptoOrders} panel={true}/>
     </Card>
   );
 }

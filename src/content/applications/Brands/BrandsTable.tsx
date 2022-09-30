@@ -35,6 +35,7 @@ import {FaCloudDownloadAlt} from 'react-icons/fa'
 interface RecentOrdersTableProps {
   className?: string;
   cryptoOrders: CryptoOrder[];
+  panel: Boolean;
 }
 
 interface Filters {
@@ -85,7 +86,7 @@ const applyPagination = (
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
+const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );

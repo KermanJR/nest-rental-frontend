@@ -19,7 +19,7 @@ function Orders() {
 
   return (
     <Card>
-      <RecentOrdersTable cryptoOrders={dados} />
+      <RecentOrdersTable cryptoOrders={dados} panel={true}/>
     </Card>
   );
 }

@@ -8,6 +8,7 @@ export type PropsUser = {
     emailUser: string
     passwordUser: string,
     levelUser: string
+    idPerfil: number,
     userLogin: any,
     error: string
 }
@@ -18,6 +19,7 @@ export const UserContext = createContext<PropsUser>({
     emailUser: undefined,
     passwordUser: '',
     levelUser: '',
+    idPerfil: 0,
     userLogin: () => ({}),
     error: ''
 
@@ -29,7 +31,7 @@ export const UserStorage = ({ children }: any) => {
     const [emailUser, setEmailUser] = useState<string>(undefined);
     const [passwordUser, setPasswordUser] = useState<string>('');
     const [levelUser, setLevelUser] = useState<string>('');
-
+    const [idPerfil, setIdPerfil] = useState(0);
     const [data, setData] = React.useState(null);
     const [login, setLogin] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
@@ -59,10 +61,13 @@ export const UserStorage = ({ children }: any) => {
             if (json.message) {
                 setError(json.message)
             } else {
-                const { token } = await json;
+                const { jwt: {token}, user} = await json;
                 console.log(token)
                 window.localStorage.setItem('token', token)
+                window.localStorage.setItem('user', JSON.stringify(user))
                 setEmailUser(emailUser)
+                setIdPerfil(user.id_perfil || 0)
+                setLogin(true)
                 navigate(redirect || '/dashboard/geral')
             }
 
@@ -84,6 +89,7 @@ export const UserStorage = ({ children }: any) => {
             login,
             emailUser,
             passwordUser,
+            idPerfil,
             levelUser
         }}>
             {children}
