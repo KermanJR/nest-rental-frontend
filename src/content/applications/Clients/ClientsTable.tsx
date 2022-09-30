@@ -1,7 +1,7 @@
 import { FC, ChangeEvent, useState } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
+import { api } from 'src/api/api';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Tooltip,
   Divider,
@@ -26,15 +26,16 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
+import { Cliente, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import BulkActions from '../RegisterCategory/BulkActions';
+import BulkActions from '../Category/BulkActions';
 import {FaCloudDownloadAlt} from 'react-icons/fa'
+import { ClientsModal } from 'src/components/Modals/ClientsModal/ClientsModal';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  clients: Cliente[];
 }
 
 interface Filters {
@@ -63,29 +64,29 @@ const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Cliente[],
   filters: Filters
-): CryptoOrder[] => {
+): Cliente[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
-    if (filters.status && cryptoOrder.status !== filters.status) {
+    /*if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Cliente[],
   page: number,
   limit: number
-): CryptoOrder[] => {
+): Cliente[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
+const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -95,6 +96,8 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const [filters, setFilters] = useState<Filters>({
     status: null
   });
+
+
 
   const statusOptions = [
     {
@@ -133,7 +136,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   ): void => {
     setSelectedCryptoOrders(
       event.target.checked
-        ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
+        ? clients.map((clients) => clients.id)
         : []
     );
   };
@@ -162,7 +165,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredCryptoOrders = applyFilters(cryptoOrders, filters);
+  const filteredCryptoOrders = applyFilters(clients, filters);
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
     page,
@@ -170,13 +173,31 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   );
   const selectedSomeCryptoOrders =
     selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
+    selectedCryptoOrders.length < clients.length;
   const selectedAllCryptoOrders =
-    selectedCryptoOrders.length === cryptoOrders.length;
+    selectedCryptoOrders.length === clients.length;
   const theme = useTheme();
 
+  const [data, setData] = useState<Cliente[]>([]);
+  const [idClient, setIdClient] = useState<Cliente[]>([]);
+  const [modal, setModal] = React.useState<Boolean>(false)
+
+  async function queryClientsById(idClient: any){
+    setModal(!modal)
+    setData(null)
+    const {data} = await api.put(`/usuarios/${idClient}`);
+    if(data){
+      setData(data);
+    }else{
+      setData(null);
+    }
+  }
+
+
+
+
   return (
-    <Card>
+    <Card >
       {selectedBulkActions && (
         <Box flex={1} p={2}>
           <BulkActions />
@@ -230,19 +251,18 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
               <TableCell>Cliente</TableCell>
               <TableCell>CNPJ</TableCell>
               <TableCell>Contato</TableCell>
-              <TableCell align="right">Valor</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((cryptoOrder) => {
+            {paginatedCryptoOrders.map((data) => {
               const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                cryptoOrder.id
+                data.id
               );
               return (
                 <TableRow
                   hover
-                  key={cryptoOrder.id}
+                  key={data.id}
                   selected={isCryptoOrderSelected}
                 >
                   <TableCell padding="checkbox">
@@ -250,7 +270,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       color="primary"
                       checked={isCryptoOrderSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneCryptoOrder(event, cryptoOrder.id)
+                        handleSelectOneCryptoOrder(event, data.id)
                       }
                       value={isCryptoOrderSelected}
                     />
@@ -263,10 +283,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {(cryptoOrder.orderDate)}
+                      {data.razao_social}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -277,7 +294,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
+                      {data.documento}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -288,29 +305,10 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.sourceName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {cryptoOrder.sourceDesc}
+                      {data.email}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-
-                      
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(cryptoOrder.amount).format(
-                        `${cryptoOrder.currency}0,0.00`
-                      )}
-                    </Typography>
-                  </TableCell>
+                  
                   <TableCell align="right">
                     <Tooltip title="Editar cliente" arrow>
                       <IconButton
@@ -322,6 +320,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         }}
                         color="inherit"
                         size="small"
+                        onClick={(e)=>queryClientsById(data.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
@@ -356,16 +355,25 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
+      {data  && (
+        <ClientsModal 
+        openModal={modal}
+        setModal={setModal}
+        data={data}
+        edit={false}
+      />
+      )}
+      
     </Card>
   );
 };
 
 ClientsTable.propTypes = {
-  cryptoOrders: PropTypes.array.isRequired
+  clients: PropTypes.array.isRequired
 };
 
 ClientsTable.defaultProps = {
-  cryptoOrders: []
+  clients: []
 };
 
 export default ClientsTable;

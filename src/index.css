@@ -25,3 +25,10 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+input{
+  width: 100%;
+  padding: .7rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}

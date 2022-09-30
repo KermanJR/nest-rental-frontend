@@ -1,15 +1,16 @@
 
 import styles from '../Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
-import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
+import { ModalProps } from 'src/default/interfaces/Interfaces';
 import { useState } from 'react';
 import Button from 'src/components/Button/Button';
 import { Title } from 'src/components/Title/Title';
 
-export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
-  const [category, setCategory] = useState<string>('');
-  const [idCategory, setIdCategory] = useState<string>('');
+export const BrandsModal = ({openModal, setModal}: ModalProps) => {
+
+  const [brand, setBrand] = useState<string>('');
+  const [idBrand, setIdBrand] = useState<string>('');
 
 
   return (
@@ -25,36 +26,36 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
             </button>
           </div>
           
-          <Title>Nova categoria</Title>
+          <Title>Nova marca</Title>
           <form>
             <div style={{marginTop: '1rem'}}>
-              <label style={{display: 'block'}}>Nome da categoria</label>
+              <label style={{display: 'block'}}>Nome da marca</label>
               <input 
                 type="text"
-                name="category"
-                id="category"
-                placeholder="Digite o nome da categoria"
-                value={data['descricao']}
-                onChange={(e)=>setCategory(e.target.value)}
+                name="brand"
+                id="brand"
+                placeholder="Digite o nome da marca"
+                value={brand}
+                onChange={(e)=>setIdBrand(e.target.value)}
                 style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
               />
             </div>
             <div  style={{marginTop: '1rem'}}>
-              <label style={{display: 'block'}}>ID da categoria</label>
+              <label style={{display: 'block'}}>ID da marca</label>
               <input 
                 type="text"
-                name="id_category"
-                id="id_category"
-                placeholder="Digite o ID da categoria"
-                value={data['id']}
-                onChange={(e)=>setIdCategory(e.target.value)}
+                name="id_brand"
+                id="id_brand"
+                placeholder="Digite o ID da marca"
+                value={idBrand}
+                onChange={(e)=>setIdBrand(e.target.value)}
                 style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
               />
             </div>
             <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
-            {edit? <Button text="Editar" />:  <Button text="Cadastrar" />  }
-              <Button text="Cancelar" />
-            </div>
+                  <Button text="Cadastrar" />
+                  <Button text="Cancelar" />
+                </div>
           </form>
             
         </div>

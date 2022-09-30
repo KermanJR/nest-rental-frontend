@@ -18,7 +18,7 @@ function PageHeader() {
       </Grid>
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          {data.emailUser}
+          Painel
         </Typography>
         <Typography variant="subtitle2">
           Gerencie todos os recursos da sua empresa

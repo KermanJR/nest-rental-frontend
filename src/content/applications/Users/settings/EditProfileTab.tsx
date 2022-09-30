@@ -5,6 +5,10 @@ import {
   Card,
   Box,
   Divider,
+  ListItem,
+  ListItemText,
+  Switch,
+  List,
   Button
 } from '@mui/material';
 
@@ -76,10 +80,8 @@ function EditProfileTab() {
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <Box
+        <Card style={{marginTop: '3rem'}}>
+        <Box
             p={3}
             display="flex"
             alignItems="center"
@@ -87,10 +89,10 @@ function EditProfileTab() {
           >
             <Box>
               <Typography variant="h4" gutterBottom>
-                Configurações da conta
+                Configurações de senha
               </Typography>
               <Typography variant="subtitle2">
-               Gerencia os detalhes relacionados à sua conta
+               Gerencia os detalhes relacionados à sua senha
               </Typography>
             </Box>
             <Button variant="text" startIcon={<EditTwoToneIcon />}>
@@ -98,45 +100,38 @@ function EditProfileTab() {
             </Button>
           </Box>
           <Divider />
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="subtitle2">
-              <Grid container spacing={0}>
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                  <Box pr={3} pb={2}>
-                    Lingua:
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={8} md={9}>
-                  <Text color="black">
-                    <b>Portugûes (BR)</b>
-                  </Text>
-                </Grid>
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                  <Box pr={3} pb={2}>
-                    Timezone:
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={8} md={9}>
-                  <Text color="black">
-                    <b>GMT +2</b>
-                  </Text>
-                </Grid>
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                  <Box pr={3} pb={2}>
-                    Status da conta
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={8} md={9}>
-                  <Label color="success">
-                    <DoneTwoToneIcon fontSize="small" />
-                    <b>Ativo</b>
-                  </Label>
-                </Grid>
-              </Grid>
-            </Typography>
-          </CardContent>
+          <List>
+            <ListItem sx={{ p: 3 }}>
+              <ListItemText
+                primaryTypographyProps={{ variant: 'h5', gutterBottom: false }}
+                secondaryTypographyProps={{
+                  variant: 'subtitle2',
+                  lineHeight: 1
+                }}
+                primary="Alterar senha"
+                secondary="Altere sua senha aqui"
+              />
+              <Button size="large" >
+                Alterar Senha
+              </Button>
+            </ListItem>
+            <ListItem sx={{ p: 3 }}>
+              <ListItemText
+                primaryTypographyProps={{ variant: 'h5', gutterBottom: true }}
+                secondaryTypographyProps={{
+                  variant: 'subtitle2',
+                  lineHeight: 1
+                }}
+                primary="Fator duplo de autenticação"
+                secondary="Ative o PIN de verifição em seus dispositivos"
+              />
+              <Switch color="primary" />
+            </ListItem>
+          </List>
         </Card>
       </Grid>
+      
+
       <Grid item xs={12}>
         <Card>
           <Box
@@ -163,12 +158,12 @@ function EditProfileTab() {
               <Grid container spacing={0}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
-                    Email ID:
+                    Email principal:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>example@demo.com</b>
+                    <b>email@email.com</b>
                   </Text>
                   <Box pl={1} component="span">
                     <Label color="success">Principal</Label>
@@ -176,12 +171,12 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
-                    Email ID:
+                    Email de Recuperação:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>demo@example.com</b>
+                    <b>email@email.com</b>
                   </Text>
                 </Grid>
               </Grid>

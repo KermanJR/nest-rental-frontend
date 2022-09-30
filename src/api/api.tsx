@@ -1,14 +1,14 @@
 import axios from 'axios';
+//export const API_URL = 'http://127.0.0.1:4003/api'
 export const API_URL = 'https://nest-rental-backend.herokuapp.com/api'
 
 let token = null;
 
 export const api = axios.create({
-    baseURL: 'https://nest-rental-backend.herokuapp.com/api'
+    baseURL: API_URL
 })
 
 api.interceptors.request.use((config) => {
-    console.log(config);
 
     config.headers = {
         ...config.headers,

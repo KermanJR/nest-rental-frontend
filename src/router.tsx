@@ -25,16 +25,13 @@ const Loader = (Component) => (props) =>
 const Overview = Loader(lazy(() => import('src/content/dashboards/Overview')));
 
 // Applications
-const Messenger = Loader(
-  lazy(() => import('src/content/applications/Messenger'))
-);
 
 const RegisterCategory = Loader(
-  lazy(() => import('src/content/applications/RegisterCategory'))
+  lazy(() => import('src/content/applications/Category'))
 );
 
 const RegisterProduct = Loader(
-  lazy(() => import('src/content/applications/RegisterProduct'))
+  lazy(() => import('src/content/applications/Products'))
 );
 
 const Budget = Loader(
@@ -53,6 +50,10 @@ const UserProfile = Loader(
 
 const UserSettings = Loader(
   lazy(() => import('src/content/applications/Users/settings'))
+);
+
+const Brands = Loader(
+  lazy(() => import('src/content/applications/Brands/'))
 );
 
 
@@ -217,6 +218,12 @@ const routes: RouteObject[] = [
         path: 'orcamentos',
         element:  <ProtectedRoute>
                     <Budget />
+                  </ProtectedRoute>
+      },
+      {
+        path: 'cadastrar-marca',
+        element:  <ProtectedRoute>
+                    <Brands />
                   </ProtectedRoute>
       },
       {

@@ -1,9 +1,8 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
-import parseISO from 'date-fns/parseISO';
-import { api } from 'src/api/api';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
+import { api } from 'src/api/api';
 import {
   Tooltip,
   Divider,
@@ -27,33 +26,55 @@ import {
   CardHeader
 } from '@mui/material';
 
-
-import { Pedido, CryptoOrderStatus } from 'src/models/crypto_order';
+import Label from 'src/components/Label';
+import { ProductOrderStatus } from 'src/models/product_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-
-import BulkActions from '../Clients/BulkActions';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import BulkActions from './BulkActions';
 import { FaCloudDownloadAlt } from 'react-icons/fa'
-import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
+import { Produto } from 'src/models/crypto_order';
+import { ListProductsModal } from 'src/components/Modals/ListProductsModal/ListProductsModal';
+
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: Pedido[];
-  panel: boolean;
+  productOrders: Produto[];
 }
 
 interface Filters {
-  status?: CryptoOrderStatus;
+  status?: ProductOrderStatus;
 }
 
+const getStatusLabel = (cryptoOrderStatus: ProductOrderStatus): JSX.Element => {
+  const map = {
+    failed: {
+      text: 'Failed',
+      color: 'error'
+    },
+    completed: {
+      text: 'Completed',
+      color: 'success'
+    },
+    pending: {
+      text: 'Pending',
+      color: 'warning'
+    }
+  };
+
+  const { text, color }: any = map[cryptoOrderStatus];
+
+  return <Label color={color}>{text}</Label>;
+};
 
 const applyFilters = (
-  cryptoOrders: Pedido[],
+  productOrders: Produto[],
   filters: Filters
-): Pedido[] => {
-  return cryptoOrders.filter((cryptoOrder) => {
+): Produto[] => {
+  return productOrders.filter((productOrder) => {
     let matches = true;
 
-    /*if (filters.status && cryptoOrder.status !== filters.status) {
+    /*
+    if (filters.status && productOrder.status !== filters.status) {
       matches = false;
     }*/
 
@@ -62,14 +83,14 @@ const applyFilters = (
 };
 
 const applyPagination = (
-  cryptoOrders: Pedido[],
+  productOrders: Produto[],
   page: number,
   limit: number
-): Pedido[] => {
-  return cryptoOrders.slice(page * limit, page * limit + limit);
+): Produto[] => {
+  return productOrders.slice(page * limit, page * limit + limit);
 };
 
-const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
+const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -80,14 +101,44 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     status: null
   });
 
+  const statusOptions = [
+    {
+      id: 'all',
+      name: 'Todos'
+    },
+    {
+      id: 'completed',
+      name: 'Opção 2'
+    },
+    {
+      id: 'pending',
+      name: 'Opção 3'
+    },
+    {
+      id: 'failed',
+      name: 'Opção 4'
+    }
+  ];
 
+  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    let value = null;
+
+    if (e.target.value !== 'all') {
+      value = e.target.value;
+    }
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      status: value
+    }));
+  };
 
   const handleSelectAllCryptoOrders = (
     event: ChangeEvent<HTMLInputElement>
   ): void => {
     setSelectedCryptoOrders(
       event.target.checked
-        ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
+        ? productOrders.map((cryptoOrder) => cryptoOrder.id)
         : []
     );
   };
@@ -116,7 +167,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredCryptoOrders = applyFilters(cryptoOrders, filters);
+  const filteredCryptoOrders = applyFilters(productOrders, filters);
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
     page,
@@ -124,20 +175,19 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   );
   const selectedSomeCryptoOrders =
     selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
+    selectedCryptoOrders.length < productOrders.length;
   const selectedAllCryptoOrders =
-    selectedCryptoOrders.length === cryptoOrders.length;
+    selectedCryptoOrders.length === productOrders.length;
   const theme = useTheme();
 
-
-  const [data, setData] = useState<Pedido[]>([]);
-  const [idOrder, setIdOrder] = useState<Pedido[]>([]);
+  const [data, setData] = useState<Produto[]>([]);
+  const [idProduct, setIdProduct] = useState<Produto[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
 
-  async function queryOrdersById(idOrder: any){
+  async function queryProductsById(idProduct: any){
     setModal(!modal)
     setData(null)
-    const {data} = await api.get(`/pedidos/${idOrder}`);
+    const {data} = await api.get(`/produtos`);
     if(data){
       setData(data);
     }else{
@@ -145,8 +195,9 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     }
   }
 
+
   return (
-    <Card >
+    <Card>
       {selectedBulkActions && (
         <Box flex={1} p={2}>
           <BulkActions />
@@ -156,8 +207,8 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
         <CardHeader
           action={
             <Box width={150}>
-              <FormControl fullWidth variant="outlined">
-                {/*<InputLabel>Status</InputLabel>
+              {/*<FormControl fullWidth variant="outlined">
+                <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
                   onChange={handleStatusChange}
@@ -169,23 +220,19 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       {statusOption.name}
                     </MenuItem>
                   ))}
-                  </Select>*/}
-                  
-              </FormControl>
-              <FaCloudDownloadAlt style={{
-                textAlign: 'right',
-                position: 'relative',
-                left: '7rem',
-                height: '25px',
-                width: '25px',
-                cursor: 'pointer'
+                </Select>
+                  </FormControl>*/}
+                  <FaCloudDownloadAlt style={{
+                  textAlign: 'right',
+                  position: 'relative',
+                  left: '7rem',
+                  height: '25px',
+                  width: '25px',
+                  cursor: 'pointer'
                }}/>
             </Box>
-            
-            
           }
-          title={panel? "Pedidos recentes": "Pedidos cadastrados"}
-          
+          title="Produtos cadastrados"
         />
       )}
       <Divider />
@@ -201,23 +248,22 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   onChange={handleSelectAllCryptoOrders}
                 />
               </TableCell>
-              <TableCell>Empresa</TableCell>
-              <TableCell>Contato</TableCell>
-              <TableCell>Início e Devolução</TableCell>
-              <TableCell align="right">Valor</TableCell>
-              {/*<TableCell align="right">Status</TableCell>*/}
+              <TableCell>Produto</TableCell>
+              <TableCell>Marca</TableCell>
+              <TableCell>Categoria</TableCell>
+              <TableCell align="right">Valor Diário</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((data) => {
+            {paginatedCryptoOrders.map((produto) => {
               const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                data.id
+                produto.id
               );
               return (
                 <TableRow
                   hover
-                  key={data.id}
+                  key={produto.id}
                   selected={isCryptoOrderSelected}
                 >
                   <TableCell padding="checkbox">
@@ -225,7 +271,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       color="primary"
                       checked={isCryptoOrderSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneCryptoOrder(event, data.id)
+                        handleSelectOneCryptoOrder(event, produto.id)
                       }
                       value={isCryptoOrderSelected}
                     />
@@ -238,7 +284,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.razao_social}
+                      {produto.nome}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -249,7 +295,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.email}
+                      {produto.fabricante}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -260,16 +306,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {format(parseISO(data.data_inicio), 'dd/MM/yyyy')}
-                    </Typography>
-                    <Typography 
-                        variant="body1"
-                        fontWeight="bold"
-                        color="text.secondary"
-                        gutterBottom 
-                        noWrap
-                    >
-                      {format(parseISO(data.data_entrega), 'dd/MM/yyyy')}
+                      {produto.categoria.descricao}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -281,16 +318,15 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       noWrap
                     >
 
-                    
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                    R${numeral(data.vr_total).format(
+                      R${numeral(produto.valor).format(
                         `0,0.00`
                       )}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Editar pedido" arrow>
+                    <Tooltip title="Editar produto" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -300,12 +336,12 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryOrdersById(data.id)}
+                        onClick={(e)=>queryProductsById(produto.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    {/*<Tooltip title="Excluir pedido" arrow>
+                    {/*<Tooltip title="Excluir produto" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -316,7 +352,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       >
                         <DeleteTwoToneIcon fontSize="small" />
                       </IconButton>
-                      </Tooltip>*/}
+                    </Tooltip>*/}
                   </TableCell>
                 </TableRow>
               );
@@ -336,23 +372,23 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
         />
       </Box>
       {data  && (
-        <RegisterOrderModal 
-        openModal={modal}
-        setModal={setModal}
-        data={data}
-        edit={true}
+        <ListProductsModal 
+          openModal={modal}
+          setModal={setModal}
+          data={data}
+          edit={true}
       />
       )}
     </Card>
   );
 };
 
-OrdersTable.propTypes = {
-  cryptoOrders: PropTypes.array.isRequired
+ProductsTable.propTypes = {
+  productOrders: PropTypes.array.isRequired
 };
 
-OrdersTable.defaultProps = {
-  cryptoOrders: []
+ProductsTable.defaultProps = {
+  productOrders: []
 };
 
-export default OrdersTable;
+export default ProductsTable;

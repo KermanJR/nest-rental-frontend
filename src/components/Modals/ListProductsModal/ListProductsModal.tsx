@@ -1,14 +1,39 @@
 
 import styles from '../Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
-import { ModalProps } from 'src/default/interfaces/Interfaces';
+import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 import React from 'react';
 import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
 import Button from 'src/components/Button/Button';
+import { Categoria } from 'src/models/crypto_order';
+import { api } from 'src/api/api';
+import {useState} from 'react';
 
-export const ListProductsModal = ({openModal, setModal}: ModalProps) => {
-  const [razaoSocial, setRazaoSocial] = React.useState<String>('');
+export const ListProductsModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
+
+
+  const [nameProduct, setNameProduct] = React.useState<string>('');
+  const [priceProduct, setPriceProduct] = React.useState<string>('');
+  const [categoryProduct, setCategoryProduct] = React.useState<string>('');
+  const [descriptionProduct, setDescriptionProduct] = React.useState<string>('');
+
+  const [categories, setCategories] = useState<Categoria[]>([]);
+
+  async function queryCategories(){
+    setCategories(null)
+    const {data} = await api.get(`/categorias`);
+    if(data){
+      setCategories(data);
+    }else{
+      setCategories(null);
+    }
+  }
+
+  React.useEffect(()=>{
+    queryCategories()
+  },[])
+
   return (
     <>
       {openModal && (
@@ -23,7 +48,7 @@ export const ListProductsModal = ({openModal, setModal}: ModalProps) => {
           </div>
           <section>
             <Title>
-              Cadastre um novo produto
+             {edit? "Produto": "Cadastre um novo produto"} 
             </Title>
             <form>
               <Input
@@ -33,9 +58,9 @@ export const ListProductsModal = ({openModal, setModal}: ModalProps) => {
                 error=''
                 label='Nome do Produto'
                 type='text'
-                onChange={(e)=>setRazaoSocial(e.target.value)}
-                onBlur={(e)=>setRazaoSocial(e.target.value)}
-                value={razaoSocial}
+                onChange={(e)=>setNameProduct(e.target.value)}
+                onBlur={(e)=>setNameProduct(e.target.value)}
+                value={edit? data[0].nome: ""}
               />
               <div style={{display: 'flex', justifyContent: 'space-between', gridGap: '2rem', alignItems: 'center'}}>
                 <Input
@@ -45,48 +70,59 @@ export const ListProductsModal = ({openModal, setModal}: ModalProps) => {
                   error=''
                   label='Preço do Produto'
                   type='area'
-                  onChange={(e)=>setRazaoSocial(e.target.value)}
-                  onBlur={(e)=>setRazaoSocial(e.target.value)}
-                  value={razaoSocial}
+                  onChange={(e)=>setPriceProduct(e.target.value)}
+                  onBlur={(e)=>setPriceProduct(e.target.value)}
+                  value={edit? (data[0].valor).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): ""}
                 />
 
-                <div style={{width: '50%'}}>
-                  <label style={{display: 'block'}}>
-                    Selecione a categoria do produto:
-                  </label>
-                  <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
-                    <option>Produto 1</option>
-                    <option>Produto 2</option>
-                    <option>Produto 3</option>
-                    <option>Produto 4</option>
-                  </select>
-                </div>
+                {!edit? 
+                  <div style={{width: '50%'}}>
+                    <label style={{display: 'block'}}>
+                      Selecione a categoria do produto:
+                    </label>
+
+                    {categories && 
+                      <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                        {categories.map((item, index)=>{
+                          return  <>
+                                    <option value='0' key='0' selected disabled>Selecione</option>
+                                    <option value={item.id} key={item.id}>{item.descricao}</option>
+                                  </>
+                          
+                        })} 
+                    </select>
+                    }
+                  </div> :  ""
+                }
               </div>
 
               <div>
-                <label style={{display: 'block'}}>
+                <label style={{display: 'block', marginTop: "1rem"}}>
                   Descrição do produto
                 </label>
                 <div style={{display: 'flex', gridGap: '4rem'}}>
-
-                
-                <textarea rows={4} cols={80} style={{borderRadius: '8px', borderColor: '#ccc', padding: '1rem'}} placeholder="Descreva o produto">
+                  <textarea rows={4} cols={80} style={{borderRadius: '8px', borderColor: '#ccc', padding: '1rem'}} placeholder="Descreva o produto" defaultValue={edit? (data[0].descricao).toString(): ""}>
                   
-                </textarea>
+                  </textarea>
 
-                <div>
-                <label style={{display: 'block'}}>
-                  Imagem do produto
-                </label>
-                <input type="file" style={{marginTop: '8px'}} />
-                </div>
-              </div>
-              </div>
+                  {!edit ? 
+                    <div>
+                      <label style={{display: 'block'}}>
+                        Imagem do produto
+                      </label>
+                      <input type="file" style={{marginTop: '8px'}} />
+                    </div>:
+                    <img src={data[0].prod_image} alt="" style={{width: "20rem", height: "20rem"}}/>
+                    }
 
-                <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
-                  <Button text="Cadastrar" />
-                  <Button text="Cancelar" />
                 </div>
+            </div>
+
+            <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
+              {edit? <Button text="Editar" />:  <Button text="Cadastrar" />  }
+             
+              <Button text="Cancelar" />
+            </div>
             </form>
           </section>
           

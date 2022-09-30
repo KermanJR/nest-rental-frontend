@@ -1,9 +1,8 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
-import parseISO from 'date-fns/parseISO';
-import { api } from 'src/api/api';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
+import { api } from 'src/api/api';
 import {
   Tooltip,
   Divider,
@@ -27,29 +26,48 @@ import {
   CardHeader
 } from '@mui/material';
 
-
-import { Pedido, CryptoOrderStatus } from 'src/models/crypto_order';
+import Label from 'src/components/Label';
+import { Categoria, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
-import { FaCloudDownloadAlt } from 'react-icons/fa'
-import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
+import {FaCloudDownloadAlt} from 'react-icons/fa'
+import { CategoryModal } from 'src/components/Modals/CategoryModal/CategoryModel';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: Pedido[];
-  panel: boolean;
+  cryptoOrders: Categoria[];
 }
 
 interface Filters {
   status?: CryptoOrderStatus;
 }
 
+const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
+  const map = {
+    failed: {
+      text: 'Failed',
+      color: 'error'
+    },
+    completed: {
+      text: 'Completed',
+      color: 'success'
+    },
+    pending: {
+      text: 'Pending',
+      color: 'warning'
+    }
+  };
+
+  const { text, color }: any = map[cryptoOrderStatus];
+
+  return <Label color={color}>{text}</Label>;
+};
 
 const applyFilters = (
-  cryptoOrders: Pedido[],
+  cryptoOrders: Categoria[],
   filters: Filters
-): Pedido[] => {
+): Categoria[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
@@ -62,14 +80,14 @@ const applyFilters = (
 };
 
 const applyPagination = (
-  cryptoOrders: Pedido[],
+  cryptoOrders: Categoria[],
   page: number,
   limit: number
-): Pedido[] => {
+): Categoria[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
+const CategoryTables: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -80,7 +98,37 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     status: null
   });
 
+  const statusOptions = [
+    {
+      id: 'all',
+      name: 'Todos'
+    },
+    {
+      id: 'completed',
+      name: 'Opção 2'
+    },
+    {
+      id: 'pending',
+      name: 'Opção 3'
+    },
+    {
+      id: 'failed',
+      name: 'Opção 4'
+    }
+  ];
 
+  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    let value = null;
+
+    if (e.target.value !== 'all') {
+      value = e.target.value;
+    }
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      status: value
+    }));
+  };
 
   const handleSelectAllCryptoOrders = (
     event: ChangeEvent<HTMLInputElement>
@@ -130,14 +178,14 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const theme = useTheme();
 
 
-  const [data, setData] = useState<Pedido[]>([]);
-  const [idOrder, setIdOrder] = useState<Pedido[]>([]);
+  const [data, setData] = useState<Categoria[]>([]);
+  const [idCategory, setIdCategory] = useState<Categoria[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
 
-  async function queryOrdersById(idOrder: any){
+  async function queryCategoryId(idCategory: any){
     setModal(!modal)
     setData(null)
-    const {data} = await api.get(`/pedidos/${idOrder}`);
+    const {data} = await api.get(`/categorias/${idCategory}`);
     if(data){
       setData(data);
     }else{
@@ -145,8 +193,9 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     }
   }
 
+
   return (
-    <Card >
+    <Card>
       {selectedBulkActions && (
         <Box flex={1} p={2}>
           <BulkActions />
@@ -156,8 +205,8 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
         <CardHeader
           action={
             <Box width={150}>
-              <FormControl fullWidth variant="outlined">
-                {/*<InputLabel>Status</InputLabel>
+              {/*<FormControl fullWidth variant="outlined">
+                <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || 'all'}
                   onChange={handleStatusChange}
@@ -169,23 +218,19 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       {statusOption.name}
                     </MenuItem>
                   ))}
-                  </Select>*/}
-                  
-              </FormControl>
-              <FaCloudDownloadAlt style={{
-                textAlign: 'right',
-                position: 'relative',
-                left: '7rem',
-                height: '25px',
-                width: '25px',
-                cursor: 'pointer'
+                </Select>
+                  </FormControl>*/}
+                  <FaCloudDownloadAlt style={{
+                  textAlign: 'right',
+                  position: 'relative',
+                  left: '7rem',
+                  height: '25px',
+                  width: '25px',
+                  cursor: 'pointer'
                }}/>
             </Box>
-            
-            
           }
-          title={panel? "Pedidos recentes": "Pedidos cadastrados"}
-          
+          title="Categorias cadastradas"
         />
       )}
       <Divider />
@@ -201,12 +246,9 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   onChange={handleSelectAllCryptoOrders}
                 />
               </TableCell>
-              <TableCell>Empresa</TableCell>
-              <TableCell>Contato</TableCell>
-              <TableCell>Início e Devolução</TableCell>
-              <TableCell align="right">Valor</TableCell>
-              {/*<TableCell align="right">Status</TableCell>*/}
-              <TableCell align="right">Ações</TableCell>
+              <TableCell>Detalhes categoria</TableCell>
+              <TableCell>ID categoria</TableCell>
+              <TableCell align="right">Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -238,7 +280,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.razao_social}
+                      {data.descricao}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -249,48 +291,11 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.email}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {format(parseISO(data.data_inicio), 'dd/MM/yyyy')}
-                    </Typography>
-                    <Typography 
-                        variant="body1"
-                        fontWeight="bold"
-                        color="text.secondary"
-                        gutterBottom 
-                        noWrap
-                    >
-                      {format(parseISO(data.data_entrega), 'dd/MM/yyyy')}
+                      {data.id}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-
-                    
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                    R${numeral(data.vr_total).format(
-                        `0,0.00`
-                      )}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Editar pedido" arrow>
+                    <Tooltip title="Editar categoria" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -300,12 +305,12 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryOrdersById(data.id)}
+                        onClick={(e)=>queryCategoryId(data.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    {/*<Tooltip title="Excluir pedido" arrow>
+                    {/*<Tooltip title="Excluir produto" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -336,7 +341,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
         />
       </Box>
       {data  && (
-        <RegisterOrderModal 
+        <CategoryModal 
         openModal={modal}
         setModal={setModal}
         data={data}
@@ -347,12 +352,12 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   );
 };
 
-OrdersTable.propTypes = {
+CategoryTables.propTypes = {
   cryptoOrders: PropTypes.array.isRequired
 };
 
-OrdersTable.defaultProps = {
+CategoryTables.defaultProps = {
   cryptoOrders: []
 };
 
-export default OrdersTable;
+export default CategoryTables;

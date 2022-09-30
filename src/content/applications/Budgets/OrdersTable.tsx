@@ -176,7 +176,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const theme = useTheme();
 
   return (
-    <Card>
+    <Card >
       {selectedBulkActions && (
         <Box flex={1} p={2}>
           <BulkActions />

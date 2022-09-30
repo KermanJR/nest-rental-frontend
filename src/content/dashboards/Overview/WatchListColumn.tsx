@@ -10,8 +10,16 @@ import {
 } from '@mui/material';
 import Label from 'src/components/Label';
 import Text from 'src/components/Text';
-import Chart from 'react-apexcharts';
+//import Chart from 'react-apexcharts';
 import type { ApexOptions } from 'apexcharts';
+import { useEffect } from 'react';
+import { api } from 'src/api/api';
+import { useState } from 'react';
+import {GoPerson} from 'react-icons/go';
+import { GiFlatPlatform } from 'react-icons/gi';
+import {MdAttachMoney} from 'react-icons/md'
+import OrdersTable from 'src/content/applications/Orders/OrdersTable';
+import { Pedido } from 'src/models/crypto_order';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -44,320 +52,242 @@ const AvatarWrapper = styled(Avatar)(
 function WatchListColumn() {
   const theme = useTheme();
 
-  const chartOptions: ApexOptions = {
-    chart: {
-      background: 'transparent',
-      toolbar: {
-        show: false
-      },
-      sparkline: {
-        enabled: true
-      },
-      zoom: {
-        enabled: false
-      }
-    },
-    fill: {
-      gradient: {
-        shade: 'light',
-        type: 'vertical',
-        shadeIntensity: 0.1,
-        inverseColors: false,
-        opacityFrom: 0.8,
-        opacityTo: 0,
-        stops: [0, 100]
-      }
-    },
-    colors: [theme.colors.primary.main],
-    dataLabels: {
-      enabled: false
-    },
-    theme: {
-      mode: theme.palette.mode
-    },
-    stroke: {
-      show: true,
-      colors: [theme.colors.primary.main],
-      width: 3
-    },
-    legend: {
-      show: false
-    },
-    labels: [
-      'Monday',
-      'Tueday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ],
-    xaxis: {
-      labels: {
-        show: false
-      },
-      axisBorder: {
-        show: false
-      },
-      axisTicks: {
-        show: false
-      }
-    },
-    yaxis: {
-      show: false,
-      tickAmount: 5
-    },
-    tooltip: {
-      x: {
-        show: true
-      },
-      y: {
-        title: {
-          formatter: function () {
-            return 'Price: $';
-          }
-        }
-      },
-      marker: {
-        show: false
-      }
-    }
-  };
-  const chart1Data = [
-    {
-      name: 'Bitcoin Price',
-      data: [55.701, 57.598, 48.607, 46.439, 58.755, 46.978, 58.16]
-    }
-  ];
-  const chart2Data = [
-    {
-      name: 'Ethereum Price',
-      data: [13, 16, 14, 20, 8, 11, 20]
-    }
-  ];
-  const chart3Data = [
-    {
-      name: 'Cardano Price',
-      data: [51.85, 41.77, 22.09, 42.0, 71.9, 51.84, 31.84]
-    }
-  ];
+  const [usuarios, setUsuarios] = useState('');
+  const [total, setTotal] = useState('');
+  const [produto, setProduto] = useState(null);
+  const [pedidos, setPedidos] = useState<any>(null);
+  const [recentOrdersData, setRecentOrdersData] = useState<Pedido[]>([]);
+
+  async function carregar_usuario(){
+    const {data} = await api.get("/usuarios/total");
+    setUsuarios(data.total);
+  }
+
+  async function carregar_pedidos(){
+    const {data} = await api.get("/pedidos/total");
+    setProduto(data.produto);
+    setPedidos(data.pedidos);
+  }
+
+  async function carregar(){
+    const {data} = await api.get("/pedidos/dashboard");
+    setRecentOrdersData(data);
+  }
+
+
+  useEffect(()=>{
+    carregar_usuario();
+    carregar_pedidos();
+    carregar();
+  }, []);
+
+  
+
+ 
+  
 
   return (
-    <Grid
-      container
-      direction="row"
-      justifyContent="center"
-      alignItems="stretch"
-      spacing={3}
-    >
-      <Grid item md={4} xs={12}>
-        <Card
-          sx={{
-            overflow: 'visible'
-          }}
-        >
-          <Box
+    <>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="stretch"
+        spacing={3}
+      >
+        <Grid item md={4} xs={12}>
+          <Card
             sx={{
-              p: 3
+              overflow: 'visible'
             }}
           >
-            <Box display="flex" alignItems="center">
-              <AvatarWrapper>
-                <img
-                  alt="BTC"
-                  src="/static/images/placeholders/logo/bitcoin.png"
-                />
-              </AvatarWrapper>
-              <Box>
-                <Typography variant="h4" noWrap>
-                Clientes
+            <Box
+              sx={{
+                p: 3
+              }}
+            >
+              <Box display="flex" alignItems="center">
+                <AvatarWrapper>
+                  <GoPerson style={{width: '30px', height: '30px', fill: '#223354'}}/>
+                </AvatarWrapper>
+                <Box>
+                  <Typography variant="h4" noWrap>
+                  Clientes
+                  </Typography>
+                  <Typography variant="subtitle1" noWrap>
+                    
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  pt: 3
+                }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    pr: 1,
+                    mb: 1
+                  }}
+                >
+                  {usuarios}
                 </Typography>
-                <Typography variant="subtitle1" noWrap>
+
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    pl: 1
+                  }}
+                >
+
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <Card
+            sx={{
+              overflow: 'visible'
+            }}
+          >
+            <Box
+              sx={{
+                p: 3
+              }}
+            >
+              <Box display="flex" alignItems="center">
+                <AvatarWrapper>
+                <MdAttachMoney style={{width: '30px', height: '30px', fill: '#223354'}}/>
+                </AvatarWrapper>
+                <Box>
+                  <Typography variant="h4" noWrap>
+                  Valor Total
+                  </Typography>
+                  <Typography variant="subtitle1" noWrap>
                   
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  pt: 3
+                }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    pr: 1,
+                    mb: 1
+                  }}
+                >
+                  {pedidos?.valor_total?.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    pl: 1
+                  }}
+                >
+        
                 </Typography>
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                pt: 3
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  pr: 1,
-                  mb: 1
-                }}
-              >
-                R$56,475.99
-              </Typography>
-              <Text color="success">
-                <b>+12.5%</b>
-              </Text>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start'
-              }}
-            >
-              <Label color="success">+R$500</Label>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  pl: 1
-                }}
-              >
-                últimas 24hrs
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <Card
-          sx={{
-            overflow: 'visible'
-          }}
-        >
-          <Box
+          </Card>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <Card
             sx={{
-              p: 3
+              overflow: 'visible'
             }}
           >
-            <Box display="flex" alignItems="center">
-              <AvatarWrapper>
-                <img
-                  alt="ETH"
-                  src="/static/images/placeholders/logo/ethereum.png"
-                />
-              </AvatarWrapper>
-              <Box>
-                <Typography variant="h4" noWrap>
-                Valor Total
+            <Box
+              sx={{
+                p: 3
+              }}
+            >
+              <Box display="flex" alignItems="center">
+                <AvatarWrapper>
+                <GiFlatPlatform style={{width: '30px', height: '30px', fill: '#223354'}}/>
+                </AvatarWrapper>
+                <Box>
+                  <Typography variant="h4" noWrap>
+                  Mais Alugado
+                  </Typography>
+                  <Typography variant="subtitle1" noWrap>
+                
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  pt: 3
+                }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    pr: 1,
+                    mb: 1
+                  }}
+                >
+                  {produto?.nome}
                 </Typography>
-                <Typography variant="subtitle1" noWrap>
-                 
+
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    pl: 1
+                  }}
+                >
                 </Typography>
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                pt: 3
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  pr: 1,
-                  mb: 1
-                }}
-              >
-                R$1,968.00
-              </Typography>
-              <Text color="error">
-                <b>-3.24%</b>
-              </Text>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start'
-              }}
-            >
-              <Label color="error">-R$90</Label>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  pl: 1
-                }}
-              >
-                últimas 24hrs
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
+          </Card>
+        </Grid>
       </Grid>
-      <Grid item md={4} xs={12}>
-        <Card
-          sx={{
-            overflow: 'visible'
-          }}
-        >
-          <Box
-            sx={{
-              p: 3
-            }}
-          >
-            <Box display="flex" alignItems="center">
-              <AvatarWrapper>
-                <img
-                  alt="ADA"
-                  src="/static/images/placeholders/logo/cardano.png"
-                />
-              </AvatarWrapper>
-              <Box>
-                <Typography variant="h4" noWrap>
-                Mais Alugado
-                </Typography>
-                <Typography variant="subtitle1" noWrap>
-               
-                </Typography>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                pt: 3
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  pr: 1,
-                  mb: 1
-                }}
-              >
-                R$23.00
-              </Typography>
-              <Text color="error">
-                <b>-0.33%</b>
-              </Text>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start'
-              }}
-            >
-              <Label color="error">-R$5</Label>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  pl: 1
-                }}
-              >
-                últimas 24hrs
-              </Typography>
-            </Box>
-          </Box>
-        </Card>
-      </Grid>
-    </Grid>
+      <div style={{marginTop: '3rem'}}>
+       <OrdersTable cryptoOrders={recentOrdersData} panel={true}/>
+      </div>
+      
+    </>
   );
 }
 

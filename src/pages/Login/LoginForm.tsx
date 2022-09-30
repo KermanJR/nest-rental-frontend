@@ -3,22 +3,19 @@ import React, { FormEvent } from 'react';
 import styles from './LoginForm.module.scss';
 import { Input } from 'src/components/Input/Input';
 import { useForm } from 'src/hooks/useForm';
-import Button from '../../components/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import MachineLogin from '../../assets/images/machine-login.png'
 import Logo from '../../assets/logo.jpg'
-import { checkContext } from 'src/context/CheckoutContext';
-import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from 'src/context/UserContext';
 import { logar, api } from 'src/api/api';
-import { ErrorRounded } from '@mui/icons-material';
+
 export const LoginForm = () => {
 
 
-    const navigate = useNavigate();
+
     const email = useForm("email");
-    const password = useForm("password");
+    const [password, setPassword] = React.useState<string>("")
     const [loginError, setLoginError] = React.useState<String>('');
 
 
@@ -29,8 +26,8 @@ export const LoginForm = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        if (password.validate() && email.validate()) {
-            userLogin(email.value, password.value);
+        if (password) {
+            userLogin(email.value, password);
         }
     }
 
@@ -52,14 +49,14 @@ export const LoginForm = () => {
                         placeholder="Digite seu email"
                        {...email}
                     />
-
-                    <Input
-                        label="Senha:"
+                    <label style={{display: "block"}}>Senha:</label>
+                    <input 
                         type="password"
-                        name="user_password"
-                        id="user_password"
-                        placeholder="Digite sua senha"
-                       {...password}
+                        value={password}
+                        name="password"
+                        id="password"
+                        onChange={(e)=>setPassword(e.target.value)}
+                        style={{width: "100%", padding: ".7rem", border: "1px solid #ccc", borderRadius: "8px"}}
                     />
                 </form>
                 {error && (

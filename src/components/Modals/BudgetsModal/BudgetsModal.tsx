@@ -7,7 +7,9 @@ import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
 import { useForm } from 'src/hooks/useForm';
 import Button from 'src/components/Button/Button';
-import { Link } from '@mui/icons-material';
+import {useState} from 'react';
+import { Produto } from 'src/models/crypto_order';
+import { api } from 'src/api/api';
 
 export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
 
@@ -39,6 +41,25 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
      const [payCep, setPayCep] = React.useState('');
      const [nameResp, setNameResp] = React.useState('');
      const [errorData, setErrorData] = React.useState('');
+
+    const [produtos, setProdutos] = useState<Produto[]>([]);
+
+
+    async function queryProductsById(){
+        setProdutos(null)
+        const {data} = await api.get(`/produtos`);
+        if(data){
+            setProdutos(data);
+        }else{
+            setProdutos(null);
+        }
+    }
+
+    React.useEffect(()=>{
+        queryProductsById()
+    },[])
+
+
  
   return (
     <>
@@ -57,7 +78,8 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        gridGap: "1rem"
                     }}>
                         <Title level={3}>
                         Novo orçamento
@@ -73,7 +95,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         {...razaoSocial}
                     />
 
-                    <div className={styles.formCheckout__div__inputs}> 
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}> 
                         <Input
                             type="text"
                             label="Nome fantasia*"
@@ -93,7 +115,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         />
                     </div>
 
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                         <div style={{width:"100%"}}>
                             <Input
                                 type="text"
@@ -115,20 +137,28 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                             />
                         </div>
                     </div>
-                  
-                            <Input
-                                type="password"
-                                label="Senha*"
-                                name="new_pass_client"
-                                id="new_pass_client"
-                                placeholder="Digite sua senha"
-                                {...passwordClient}
-                            />
-                    
                     
                 </div>
 
                 {/* DETALHES DO FATURAMENTO*/}
+
+                <div style={{width: '50%'}}>
+                        <Title level={3}>
+                            Selecione o produto:
+                        </Title>
+
+                    {produtos && 
+                      <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                        {produtos.map((item, index)=>{
+                          return  <>
+                                    <option value='0' key='0' selected disabled>Selecione</option>
+                                    <option value={item.id} key={item.id}>{item.nome}</option>
+                                  </>
+                          
+                        })} 
+                    </select>
+                    }
+                  </div>
 
                 
 
@@ -136,7 +166,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                     <Title level={3}>
                         Detalhes do faturamento
                     </Title>
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                         <div  style={{width:"100%"}}>
                             <label style={{display: "block", paddingTop: '1rem'}}>CEP</label>
                             <input 
@@ -176,7 +206,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         </div>
                     </div>
 
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                         <div >
                             <label style={{display: "block", paddingTop: '1rem'}}>Cidade*</label>
                             <input 
@@ -237,7 +267,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                     <Title level={3}>
                         Detalhes de entrega
                     </Title>
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                             <div style={{width:"100%"}}>
                                 <label style={{display: "block", paddingTop: '1rem'}}>Nome(responsável por receber):*</label>
                                 <input 
@@ -261,7 +291,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                                 />
                             </div>
                         </div>
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                         <div style={{width:"100%"}}>
                             <label style={{display: "block", paddingTop: '1rem'}}>CEP*</label>
                             <input 
@@ -302,7 +332,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         </div>
                     </div>
 
-                    <div className={styles.formCheckout__div__inputs}>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
                         <div>
                             <label style={{display: "block", paddingTop: '1rem'}}>Cidade*</label>
                             <input 

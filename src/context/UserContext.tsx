@@ -1,6 +1,6 @@
 import React from 'react';
 import { createContext, useState, FC } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { TOKEN_POST, USER_GET } from 'src/api/api';
 
 export type PropsUser = {
@@ -18,24 +18,26 @@ export const UserContext = createContext<PropsUser>({
     emailUser: undefined,
     passwordUser: '',
     levelUser: '',
-    userLogin: ()=> ({}),
-    error:''
+    userLogin: () => ({}),
+    error: ''
 
 })
 
 
-export const UserStorage = ({children}: any)=>{
+export const UserStorage = ({ children }: any) => {
 
     const [emailUser, setEmailUser] = useState<string>(undefined);
     const [passwordUser, setPasswordUser] = useState<string>('');
     const [levelUser, setLevelUser] = useState<string>('');
-    
+
     const [data, setData] = React.useState(null);
     const [login, setLogin] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null)
     const navigate = useNavigate()
 
+    const { search } = useLocation();
+    const redirect = new URLSearchParams(search).get("redirect");
 
     {/*const getUser = async (token: string) =>{
         const { url, options } = USER_GET(token)
@@ -43,33 +45,33 @@ export const UserStorage = ({children}: any)=>{
         const json = await response.json()
         setData(json)
         setLogin(true)
-    } */}   
+    } */}
 
 
-    const userLogin = async(emailUser: string, passwordUser: string) =>{
-        try{
+    const userLogin = async (emailUser: string, passwordUser: string) => {
+        try {
             setError(null)
             setLoading(true)
             const { url, options } = TOKEN_POST(emailUser, passwordUser);
             const tokenRes = await fetch(url, options)
             const json = await tokenRes.json();
-    
-            if(json.message){
+
+            if (json.message) {
                 setError(json.message)
-            }else{
-                const {token} = await json;
+            } else {
+                const { token } = await json;
                 console.log(token)
                 window.localStorage.setItem('token', token)
-                setEmailUser(emailUser)            
-                navigate('/dashboard/geral')
+                setEmailUser(emailUser)
+                navigate(redirect || '/dashboard/geral')
             }
-            
-        }catch(err){
+
+        } catch (err) {
             setLogin(false)
-        }finally{
+        } finally {
             setLoading(false)
         }
-        
+
     }
 
 

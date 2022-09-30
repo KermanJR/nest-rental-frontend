@@ -278,7 +278,23 @@ function SidebarMenu() {
                   to="/dashboard/cadastrar-categoria"
                   startIcon={<TableChartTwoToneIcon />}
                 >
-                  Cadastrar categoria
+                  Categoria
+                </Button>
+               
+              </ListItem>
+            </List>
+          </SubMenuWrapper>
+          <SubMenuWrapper>
+            <List component="div">
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/dashboard/cadastrar-marca"
+                  startIcon={<TableChartTwoToneIcon />}
+                >
+                  Marcas
                 </Button>
                
               </ListItem>
@@ -302,7 +318,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/marketing/banners"
+                  to="/dashboard/gerenciar-banners"
                   startIcon={<TableChartTwoToneIcon />}
                 >
                   Banners

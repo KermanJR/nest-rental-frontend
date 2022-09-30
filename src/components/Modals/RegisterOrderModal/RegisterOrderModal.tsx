@@ -5,9 +5,9 @@ import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
 import Button from 'src/components/Button/Button';
 import React from 'react';
-import { ModalProps } from 'src/default/interfaces/Interfaces';
+import {ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 
-export const RegisterOrderModal = ({openModal, setModal}: ModalProps) => {
+export const RegisterOrderModal = ({openModal, setModal, data}: ModalPropsTestEdit) => {
 
 
   const [nameOrder, setNameOrder] = React.useState<String>('');
@@ -50,7 +50,7 @@ export const RegisterOrderModal = ({openModal, setModal}: ModalProps) => {
                     type='text'
                     onChange={(e)=>setNameOrder(e.target.value)}
                     onBlur={(e)=>setNameOrder(e.target.value)}
-                    value={nameOrder}
+                    value={data['id']}
                     error=''
                   />
                 </div>
@@ -63,25 +63,25 @@ export const RegisterOrderModal = ({openModal, setModal}: ModalProps) => {
                     type='text'
                     onChange={(e)=>setNameOrder(e.target.value)}
                     onBlur={(e)=>setNameOrder(e.target.value)}
-                    value={nameOrder}
+                    value={data['vr_total'].toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
                     error=''
                   />
                   <Input
-                    placeholder='Digite o ID do pedido'
-                    id='id_order'
+                    placeholder=''
+                    id='start_date'
                     label='Início'
-                    name="sss"
+                    name="start_date"
                     type='date'
                     onChange={(e)=>setNameOrder(e.target.value)}
                     onBlur={(e)=>setNameOrder(e.target.value)}
-                    value={nameOrder}
+                    value={""}
                     error=''
                   />
                   <Input
-                    placeholder='Digite o ID do pedido'
-                    id='id_order'
+                    id='final_date'
                     label='Devolução'
-                    name="sss"
+                    name='final_date'
+                    placeholder=''
                     type='date'
                     onChange={(e)=>setNameOrder(e.target.value)}
                     onBlur={(e)=>setNameOrder(e.target.value)}
