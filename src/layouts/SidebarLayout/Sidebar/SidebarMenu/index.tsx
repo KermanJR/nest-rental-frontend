@@ -32,7 +32,7 @@ import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwo
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -182,8 +182,8 @@ function SidebarMenu() {
   const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
   
   if(!id_perfil) {
-    const history = useHistory();
-     history.push('/login');
+    const navigate = useNavigate();
+    navigate('/login');
   }
   return (
     <>
