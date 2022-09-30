@@ -32,6 +32,8 @@ import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwo
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 
+import { useNavigate } from 'react-router-dom';
+
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
   .MuiList-root {
@@ -177,7 +179,12 @@ const SubMenuWrapper = styled(Box)(
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   // const { idPerfil } = useContext(UserContext)
-  const { id_perfil } = JSON.parse(window.localStorage.getItem('user'))
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
+  
+  if(!id_perfil) {
+    const navigate = useNavigate();
+    navigate('/login');
+  }
   return (
     <>
       <MenuWrapper>

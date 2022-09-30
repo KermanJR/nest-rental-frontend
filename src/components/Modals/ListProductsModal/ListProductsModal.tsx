@@ -85,7 +85,6 @@ export const ListProductsModal = ({openModal, setModal, data, edit}: ModalPropsT
                       <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
                         {categories.map((item, index)=>{
                           return  <>
-                                    <option value='0' key='0' selected disabled>Selecione</option>
                                     <option value={item.id} key={item.id}>{item.descricao}</option>
                                   </>
                           

@@ -189,6 +189,7 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
     setData(null)
     const {data} = await api.get(`/produtos`);
     if(data){
+      console.log(data)
       setData(data);
     }else{
       setData(null);
