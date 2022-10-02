@@ -12,12 +12,10 @@ export const BrandsModal = ({ openModal, setModal, data }: ModalProps) => {
 
 
   const [brand, setBrand] = useState<string>('');
-  const [idBrand, setIdBrand] = useState<string>('');
 
   useEffect(()=>{
     if(data){
       setBrand(data.nome);
-      setIdBrand(data.identificador);
     }
   }, [data]);
 
@@ -26,9 +24,9 @@ export const BrandsModal = ({ openModal, setModal, data }: ModalProps) => {
     event.preventDefault();
 
     if (data?.id != null) {
-      api.put(`/marcas/${data.id}`, { nome: brand, identificador: idBrand });
+      api.put(`/marcas/${data.id}`, { nome: brand, identificador: '' });
     } else {
-      api.post("/marcas", { nome: brand, identificador: idBrand });
+      api.post("/marcas", { nome: brand, identificador: '' });
     }
 
     setModal(false);
@@ -58,18 +56,6 @@ export const BrandsModal = ({ openModal, setModal, data }: ModalProps) => {
                 placeholder="Digite o nome da marca"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                style={{ padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%' }}
-              />
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              <label style={{ display: 'block' }}>ID da marca</label>
-              <input
-                type="text"
-                name="id_brand"
-                id="id_brand"
-                placeholder="Digite o ID da marca"
-                value={idBrand}
-                onChange={(e) => setIdBrand(e.target.value)}
                 style={{ padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%' }}
               />
             </div>

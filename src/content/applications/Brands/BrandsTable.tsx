@@ -241,7 +241,6 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                 />
               </TableCell>
               <TableCell>Nome marca</TableCell>
-              <TableCell>ID Marca</TableCell>
               <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -269,17 +268,6 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" noWrap>
                       {(cryptoOrder.nome)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.identificador}
                     </Typography>
                   </TableCell>
                  
