@@ -134,14 +134,14 @@ export const Checkout = () => {
         dataCheckout,
         state,
         setDataCheckout,
-        login //está logado
     } = useContext(checkContext);
 
     const {
-        emailUser,
+        usuario
     } = useContext(UserContext);
 
-    console.log(emailUser);
+
+    console.log("usuario", usuario);
 
     function dataAtualFormatada(date: string) {
         var data = new Date(date),
@@ -392,10 +392,20 @@ export const Checkout = () => {
     async function salvar(e) {
         e.preventDefault();
         try {
-            const { entidade, user } = await criar_usuario();
-            const { endereco } = await criar_endereco_cobranca(entidade.id);
-            const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade.id);
-            const pedido = await criar_pedido(endereco, user.id, entidade.id);
+            let entidade_id, user_id;
+
+            if(usuario == null){
+                const { entidade, user } = await criar_usuario();
+                entidade_id = entidade.id;
+                user_id = user.id;
+            }else{
+                entidade_id = usuario.id_entidade;
+                user_id = usuario.id;
+            }
+            
+            const { endereco } = await criar_endereco_cobranca(entidade_id);
+            const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
+            const pedido = await criar_pedido(endereco, user_id, entidade_id);
         } catch (err) {
             alert(
                 JSON.stringify(err?.response?.data || err, null, 3)
@@ -511,7 +521,7 @@ export const Checkout = () => {
                                 Empresa
                             </Title>
                             {
-                                !login && <div>
+                                usuario == null && <div>
                                     <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro?
                                         <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link>
                                     </p>
