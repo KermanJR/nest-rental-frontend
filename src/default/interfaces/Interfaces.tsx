@@ -4,6 +4,7 @@ export interface ClientsProps{
 }
 
 export interface ModalProps{
+    data: any;
     openModal: Boolean;
     setModal: React.Dispatch<React.SetStateAction<Boolean>>
 }

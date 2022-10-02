@@ -26,15 +26,17 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
+import { CryptoOrderStatus, Marca } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from './BulkActions';
 import {FaCloudDownloadAlt} from 'react-icons/fa'
+import { api } from 'src/api/api';
+import { BrandsModal } from 'src/components/Modals/BrandsModal/BrandsModal';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  cryptoOrders: Marca[];
   panel: Boolean;
 }
 
@@ -64,25 +66,26 @@ const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Marca[],
   filters: Filters
-): CryptoOrder[] => {
+): Marca[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
+    /*
     if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Marca[],
   page: number,
   limit: number
-): CryptoOrder[] => {
+): Marca[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -176,6 +179,15 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     selectedCryptoOrders.length === cryptoOrders.length;
   const theme = useTheme();
 
+
+  const [data, setData] = useState<Marca>(null);
+  const [modal, setModal] = useState<Boolean>(false)
+
+  async function queryCategoryId(data: Marca){
+    setModal(!modal)
+    setData(data)
+  }
+
   return (
     <Card>
       {selectedBulkActions && (
@@ -256,7 +268,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                      {(cryptoOrder.orderDate)}
+                      {(cryptoOrder.nome)}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -267,7 +279,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
+                      {cryptoOrder.identificador}
                     </Typography>
                   </TableCell>
                  
@@ -282,6 +294,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         }}
                         color="inherit"
                         size="small"
+                        onClick={(e)=>queryCategoryId(cryptoOrder)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
@@ -316,6 +329,11 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
+        <BrandsModal 
+        openModal={modal}
+        setModal={setModal}
+        data={data}
+      />
     </Card>
   );
 };

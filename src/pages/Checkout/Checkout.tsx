@@ -297,7 +297,7 @@ export const Checkout = () => {
 
     useEffect(()=>{
         carregar_usuario_logado();
-        carregar_endereco();
+        //carregar_endereco();
     }, []);
 
     async function criar_usuario() {

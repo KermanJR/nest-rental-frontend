@@ -9,6 +9,13 @@ export interface Pedido {
   data_entrega: string;
 }
 
+
+export interface Marca {
+  id: string;
+  nome: string;
+  identificador: string;
+}
+
 // ??
 export interface CryptoOrder {
   id: string;

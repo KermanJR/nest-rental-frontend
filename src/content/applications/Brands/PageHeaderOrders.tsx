@@ -35,7 +35,7 @@ function PageHeaderOrders() {
           Cadastrar marca
         </Button>
       </Grid>
-      <BrandsModal setModal={setModal} openModal={modal}/>
+      <BrandsModal data={null} setModal={setModal} openModal={modal}/>
     </Grid>
   );
 }
