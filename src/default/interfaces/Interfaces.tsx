@@ -12,7 +12,7 @@ export interface ModalProps{
 export interface ModalPropsTestEdit{
     openModal: Boolean;
     setModal: React.Dispatch<React.SetStateAction<Boolean>>;
-    data: {};
+    data: any;
     edit: Boolean;
 }
   

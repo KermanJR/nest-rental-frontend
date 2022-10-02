@@ -184,16 +184,20 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
   const [idProduct, setIdProduct] = useState<Produto[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
 
-  async function queryProductsById(idProduct: any){
+  async function queryProductsById(data: any){
     setModal(!modal)
-    setData(null)
+    setData(data);
+
+    console.log("data", data);
+
+    /*setData(null)
     const {data} = await api.get(`/produtos`);
     if(data){
       console.log(data)
       setData(data);
     }else{
       setData(null);
-    }
+    }*/
   }
 
 
@@ -337,7 +341,7 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryProductsById(produto.id)}
+                        onClick={(e)=>queryProductsById(produto)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
