@@ -2,6 +2,7 @@ import { Typography, Avatar, Grid } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import { UserContext } from 'src/context/UserContext';
+
 function PageHeader() {
   const user = {
     name: 'Fernanda Alves',

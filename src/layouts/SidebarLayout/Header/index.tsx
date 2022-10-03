@@ -62,6 +62,7 @@ function Header() {
               )}`
       }}
     >
+     <HeaderMenu/>
       <Stack
         direction="row"
         divider={<Divider orientation="vertical" flexItem />}

@@ -10,7 +10,7 @@ import { api } from 'src/api/api';
 
 export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
-  console.log(data)
+
   const [editedBrand, setEditedBrand] = useState<string>('');
   const [newBrand, setNewBrand] = useState<string>('');
   const [idBrand, setIdBrand] = useState<string>('');

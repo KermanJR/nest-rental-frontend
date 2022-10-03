@@ -134,7 +134,7 @@ function WatchListColumn() {
                     mb: 1
                   }}
                 >
-                  {usuarios}
+                  {usuarios} Cadastrados
                 </Typography>
 
               </Box>

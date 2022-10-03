@@ -12,7 +12,7 @@ function PageHeader() {
     avatar: '/static/images/avatars/1.jpg'
   };
 
-  
+  const [modal, setModal] = React.useState<Boolean>(false);
   
   return (
     <Grid container justifyContent="space-between" alignItems="center">
@@ -24,16 +24,18 @@ function PageHeader() {
           {user.name}, gerencie os clientes da sua empresa
         </Typography>
       </Grid>
-     {/*} <Grid item>
+      <Grid item>
         <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
           style={{backgroundColor: "rgb(18, 80, 130)"}}
+          onClick={(e)=>setModal(!modal)}
         >
           Cadastrar cliente
         </Button>
-  </Grid>*/}
+  </Grid>
+  <ClientsModal data="" edit={false} setModal={setModal} openModal={modal}/>
     </Grid>
   );
 }

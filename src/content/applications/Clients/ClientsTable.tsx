@@ -187,6 +187,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
     setData(null)
     const {data} = await api.put(`/usuarios/${idClient}`);
     if(data){
+  
       setData(data);
     }else{
       setData(null);
@@ -360,7 +361,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
         openModal={modal}
         setModal={setModal}
         data={data}
-        edit={false}
+        edit={true}
       />
       )}
       

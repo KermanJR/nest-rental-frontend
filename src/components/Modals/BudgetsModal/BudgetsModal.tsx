@@ -73,7 +73,22 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
               <AiFillCloseCircle/>
             </button>
             <form className={styles.formCheckout} style={{textAlign: 'left'}}>
- 
+            <div style={{width: '50%'}}>
+                        <Title level={3}>
+                            Selecione o produto:
+                        </Title>
+
+                    {produtos && 
+                      <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                        {produtos.map((item, index)=>{
+                          return  <>
+                                    <option value={item.id} key={item.id}>{item.nome}</option>
+                                  </>
+                          
+                        })} 
+                    </select>
+                    }
+                  </div>
                 <div className={styles.formCheckout__div}>
                     <div style={{
                         display: 'flex',
@@ -82,7 +97,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         gridGap: "1rem"
                     }}>
                         <Title level={3}>
-                        Novo orçamento
+                        Dados do cliente
                         </Title>
                     </div>
                     
@@ -142,26 +157,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
 
                 {/* DETALHES DO FATURAMENTO*/}
 
-                <div style={{width: '50%'}}>
-                        <Title level={3}>
-                            Selecione o produto:
-                        </Title>
-
-                    {produtos && 
-                      <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
-                        {produtos.map((item, index)=>{
-                          return  <>
-                                    <option value='0' key='0' selected disabled>Selecione</option>
-                                    <option value={item.id} key={item.id}>{item.nome}</option>
-                                  </>
-                          
-                        })} 
-                    </select>
-                    }
-                  </div>
-
-                
-
+            
                 <div className={styles.formCheckout__div}>
                     <Title level={3}>
                         Detalhes do faturamento
