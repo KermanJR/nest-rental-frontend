@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import parseISO from 'date-fns/parseISO';
 import { api } from 'src/api/api';
@@ -28,6 +28,8 @@ import {
 } from '@mui/material';
 
 
+
+import { read, utils, writeFileXLSX } from 'xlsx';
 import { Pedido, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 
@@ -109,6 +111,18 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     }
   };
 
+  
+  const exportFile = useCallback(() => {
+    const newData = cryptoOrders.map(item => ({
+      "Empresa": item.razao_social,
+      "Início e Devolução": moment(item.data_entrega).utc().format('DD/MM/yyyy'),
+      "Contato": item.email
+    }))
+    const ws = utils.json_to_sheet(newData);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFileXLSX(wb, "export.xlsx");
+  }, [cryptoOrders]);
   const handlePageChange = (event: any, newPage: number): void => {
     setPage(newPage);
   };
@@ -173,7 +187,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   </Select>*/}
                   
               </FormControl>
-              <FaCloudDownloadAlt style={{
+              <FaCloudDownloadAlt  onClick={exportFile} style={{
                 textAlign: 'right',
                 position: 'relative',
                 left: '7rem',

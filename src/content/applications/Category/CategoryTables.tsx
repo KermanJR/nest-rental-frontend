@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -26,6 +26,7 @@ import {
   CardHeader
 } from '@mui/material';
 
+import { read, utils, writeFileXLSX } from 'xlsx';
 import Label from 'src/components/Label';
 import { Categoria, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -117,6 +118,17 @@ const CategoryTables: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     }
   ];
 
+  
+  const exportFile = useCallback(() => {
+    const newData = cryptoOrders.map(item => ({
+      "Detalhes categoria": item.descricao,
+      "ID categoria": item.id,
+    }))
+    const ws = utils.json_to_sheet(newData);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFileXLSX(wb, "export.xlsx");
+  }, [cryptoOrders]);
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
 
@@ -220,7 +232,7 @@ const CategoryTables: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                  <FaCloudDownloadAlt style={{
+                  <FaCloudDownloadAlt onClick={exportFile}  style={{
                   textAlign: 'right',
                   position: 'relative',
                   left: '7rem',

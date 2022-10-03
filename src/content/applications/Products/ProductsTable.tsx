@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState } from 'react';
+import { FC, ChangeEvent, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -26,6 +26,7 @@ import {
   CardHeader
 } from '@mui/material';
 
+import { read, utils, writeFileXLSX } from 'xlsx';
 import Label from 'src/components/Label';
 import { ProductOrderStatus } from 'src/models/product_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -120,6 +121,20 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
     }
   ];
 
+  const exportFile = useCallback(() => {
+    const newData = productOrders.map(item => ({
+      "Produto": item.nome,
+      "Marca": item.fabricante,
+      "Categoria": item.categoria?.descricao,
+      "Valor Diário":` R${numeral(item.valor).format(
+        `0,0.00`
+      )}`
+    }))
+    const ws = utils.json_to_sheet(newData);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFileXLSX(wb, "export.xlsx");
+  }, [productOrders]);
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
 
@@ -224,7 +239,7 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                  <FaCloudDownloadAlt style={{
+                  <FaCloudDownloadAlt  onClick={exportFile}  style={{
                   textAlign: 'right',
                   position: 'relative',
                   left: '7rem',
