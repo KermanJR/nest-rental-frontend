@@ -11,6 +11,7 @@ function Brands() {
 
   async function carregar(){
     const {data} = await api.get("/marcas");
+    console.log(data)
     setDados(data);
   }
 
@@ -20,7 +21,7 @@ function Brands() {
 
   return (
     <Card>
-      <BrandsTable cryptoOrders={dados} panel={true}/>
+      <BrandsTable cryptoOrders={dados} panel={false}/>
     </Card>
   );
 }

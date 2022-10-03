@@ -10,7 +10,6 @@ function Products() {
   async function carregar(){
     const {data} = await api.get("/produtos");
     setDados(data);
-    console.log(data)
   }
 
   useEffect(()=>{

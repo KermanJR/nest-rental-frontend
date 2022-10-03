@@ -9,7 +9,7 @@ import {ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 
 export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
-  console.log(data)
+
   const [nameOrder, setNameOrder] = React.useState<string>('');
 
   //Valor

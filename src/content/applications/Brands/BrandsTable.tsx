@@ -89,7 +89,7 @@ const applyPagination = (
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
+const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders}) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -186,7 +186,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   async function queryBrandById(idBrand: any){
     setModal(!modal)
     setData(null)
-    const {data} = await api.put(`/marcas/${idBrand}`);
+    const {data} = await api.get(`/marcas/${idBrand}`);
     if(data){
       setData(data);
       console.log(data);
@@ -255,14 +255,14 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((data) => {
+            {paginatedCryptoOrders.map((marca) => {
               const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                data.id
+                marca.id
               );
               return (
                 <TableRow
                   hover
-                  key={data.id}
+                  key={marca.id}
                   selected={isCryptoOrderSelected}
                 >
                   <TableCell padding="checkbox">
@@ -270,14 +270,14 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       color="primary"
                       checked={isCryptoOrderSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneCryptoOrder(event, data.id)
+                        handleSelectOneCryptoOrder(event, marca.id)
                       }
                       value={isCryptoOrderSelected}
                     />
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                      {(data.nome)}
+                      {(marca.nome)}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -288,7 +288,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.identificador}
+                      {marca.identificador}
                     </Typography>
                   </TableCell>
                  
@@ -303,7 +303,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryBrandById(data.id)}
+                        onClick={(e)=>queryBrandById(marca.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
@@ -338,12 +338,12 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
-        <BrandsModal 
+       {data && (<BrandsModal 
         openModal={modal}
         setModal={setModal}
         data={data}
         edit={true}
-      />
+      />)}
     </Card>
   );
 };

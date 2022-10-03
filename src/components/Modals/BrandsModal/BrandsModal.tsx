@@ -10,10 +10,10 @@ import { api } from 'src/api/api';
 
 export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
-
-  const [editedBrand, setEditedBrand] = useState<string>(data['marca']);
+  console.log(data)
+  const [editedBrand, setEditedBrand] = useState<string>('');
   const [newBrand, setNewBrand] = useState<string>('');
-  const [idBrand, setIdBrand] = useState<string>(data['id']);
+  const [idBrand, setIdBrand] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(false);
   const [message, setMessage] = useState<string>('');
 
@@ -21,7 +21,7 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
   async function editBrandById(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/marca/${idBrand}`, {
+    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/marcas/${idBrand}`, {
       headers:{
         'Content-Type': 'application/json',
       }, 
@@ -45,7 +45,7 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
    async function createBrand(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/categorias/`, {
+    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/marcas`, {
       headers:{
         'Content-Type': 'application/json',
       }, 
