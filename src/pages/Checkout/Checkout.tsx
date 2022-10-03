@@ -1017,9 +1017,9 @@ export const Checkout = () => {
                                 </div>
 
 
-                                <div style={{ padding: '1rem 0 0 0' }}>
+                                <div>
                                     <p >Quantidade de dias: {totalDays}</p>
-                                    <div style={{ padding: ".7rem 0" }}>
+                                    <div>
 
                                         <p>Frete: {billing.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</p>
                                         <p style={{ padding: '0.5rem 0 0 0' }}>Aluguel: {price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</p>
@@ -1053,7 +1053,6 @@ export const Checkout = () => {
                             </form>
                         </div>
                     </section>
-
                 </section>
             }
 

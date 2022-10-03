@@ -7,7 +7,6 @@ import { FiPhoneCall } from 'react-icons/fi';
 import { FaWhatsapp, FaYoutube, FaFacebook, FaLinkedin, FaInstagram  } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
 import { useMedia } from 'src/hooks/useMedia';
-import { checkContext } from 'src/context/CheckoutContext';
 import HeaderUserbox from 'src/layouts/SidebarLayout/Header/Userbox';
 
 
@@ -15,7 +14,6 @@ const Header = () => {
 
     const [mobileMenu, setMobileMenu] = React.useState(false);
     const mobile = useMedia('(max-width: 40rem)');
-    // const { login } = React.useContext(checkContext);
     const login = window.localStorage.getItem('token') && window.localStorage.getItem('token').length > 0
 
   return (
@@ -26,9 +24,9 @@ const Header = () => {
                 <img src={LogoMobile} style={{width: '120px', height: "50px", objectFit: 'contain'}}/>
                 <div className={styles.headerMobile__nav}>
                     <ul className={styles.headerMobile__nav__ul}>
-                        <li><FiPhoneCall /></li>
-                        <li><FaWhatsapp /></li>
-                        <li><MdOutlineEmail /></li>
+                        <li><FiPhoneCall style={{color:'#fff', width: "20px", height: "20px"}} /></li>
+                        <li><FaWhatsapp style={{color:'#fff', width: "20px", height: "20px"}}/></li>
+                        <li><MdOutlineEmail style={{color:'#fff', width: "20px", height: "20px"}}/></li>
                     </ul>
                 </div>
                 <div className={styles.headerMobile__divButton}>
@@ -42,17 +40,34 @@ const Header = () => {
             
             </section> 
             <section className={`${mobile ? styles.navMobile : styles.nav} ${mobileMenu && styles.navMobileActive}`}>
-                <img src={LogoMobile} alt="Logo - Nest Rental" style={{width: '80px', height: "50px", objectFit: 'contain'}}/>
+                {login ? 
+                <div style={{marginTop: "1rem", marginLeft: '-.5rem'}}>
+                    <HeaderUserbox/>
+                </div>
+                 : 
+                    <div>
+                        <Link to="/login">
+                            <button 
+                                style={{
+                                    background: 'rgb(18, 80, 130)',
+                                    padding: '.8rem',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: '#ddd',
+                                    borderRadius: '8px',
+                                    width:'120px'
+                                }}
+                            >
+                                Login
+                            </button>
+                        </Link>
+                    </div>
+                }
                 <ul className={styles.navMobile__menu}>
                     <Link to="/">Home</Link>
                     <Link to="/como-funciona">Como funciona</Link>
                     <Link to="/demonstracao">Demonstração</Link>
                     <Link to="/aluguel">Aluguel</Link>
-                </ul>
-
-                <ul className={styles.navMobile__menu__contact}>
-                    <li><FaWhatsapp color='#fff'/><label>(11) 94352-4878</label></li>
-                    <li><MdOutlineEmail color='#fff'/><label>contato@nestrental.com.br</label></li>
                 </ul>
             </section>
         </>

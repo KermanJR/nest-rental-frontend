@@ -73,10 +73,12 @@ function HeaderUserbox() {
   const {
     emailUser,
     passwordUser,
-    levelUser
+    levelUser,
+    
   } = useContext(UserContext);
-
-  console.log(emailUser)
+  
+  const localuser = window.localStorage.getItem('user')
+    const nameUser = localuser ? JSON.parse(localuser).name :''
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -135,7 +137,7 @@ function HeaderUserbox() {
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
           <Avatar variant="rounded" alt={emailUser} src={user.avatar} />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{emailUser}</UserBoxLabel>
+            <UserBoxLabel variant="body1">{nameUser}</UserBoxLabel>
             <UserBoxDescription variant="body2">
               {levelUser}
             </UserBoxDescription>
@@ -143,6 +145,14 @@ function HeaderUserbox() {
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
         <List sx={{ p: 1 }} component="nav">
+        <ListItem
+            button
+            to="/dashboard/geral"
+            component={NavLink}
+          >
+            <AccountTreeTwoToneIcon fontSize="small" />
+            <ListItemText primary="Painel" />
+          </ListItem>
           <ListItem
             button
             to="/dashboard/perfil/configuracoes"

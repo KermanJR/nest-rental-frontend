@@ -15,7 +15,8 @@ const SingleProduct = () => {
   const [produto, setProduto] = useState(null);
 
   async function carregar() {
-    const { data } = await api.get(`/produtos/${id}`);
+    const { data } = await api.get(`/produtos/1`);
+    console.log(data)
     setProduto(data)
   }
 
@@ -57,6 +58,7 @@ const SingleProduct = () => {
         </section>
         <ProductDescription descricao={produto?.descricao || ""} />
       </Container>
+      <Footer/>
     </>
   )
 }

@@ -10,6 +10,7 @@ import { LoginForm } from './pages/Login/LoginForm';
 import { LoginCreate } from './pages/Login/LoginCreate';
 import { ProtectedRoute } from './helpers/ProtectedRoute';
 import { UserStorage } from './context/UserContext';
+import Footer from './components/Footer/Footer';
 
 
 const Loader = (Component) => (props) =>
@@ -119,7 +120,9 @@ const routes: RouteObject[] = [
       },
       {
         path: '/produto/:id',
-        element: <UserStorage><SingleProduct /></UserStorage>
+        element: <UserStorage>
+                  <SingleProduct />
+                  </UserStorage>
       },
       {
         path: '/login',
@@ -134,7 +137,9 @@ const routes: RouteObject[] = [
       },
       {
         path: 'checkout',
-        element: <UserStorage><Checkout/></UserStorage>
+        element: <UserStorage>
+                  <Checkout/>
+                </UserStorage>
       },
 
       {

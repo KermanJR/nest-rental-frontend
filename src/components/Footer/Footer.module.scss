@@ -12,6 +12,7 @@
     &__company__links{
         list-style: none;
         padding-top: 1rem;
+        margin-left: -2rem;
         & li{
             padding: 1rem 0;
         }
@@ -23,6 +24,7 @@
     &__contact{
         &__links{
             padding-top: 1rem;
+            margin-left: -2rem;
             list-style: none;
             & li{
                 padding: .5rem 0;
@@ -68,5 +70,22 @@
     .footer{
         display: block;
         padding: 2rem 2rem;
+        &__company__links{
+            padding-top: 0;
+        }
+
+        &__contact{
+            &__links{
+                padding-top: 0;
+            }
+        }
+
+        &__attendance{ 
+            p{
+                padding-top: 0;
+            }
+          
+        }
+    
     }
 }

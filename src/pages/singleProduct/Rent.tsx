@@ -199,13 +199,13 @@ const Rent = ({valor}) => {
         <form className={styles.rent__form}>
             <div className={styles.rent__form__date}>
                 <div>
-                    <label htmlFor="start">início</label>
+                    <label htmlFor="start">Início</label>
                     <input type="date" name="start" onChange={(e)=>setStartDate(e.target.value)}/>
                 </div>
                 <div>
                     <label htmlFor="end">Devolução</label>
                     <input type="date" name="end" onChange={(e)=>setEndDate(e.target.value)}/>
-                </div>e
+                </div>
             </div>
             <div className={styles.rent__form__calc}>
                 <label>Calcule o frete:</label>
@@ -220,8 +220,8 @@ const Rent = ({valor}) => {
 
             {errorCep? <p style={{color: 'red'}}>{errorCep}</p>: <p>{log}</p>}
             
-            <div style={{padding: '1rem 0 0 0'}}>
-                <p style={{padding: '1rem 0', fontWeight: 'bold'}}>Resumo do pedido:</p>
+            <div >
+                <p style={{fontWeight: 'bold'}}>Resumo do pedido:</p>
                 <label >Quantidade de dias: {totalDays}</label>
                 {/*<div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>
                 <p>Adicionar mais dias: </p>

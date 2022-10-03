@@ -132,9 +132,6 @@
     justify-content: space-between;
     padding: .2rem 1rem;
     background: $primary-color;
-    &__divButton{
-        
-    }
     &__nav{
         width: 50%;
         &__ul{
@@ -162,12 +159,16 @@
     pointer-events: none;
 
     &__menu{
+        margin-top: -.3rem;
         a{
             display: block;
             text-decoration: none;
             padding: 1rem 0;
             color: #fff;
-            
+            margin-left: -2.3rem;
+            :hover{
+                background-color: rgb(14, 60, 98);
+            }
         }
 
         &__contact{
