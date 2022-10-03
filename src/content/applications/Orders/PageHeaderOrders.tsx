@@ -23,7 +23,18 @@ function PageHeaderOrders() {
         </Typography>
       </Grid>
       <Grid item>
+        <Button
+          sx={{ mt: { xs: 2, md: 0 } }}
+          variant="contained"
+          startIcon={<AddTwoToneIcon fontSize="small" />}
+          style={{backgroundColor: "rgb(18, 80, 130)"}}
+          onClick={(e)=>setModal(!modal)
+          }
+        >
+          Cadastrar pedido
+        </Button>
       </Grid>
+      <RegisterOrderModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>
   );
 }

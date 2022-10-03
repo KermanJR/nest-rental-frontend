@@ -119,7 +119,7 @@ const routes: RouteObject[] = [
       },
       {
         path: '/produto/:id',
-        element: <SingleProduct />
+        element: <UserStorage><SingleProduct /></UserStorage>
       },
       {
         path: '/login',
@@ -134,7 +134,7 @@ const routes: RouteObject[] = [
       },
       {
         path: 'checkout',
-        element: <Checkout/>
+        element: <UserStorage><Checkout/></UserStorage>
       },
 
       {

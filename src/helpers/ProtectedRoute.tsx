@@ -4,7 +4,6 @@ import { checkContext } from "../context/CheckoutContext";
 import { UserContext } from "../context/UserContext";
 
 export const ProtectedRoute = (props: any)=>{
-    console.log("ProtectedRoute", props)
     const { idPerfil, login } = React.useContext(UserContext)
     const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 

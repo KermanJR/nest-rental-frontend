@@ -185,9 +185,10 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
   const [modal, setModal] = useState<Boolean>(false)
 
   async function queryProductsById(idProduct: any){
+    console.log(idProduct)
     setModal(!modal)
     setData(null)
-    const {data} = await api.get(`/produtos`);
+    const {data} = await api.get(`/produtos/${idProduct}`);
     if(data){
       console.log(data)
       setData(data);
@@ -307,7 +308,7 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {produto.categoria.descricao}
+                      {produto?.categoria?.descricao}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -337,7 +338,7 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryProductsById(produto.id)}
+                        onClick={(e)=>queryProductsById(produto?.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>

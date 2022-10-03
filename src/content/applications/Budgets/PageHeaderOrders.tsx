@@ -34,7 +34,7 @@ function PageHeaderOrders() {
           Cadastrar orçamento
         </Button>
       </Grid>
-      <BudgetsModal setModal={setModal} openModal={modal}/>
+      <BudgetsModal data={null} setModal={setModal} openModal={modal}/>
     </Grid>
   );
 }

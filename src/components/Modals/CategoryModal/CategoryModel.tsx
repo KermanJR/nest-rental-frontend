@@ -68,7 +68,7 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
   }
 
   //criar nova categoria
-  async function deleteCategory(event: React.FormEvent<HTMLFormElement>){
+ /* async function deleteCategory(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
     const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/categorias/`, {
@@ -86,7 +86,7 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
     }
     setLoading(false);
     window.location.reload();
-  }
+  }*/
 
 
 

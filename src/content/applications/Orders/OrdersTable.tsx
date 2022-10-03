@@ -34,6 +34,7 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import BulkActions from '../Clients/BulkActions';
 import { FaCloudDownloadAlt } from 'react-icons/fa'
 import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
+import moment from 'moment';
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -260,7 +261,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       gutterBottom
                       noWrap
                     >
-                      {format(parseISO(data.data_inicio), 'dd/MM/yyyy')}
+                      {moment(data.data_inicio).utc().format('DD/MM/yyyy')}
                     </Typography>
                     <Typography 
                         variant="body1"
@@ -269,7 +270,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         gutterBottom 
                         noWrap
                     >
-                      {format(parseISO(data.data_entrega), 'dd/MM/yyyy')}
+                      {moment(data.data_entrega).utc().format('DD/MM/yyyy')}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
