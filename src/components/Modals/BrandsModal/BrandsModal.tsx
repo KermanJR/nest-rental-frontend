@@ -10,7 +10,6 @@ import { api } from 'src/api/api';
 
 export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
-  console.log(data)
   const [editedBrand, setEditedBrand] = useState<string>('');
   const [newBrand, setNewBrand] = useState<string>('');
   const [idBrand, setIdBrand] = useState<string>('');
@@ -51,18 +50,19 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
       }, 
       method: 'POST',
       body: JSON.stringify({
-          "descricao": newBrand 
+          "nome": newBrand,
+          "identificador": "teste"
       })
     })
 
     const data = await teste;
     const dataJson = await data.json();
-    console.log(dataJson)
+   
     if(dataJson){
       setMessage('Marca criada com sucesso.')
     }
     setLoading(false);
-    //window.location.reload();
+    window.location.reload();
   }
 
   /*useEffect(()=>{
