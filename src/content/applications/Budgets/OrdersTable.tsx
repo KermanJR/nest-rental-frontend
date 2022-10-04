@@ -118,10 +118,18 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   ];
 
   const exportFile = useCallback(() => {
-    const ws = utils.json_to_sheet(cryptoOrders);
+    const newData = cryptoOrders.map(item => ({
+      "Empresa": item.orderDetails,
+      "ID pedido": item.orderID,
+      "Início e Devolução": item.orderDate,
+      "Valor": numeral(item.amount).format(
+        `${item.currency}0,0.00`
+      )
+    }))
+    const ws = utils.json_to_sheet(newData);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "Orcamentos.xlsx");
+    writeFileXLSX(wb, "export.xlsx");
   }, [cryptoOrders]);
 
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
