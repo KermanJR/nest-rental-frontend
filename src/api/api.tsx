@@ -18,10 +18,13 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+
+
 export function logar(jwtToken: string) {
     token = jwtToken;
-    console.log(token)
 }
+
+
 
 //Retorna o usuário pelo token
 export function USER_GET(token: string){
@@ -36,6 +39,8 @@ export function USER_GET(token: string){
         }
     }
 }
+
+
 
 //Retorna o token do usuário
 export function TOKEN_POST(user_email: string, user_password: string){

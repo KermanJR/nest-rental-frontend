@@ -56,6 +56,8 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
     setBrands(data);
   }
 
+  
+
   React.useEffect(() => {
     queryCategories();
     queryBrands();
@@ -204,6 +206,26 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
                         {brands.map((item, index) => {
                           return <>
                             <option value={item.nome} key={item.id}>{item.nome}</option>
+                          </>
+
+                        })}
+                      </select>
+                    }
+                  </div>
+
+                  <div style={{ width: '50%', marginTop: '1rem' }}>
+                    <label style={{ display: 'block' }}>
+                      Selecione a marca do produto:
+                    </label>
+
+                    {categories &&
+                      <select
+                        onChange={edit? (e)=>setEditedFabricProduct(e.target.value): (e)=>setNewFabricProduct(e.target.value)}
+                        value={edit? editedFabricProduct: newFabricProduct} 
+                        style={{ width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc' }}>
+                        {categories.map((item, index) => {
+                          return <>
+                            <option value={item.id} key={item.id}>{item.descricao}</option>
                           </>
 
                         })}

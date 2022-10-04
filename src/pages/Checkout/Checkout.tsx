@@ -14,30 +14,9 @@ import Header from "src/components/Header/Header";
 import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
 import { UserContext } from "src/context/UserContext";
+import SearchCep from "src/helpers/SearchCep";
 
 
-export async function fetchCep(cep) {
-    try {
-        const url_fetch = fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-            method: 'GET',
-        })
-        const response = await url_fetch;
-        return await response.json();
-    } catch (err) {
-        return {
-            "cep": "01411-001",
-            "logradouro": "Rua Padre João Manuel",
-            "complemento": "lado ímpar",
-            "bairro": "Cerqueira César",
-            "localidade": "São Paulo",
-            "uf": "SP",
-            "ibge": "3550308",
-            "gia": "1004",
-            "ddd": "11",
-            "siafi": "7107"
-        }
-    }
-}
 
 export const Checkout = () => {
 
@@ -93,7 +72,7 @@ export const Checkout = () => {
 
     /* Busca CEP 01*/
     async function buscaCep(cep: string) {
-        const json = await fetchCep(cep);
+        const json = await SearchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
         setPayStreet(json.logradouro);
         setPayCity(json.localidade);
@@ -104,7 +83,7 @@ export const Checkout = () => {
 
     /* Busca CEP 02*/
     async function buscaCep2(cep: string) {
-        const json = await fetchCep(cep);
+        const json = await SearchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
         setBillingStreet(json.logradouro);
         setBillingBairro(json.bairro);
@@ -136,13 +115,10 @@ export const Checkout = () => {
         setDataCheckout,
     } = useContext(checkContext);
 
-    const {
-        usuario
-    } = useContext(UserContext);
+    
 
 
-    console.log("usuario", usuario);
-
+  
     function dataAtualFormatada(date: string) {
         var data = new Date(date),
             dia = data.getDate().toString(),
@@ -154,7 +130,7 @@ export const Checkout = () => {
     }
 
 
-
+    //Cria modelo do documento
     const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (cnpj.validate() && razaoSocial && fantasyName
@@ -193,6 +169,7 @@ export const Checkout = () => {
     }
 
 
+    //Cria documento e retorna sua chave
     const createDocumentKey = async (keySign: string) => {
         const fetchDocumentKey = fetch('https://nest-rental-backend-api.herokuapp.com/create-document', {
             method: 'POST',
@@ -218,6 +195,7 @@ export const Checkout = () => {
 
 
 
+    //Cria signatário do documento
     const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (cpfUser && email_user.value && dateBirthday && nameUser && tel_user.value) {
@@ -253,12 +231,15 @@ export const Checkout = () => {
         }
     }
 
+    const {
+        usuario
+    } = useContext(UserContext);
 
+
+    //Carrega dados de usuário que já está logado.
     async function carregar_usuario_logado() {
-        const id_usuario = 104;
-
+        const id_usuario = usuario?.id;
         const { data } = await api.get(`/usuarios/${id_usuario}`);
-
         const {
             razao_social,
             inscricao_estadual,
@@ -276,12 +257,9 @@ export const Checkout = () => {
     }
 
     async function carregar_endereco() {
-        const id_usuario = 104;
-
+        const id_usuario = usuario?.id;
         const { data } = await api.get(`/enderecos`);
-
         const endereco_entrega = data.find(e => e.tipo == "E");
-
         setBillingCep(endereco_entrega.cep);
         setBillingBairro(endereco_entrega.bairro);
         setBillingStreet(endereco_entrega.rua);
@@ -416,6 +394,7 @@ export const Checkout = () => {
 
 
 
+    //Envia LEAD para o ZOHO CRM
     const sendLead = async () => {
         const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
             method: 'POST',
@@ -448,7 +427,6 @@ export const Checkout = () => {
         })
         const response = await teste;
         const json = await response.json();
-        console.log(json)
     }
 
 
@@ -582,7 +560,8 @@ export const Checkout = () => {
                             </div>
                         </div>
 
-                        <Input
+                        {usuario?.id == null && (
+                            <Input
                             type="password"
                             label="Senha*"
                             name="new_pass_client"
@@ -590,6 +569,8 @@ export const Checkout = () => {
                             placeholder="Digite sua senha"
                             {...passwordClient}
                         />
+                        )}
+                        
 
 
                     </div>

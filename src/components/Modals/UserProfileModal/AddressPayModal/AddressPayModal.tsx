@@ -1,40 +1,16 @@
 
-import styles from '../Modal.module.scss';
+import styles from '../../../Modals/Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
 import { Input } from 'src/components/Input/Input';
 import React from 'react';
-import {ModalPropsTestEdit } from '../../../default/interfaces/Interfaces';
+import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 import { Title } from 'src/components/Title/Title';
 import Button from 'src/components/Button/Button';
 
 
 
 
-export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
-
-
-  /*CLIENTES DETAILS*/
-
-  //razão social
-  const [editedRazaoSocial, setEditedRazaoSocial] = React.useState<string>(data?.entidade?.razao_social);
-  const [newRazaoSocial, setNewRazaoSocial] = React.useState<string>('');
-
-  //nome fantasia
-  const [editedFantasyName, setEditedFantasyName] = React.useState<string>(data?.entidade?.nome_fantasia)
-  const [newFantasyName, setNewFantasyName] = React.useState<string>('');
-
-  //cnpj
-  const [editedCnpj, setEditedCnpj] = React.useState<string>(data?.entidade?.documento);
-  const [newCnpj, setNewCnpj] = React.useState<string>('');
-
-  //email
-  const [editedEmail, setEditedEmail] = React.useState<string>(data?.entidade?.email);
-  const [newEmail, setNewEmail] = React.useState<string>('');
-
-  //id cliente
-  const [idClient, setIdClient] = React.useState<string>(data?.entidade?.id);
-
-
+export const AddressPayModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
 
   /*PAY ADDRESS*/
@@ -79,21 +55,21 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
 
 
 
-  //editar cliente
-  async function editClientById(event: React.FormEvent<HTMLFormElement>){
+  //editar endereço de faturamento
+  async function editAddressById(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/usuarios/${idClient}`, {
+    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/usuarios/${''}`, {
       headers:{
         'Content-Type': 'application/json',
       }, 
       method: 'PUT',
       body: JSON.stringify({
          
-            "documento": editedCnpj,
-            "email": editedEmail,
-            "nome_fantasia": editedFantasyName,
-            "razao_social": editedRazaoSocial,
+            "documento": '',
+            "email": '',
+            "nome_fantasia": '',
+            "razao_social": '',
             "tipo": "J"
           
       })
@@ -103,44 +79,11 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     const dataJson = await data.json();
     if(dataJson){
       console.log(dataJson)
-      setMessage('Cliente editado com sucesso.')
+      setMessage('Endereço editado com sucesso.')
     }
     setLoading(false)
     window.location.reload();
   }
-
-  //criar cliente
-  async function createClient(event: React.FormEvent<HTMLFormElement>){
-    event.preventDefault();
-    setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/usuarios`, {
-      headers:{
-        'Content-Type': 'application/json',
-      }, 
-      method: 'POST',
-      body: JSON.stringify({
-       
-            "documento": newCnpj,
-            "email": newEmail,
-            "nome_fantasia": newFantasyName,
-            "razao_social": newRazaoSocial,
-            "tipo": "J",
-            "id_perfil": 2,
-            "login": newEmail,
-            "password": "cgrmsbr3"
-          
-      })
-    })
-
-    const data = await teste;
-    const dataJson = await data.json();
-    if(dataJson){
-      setMessage('Cliente editado com sucesso.')
-    }
-    setLoading(false)
-    //window.location.reload();
-  }
-
 
   return (
     <>
@@ -156,73 +99,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
           </div>
 
           <section>
-            <Title>
-              Editar cliente
-            </Title>
-              <form onSubmit={edit?editClientById: createClient}>
-                <div style={{marginTop: '1rem'}}>
-                  <label style={{display: 'block'}}>Razão social</label>
-                  <input 
-                    type="text"
-                    name="razao_social"
-                    id="ra"
-                    placeholder="Digite a razão social"
-                    value={edit? editedRazaoSocial: newRazaoSocial}
-                    onChange={
-                      edit? (e)=>setEditedRazaoSocial(e.target.value): (e)=>setNewRazaoSocial(e.target.value)}
-                    style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                  />
-                </div>
-                  
-                <div style={{display: 'flex', justifyContent: 'space-between', gridGap: '2rem', width: "100%", alignItems: "center"}}>
-                    <div style={{marginTop: '1rem', width: "100%"}}>
-                      <label style={{display: 'block'}}>Nome fantasia</label>
-                      <input 
-                        type="text"
-                        name="fantasy_name"
-                        id="fantasy_name"
-                        placeholder="Digite o nome fantasia"
-                        value={edit? editedFantasyName: newFantasyName}
-                        onChange={
-                          edit? (e)=>setEditedFantasyName(e.target.value): (e)=>setNewFantasyName(e.target.value)}
-                        style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                      />
-                    </div>
-
-                    <Input
-                      placeholder='Digite o CNPJ'
-                      name="cnpj_client"
-                      id="cnpj_client"
-                      error=''
-                      label='CNPJ'
-                      type='text'
-                      value={edit? editedCnpj: newCnpj}
-                      onChange={
-                         edit? (e)=>setEditedCnpj(e.target.value): (e)=>setNewCnpj(e.target.value)
-                      }
-                      onBlur={
-                        edit? (e)=>setEditedCnpj(e.target.value): (e)=>setNewCnpj(e.target.value)
-                     }
-                    />
-                </div>
-
-                  <div style={{display: 'flex', justifyContent: 'space-between', gridGap: '2rem'}}>
-                      <Input
-                        placeholder='Digite o E-mail'
-                        name="email_client"
-                        id="email_client"
-                        error=''
-                        label='E-mail'
-                        type='text'
-                        value={edit? editedEmail: newEmail}
-                        onChange={
-                         edit? (e)=>setEditedEmail(e.target.value): (e)=>setNewEmail(e.target.value)
-                        }
-                        onBlur={
-                          edit? (e)=>setEditedEmail(e.target.value): (e)=>setNewEmail(e.target.value)
-                        }
-                      />
-                  </div>
+              <form onSubmit={edit && editAddressById}>
                   <div className={styles.formCheckout__div}>
                     <Title level={3}>
                         Detalhes do faturamento

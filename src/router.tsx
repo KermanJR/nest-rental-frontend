@@ -241,13 +241,18 @@ const routes: RouteObject[] = [
           {
             path: 'detalhes',
             element:  <ProtectedRoute>
+                        <UserStorage>
                        <UserProfile />
+                       </UserStorage>
                       </ProtectedRoute>
           },
           {
             path: 'configuracoes',
             element:  <ProtectedRoute>
-                        <UserSettings />
+                      <UserStorage>
+                      <UserSettings />
+                      </UserStorage>
+                
                       </ProtectedRoute>
           }
         ]

@@ -11,8 +11,10 @@ import { api } from 'src/api/api';
 
 
 const SingleProduct = () => {
+
   const { id } = useParams();
   const [produto, setProduto] = useState(null);
+  const login = window.localStorage.getItem('token') && window.localStorage.getItem('token').length > 0
 
   async function carregar() {
     const { data } = await api.get(`/produtos/1`);
@@ -20,9 +22,6 @@ const SingleProduct = () => {
     setProduto(data)
   }
 
-  useEffect(() => {
-    carregar();
-  }, []);
 
 
   function dinheiro(v) {
@@ -31,6 +30,10 @@ const SingleProduct = () => {
 
     return v.toFixed(2).replace(".", ",");
   }
+
+  useEffect(() => {
+    carregar();
+  }, []);
 
 
   return (

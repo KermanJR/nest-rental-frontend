@@ -1,17 +1,16 @@
 import { Title } from '../../components/Title/Title';
-import React, { FormEvent } from 'react';
+import React from 'react';
 import styles from './LoginForm.module.scss';
 import { Input } from 'src/components/Input/Input';
 import { useForm } from 'src/hooks/useForm';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link,  } from 'react-router-dom';
 import MachineLogin from '../../assets/images/machine-login.png'
 import Logo from '../../assets/logo.jpg'
 import { useContext } from 'react';
 import { UserContext } from 'src/context/UserContext';
-import { logar, api } from 'src/api/api';
+
 
 export const LoginForm = () => {
-
 
 
     const email = useForm("email");
@@ -22,11 +21,11 @@ export const LoginForm = () => {
     const {
         userLogin,
         error
-    } = useContext(UserContext);
+    } = useContext( UserContext );
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        if (password) {
+        if (email.value && password) {
             userLogin(email.value, password);
         }
     }

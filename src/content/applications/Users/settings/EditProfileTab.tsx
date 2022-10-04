@@ -15,9 +15,26 @@ import {
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DoneTwoToneIcon from '@mui/icons-material/DoneTwoTone';
 import Text from 'src/components/Text';
+import { UserContext } from 'src/context/UserContext';
+import { useContext, useState } from 'react'
 import Label from 'src/components/Label';
+import { ChangePasswordModal } from 'src/components/Modals/UserProfileModal/ChangePasswordModal.tsx/ChangePasswordModal';
+import { ChangeEmailModal } from 'src/components/Modals/UserProfileModal/ChangeEmailModal/ChangeEmailModal';
+import { AddressPayModal } from 'src/components/Modals/UserProfileModal/AddressPayModal/AddressPayModal';
+
+
 
 function EditProfileTab() {
+  
+const {
+  usuario
+} = useContext(UserContext);
+
+const [modalPassword, setModalPassword] = useState<Boolean>(false);
+const [modalEmail, setModalEmail] = useState<Boolean>(false);
+const [modalAddress, setModalAddress] = useState<Boolean>(false);
+
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -36,9 +53,9 @@ function EditProfileTab() {
                 Gerencia as informações pessoais da sua conta
               </Typography>
             </Box>
-            <Button variant="text" startIcon={<EditTwoToneIcon />}>
+           {/* <Button variant="text" startIcon={<EditTwoToneIcon />}>
               Editar
-            </Button>
+            </Button>*/}
           </Box>
           <Divider />
           <CardContent sx={{ p: 4 }}>
@@ -46,40 +63,157 @@ function EditProfileTab() {
               <Grid container spacing={0}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
-                    Nome:
+                    Razão Social:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>Fernanda Alves</b>
+                    <b>{usuario?.razao_social}</b>
                   </Text>
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
-                    Data de Nascimento
+                    CNPJ
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>28 de Março de 2000</b>
+                    <b>{usuario?.documento}</b>
                   </Text>
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
-                    Endereço:
+                    Inscrição Estadual:
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Box sx={{ maxWidth: { xs: 'auto', sm: 300 } }}>
-                    <Text color="black">
-                      Rua Verdes Mares, 312, Jardim Tarumã, Campo Grande/MS, Brasil
-                    </Text>
+                  <Text color="black">
+                  <b>{usuario?.inscricao_estadual}</b>
+                  </Text>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Nome Fantasia:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Box sx={{ maxWidth: { xs: 'auto', sm: 300 } }}>
+                  <Text color="black">
+                  <b>{usuario?.nome_fantasia}</b>
+                  </Text>
                   </Box>
                 </Grid>
               </Grid>
             </Typography>
           </CardContent>
         </Card>
+
+        <Grid item xs={12}>
+        <Card style={{marginTop: '3rem'}}>
+          <Box
+            p={3}
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box>
+              <Typography variant="h4" gutterBottom>
+                Endereço de Faturamento
+              </Typography>
+              <Typography variant="subtitle2">
+                Gerencia os detalhes relacionados a seu endereço de faturamento
+              </Typography>
+            </Box>
+            <Button 
+              variant="text" 
+              startIcon={<EditTwoToneIcon />}
+              onClick={(e)=>setModalAddress(!modalAddress)}
+            >
+              Editar
+          </Button>
+          </Box>
+          <Divider />
+          <CardContent sx={{ p: 4 }}>
+            <Typography variant="subtitle2">
+              <Grid container spacing={0}>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    CEP:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>79097470</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Rua/AV:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>Verdes Mares</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Número:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>312</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Bairro:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>Corcovado</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Cidade:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>Campo Grande</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    UF:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b>MS</b>
+                  </Text>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                  <Box pr={3} pb={2}>
+                    Complemento:
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={8} md={9}>
+                  <Text color="black">
+                    <b></b>
+                  </Text>
+                </Grid>
+              </Grid>
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+        
         <Card style={{marginTop: '3rem'}}>
         <Box
             p={3}
@@ -95,7 +229,11 @@ function EditProfileTab() {
                Gerencia os detalhes relacionados à sua senha
               </Typography>
             </Box>
-            <Button variant="text" startIcon={<EditTwoToneIcon />}>
+            <Button 
+              variant="text" 
+              startIcon={<EditTwoToneIcon />}
+              onClick={(e)=>setModalPassword(!modalPassword)}
+            >
               Editar
             </Button>
           </Box>
@@ -111,21 +249,9 @@ function EditProfileTab() {
                 primary="Alterar senha"
                 secondary="Altere sua senha aqui"
               />
-              <Button size="large" >
+              {/*<Button size="large" >
                 Alterar Senha
-              </Button>
-            </ListItem>
-            <ListItem sx={{ p: 3 }}>
-              <ListItemText
-                primaryTypographyProps={{ variant: 'h5', gutterBottom: true }}
-                secondaryTypographyProps={{
-                  variant: 'subtitle2',
-                  lineHeight: 1
-                }}
-                primary="Fator duplo de autenticação"
-                secondary="Ative o PIN de verifição em seus dispositivos"
-              />
-              <Switch color="primary" />
+              </Button>*/}
             </ListItem>
           </List>
         </Card>
@@ -148,7 +274,11 @@ function EditProfileTab() {
                 Gerencia os detalhes relacionados a seu endereço de E-mail
               </Typography>
             </Box>
-            <Button variant="text" startIcon={<EditTwoToneIcon />}>
+            <Button 
+              variant="text" 
+              startIcon={<EditTwoToneIcon />}
+              onClick={(e)=>setModalEmail(!modalEmail)}
+            >
               Editar
             </Button>
           </Box>
@@ -163,27 +293,28 @@ function EditProfileTab() {
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>email@email.com</b>
+                    <b>{usuario?.email}</b>
                   </Text>
                   <Box pl={1} component="span">
                     <Label color="success">Principal</Label>
                   </Box>
-                </Grid>
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
-                  <Box pr={3} pb={2}>
-                    Email de Recuperação:
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={8} md={9}>
-                  <Text color="black">
-                    <b>email@email.com</b>
-                  </Text>
                 </Grid>
               </Grid>
             </Typography>
           </CardContent>
         </Card>
       </Grid>
+      {modalPassword && (
+        <ChangePasswordModal data="" edit={true} openModal={modalPassword} setModal={setModalPassword} />
+      )}
+      {modalEmail && (
+        <ChangeEmailModal data="" edit={true} openModal={modalEmail} setModal={setModalEmail} />
+      )}
+      {modalAddress && (
+        <AddressPayModal data="" edit={true} openModal={modalAddress} setModal={setModalAddress} />
+      )}
+      
+      
     </Grid>
   );
 }

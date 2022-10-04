@@ -47,18 +47,12 @@ export const UserStorage = ({ children }: any) => {
     //Revisem, não os contextos não estão consistentes!
     async function carregar() {
         const token = window.localStorage.getItem('token');
-
         if (token) {
             const user = JSON.parse(window.localStorage.getItem('user'));
-
             setUsuario(user);
             logar(token);
         }
     }
-
-    useEffect(() => {
-        carregar();
-    }, []);
 
 
     const userLogin = async (emailUser: string, passwordUser: string) => {
@@ -66,14 +60,13 @@ export const UserStorage = ({ children }: any) => {
             setError(null)
             setLoading(true)
             const { url, options } = TOKEN_POST(emailUser, passwordUser);
-            const tokenRes = await fetch(url, options)
-            const json = await tokenRes.json();
-
+            const response = await fetch(url, options)
+            const json = await response.json();
+            console.log(json)
             if (json.message) {
                 setError(json.message)
             } else {
                 const { jwt: { token }, user } = await json;
-                console.log(token)
                 window.localStorage.setItem('token', token)
                 window.localStorage.setItem('user', JSON.stringify(user))
                 setUsuario(user)
@@ -91,6 +84,10 @@ export const UserStorage = ({ children }: any) => {
 
     }
 
+
+    useEffect(() => {
+        carregar();
+    }, []);
 
 
 

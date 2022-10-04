@@ -4,7 +4,7 @@ import styles from './Rent.module.scss';
 import { useContext } from 'react';
 import { checkContext } from '../../context/CheckoutContext';
 import { MessageError } from 'src/components/MessageError/MessageError';
-import { fetchCep } from '../Checkout/Checkout';
+import SearchCep from 'src/helpers/SearchCep';
 
 
 const Rent = ({valor}) => {
@@ -139,15 +139,11 @@ const Rent = ({valor}) => {
         adicionaDias();
     }, [addDays])*/
 
-    React.useEffect(()=>{
-        buscaCep();
-    }, [cep])
-
 
     
-    /* Busca CEP*/
-    async function buscaCep(){
-        const json = await fetchCep(cep)
+    /*Verifica se o CEP está dentro do frete*/
+    async function VerifyCep(){
+        const json = await SearchCep(cep)
         const faixaCep = (json.cep).split('-', 1);
         setStreet(json.logradouro);
         setBairro(json.bairro);
@@ -179,6 +175,7 @@ const Rent = ({valor}) => {
     }
 
 
+    /*Preenche os dados de aluguel e segue para checkout*/
     function handleSubmit(e: React.FormEvent<HTMLInputElement>){
         e.preventDefault();
         if(!cep || price === 0){
@@ -188,6 +185,14 @@ const Rent = ({valor}) => {
             navigate('/checkout')
         }
     }
+
+
+    
+    React.useEffect(()=>{
+        VerifyCep();
+    }, [cep])
+
+
 
    
 
@@ -215,12 +220,14 @@ const Rent = ({valor}) => {
                     onChange={(e)=>setCep(e.target.value)}
 
                 />
-                
             </div>
 
-            {errorCep? <p style={{color: 'red'}}>{errorCep}</p>: <p>{log}</p>}
+            {errorCep ?     
+                <p style={{color: 'red'}}>{errorCep}</p> : 
+                <p>{log}</p>
+            }
             
-            <div >
+            <div>
                 <p style={{fontWeight: 'bold'}}>Resumo do pedido:</p>
                 <label >Quantidade de dias: {totalDays}</label>
                 {/*<div style={{display: 'flex', gridGap: ".5rem", padding: ".7rem 0"}}>

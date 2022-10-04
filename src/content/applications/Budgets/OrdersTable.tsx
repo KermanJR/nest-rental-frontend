@@ -210,14 +210,14 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                <FaCloudDownloadAlt onClick={exportFile}  style={{
-                    textAlign: 'right',
-                    position: 'relative',
-                    left: '7rem',
-                    height: '25px',
-                    width: '25px',
-                    cursor: 'pointer'
-                }}/>
+                <FaCloudDownloadAlt style={{
+                textAlign: 'right',
+                position: 'relative',
+                left: '7rem',
+                height: '25px',
+                width: '25px',
+                cursor: 'pointer'
+               }}/>
             </Box>
           }
           title="Orçamentos cadastrados"

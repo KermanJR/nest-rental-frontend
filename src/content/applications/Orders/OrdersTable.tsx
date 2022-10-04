@@ -173,7 +173,8 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                   </Select>*/}
                   
               </FormControl>
-              <FaCloudDownloadAlt style={{
+              {!panel && (
+                <FaCloudDownloadAlt style={{
                 textAlign: 'right',
                 position: 'relative',
                 left: '7rem',
@@ -181,6 +182,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                 width: '25px',
                 cursor: 'pointer'
                }}/>
+              )}
             </Box>
             
             
