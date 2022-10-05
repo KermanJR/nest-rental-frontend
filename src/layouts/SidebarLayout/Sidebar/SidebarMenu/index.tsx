@@ -332,10 +332,36 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/dashboard/gerenciar-banners"
+                  to="/dashboard/#"
                   startIcon={<TableChartTwoToneIcon />}
                 >
                   Banners
+                </Button>
+               
+              </ListItem>
+            </List>
+          </SubMenuWrapper>
+          
+        </List>
+        <List
+          component="div"
+          subheader={
+            <ListSubheader component="div" disableSticky>
+              Aparência
+            </ListSubheader>
+          }
+        >
+          <SubMenuWrapper>
+            <List component="div">
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/dashboard/#"
+                  startIcon={<TableChartTwoToneIcon />}
+                >
+                  Contatos
                 </Button>
                
               </ListItem>

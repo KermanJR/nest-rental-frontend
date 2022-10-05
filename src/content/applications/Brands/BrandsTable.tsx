@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState, useCallback } from 'react';
+import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
@@ -25,7 +25,6 @@ import {
   CardHeader
 } from '@mui/material';
 
-import { read, utils, writeFileXLSX } from 'xlsx';
 import Label from 'src/components/Label';
 import { CryptoOrderStatus, Marca } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -119,18 +118,6 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders}) => {
       name: 'Opção 4'
     }
   ];
-
-  
-  const exportFile = useCallback(() => {
-    const newData = cryptoOrders.map(item => ({
-      "Nome Marca": item.nome,
-      "ID Marca": item.identificador
-    }))
-    const ws = utils.json_to_sheet(newData);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "export.xlsx");
-  }, [cryptoOrders]);
 
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
@@ -236,7 +223,7 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders}) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                <FaCloudDownloadAlt onClick={exportFile} style={{
+                <FaCloudDownloadAlt style={{
                     textAlign: 'right',
                     position: 'relative',
                     left: '7rem',

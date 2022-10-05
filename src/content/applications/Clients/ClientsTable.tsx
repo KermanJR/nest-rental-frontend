@@ -1,4 +1,4 @@
-import { FC, ChangeEvent, useState, useCallback } from 'react';
+import { FC, ChangeEvent, useState } from 'react';
 import { api } from 'src/api/api';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -25,7 +25,6 @@ import {
   CardHeader
 } from '@mui/material';
 
-import { read, utils, writeFileXLSX } from 'xlsx';
 import Label from 'src/components/Label';
 import { Cliente, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -119,17 +118,6 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
     }
   ];
 
-  const exportFile = useCallback(() => {
-    const newData = clients.map(item => ({
-      "Cliente": item.razao_social,
-      "CNPJ": item.documento,
-      "Contato": item.email
-    }))
-    const ws = utils.json_to_sheet(newData);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "export.xlsx");
-  }, [clients]);
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
 
@@ -199,6 +187,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
     setData(null)
     const {data} = await api.put(`/usuarios/${idClient}`);
     if(data){
+  
       setData(data);
     }else{
       setData(null);
@@ -234,7 +223,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                <FaCloudDownloadAlt onClick={exportFile} style={{
+                <FaCloudDownloadAlt style={{
                   textAlign: 'right',
                   position: 'relative',
                   left: '7rem',
@@ -372,7 +361,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
         openModal={modal}
         setModal={setModal}
         data={data}
-        edit={false}
+        edit={true}
       />
       )}
       

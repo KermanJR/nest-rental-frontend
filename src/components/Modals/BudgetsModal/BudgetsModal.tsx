@@ -10,6 +10,7 @@ import Button from 'src/components/Button/Button';
 import {useState} from 'react';
 import { Produto } from 'src/models/crypto_order';
 import { api } from 'src/api/api';
+import SearchCep from 'src/helpers/SearchCep';
 
 export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
 
@@ -22,6 +23,10 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
     const tel_company = useForm('telefone');
     const tel_user = useForm('telefone');
     const passwordClient = useForm('password')
+
+    //Billing and total
+    const [billingValue, setBillingValue] = React.useState(null);
+    const [totalBudget, setTotalBudget] = React.useState(null);
 
      //Billing address
      const [billingStreet, setBillingStreet] = React.useState('');
@@ -44,6 +49,44 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
 
     const [produtos, setProdutos] = useState<Produto[]>([]);
 
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [errorCep, setErrorCep] = React.useState('');
+
+   
+
+    /*Verifica se o CEP está dentro do frete*/
+    async function buscaCep(cep: string){
+        const json = await SearchCep(cep)
+        const faixaCep = (json.cep).split('-', 1);
+        setBillingStreet(json.logradouro);
+        setBillingBairro(json.bairro);
+        setBillingCity(json.localidade)
+        setBillingState(json.uf)
+        if(faixaCep >= '11000' && faixaCep <= '11999'){
+            setBillingValue(1800);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '12000' && faixaCep <= '19999'){
+            setBillingValue(1800);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '06000' && faixaCep <= '09999'){
+            setBillingValue(730);
+            setErrorCep('')
+        }
+
+        else if(faixaCep >= '01000' && faixaCep <= '05999'){
+            setBillingValue(320);
+            setErrorCep('')
+        }
+        else{
+            setErrorCep('Área fora de cobertura de nossos serviços.')
+        }
+    }
+
 
     async function queryProductsById(){
         setProdutos(null)
@@ -59,6 +102,11 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
         queryProductsById()
     },[])
 
+    React.useEffect(()=>{
+        buscaCep(billingCep)
+    },[billingCep])
+
+
 
  
   return (
@@ -73,10 +121,10 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
               <AiFillCloseCircle/>
             </button>
             <form className={styles.formCheckout} style={{textAlign: 'left'}}>
-            <div style={{width: '50%'}}>
-                        <Title level={3}>
-                            Selecione o produto:
-                        </Title>
+                <div style={{width: '50%'}}>
+                    <Title level={3}>
+                        Selecione o produto:
+                    </Title>
 
                     {produtos && 
                       <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
@@ -88,7 +136,26 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         })} 
                     </select>
                     }
-                  </div>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridGap: '1rem'}}>
+                    <div style={{width: '100%'}}>
+                        <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Início</label>
+                        <input 
+                            type="date"
+                            name="start"
+                            onChange={(e)=>setStartDate(e.target.value)}
+                            style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        />
+                    </div>
+                    <div style={{width: '100%'}}>
+                        <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Devolução</label>
+                        <input type="date" 
+                            name="end" 
+                            onChange={(e)=>setEndDate(e.target.value)} 
+                            style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        />
+                    </div>
+                </div>
                 <div className={styles.formCheckout__div}>
                     <div style={{
                         display: 'flex',
@@ -309,7 +376,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                                 id="street" 
                                 name="street" 
                                 onChange={(e)=>setBillingStreet(e.target.value)}
-                                value={billingAddress}
+                                value={billingStreet}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                              
                             />
@@ -381,10 +448,17 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         </div>
                     </div>
                 </div>
+                <div style={{paddingTop: "1rem"}}>
+                    <p><b>Frete:</b> {!errorCep? billingValue?.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}): <label style={{color: 'red'}}>{errorCep}</label>}</p>
+                </div>
+                <div>
+                    <p><b>Total:</b></p>
+                </div>
                 <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
                   <Button text="Cadastrar" />
                   <Button text="Cancelar" />
                 </div>
+                
             </form>
           </div>
           

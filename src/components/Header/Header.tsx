@@ -94,7 +94,10 @@ const Header = () => {
                 </div>
             </div>
             <header className={styles.header__main}>
-                <img src={Logo} alt="Logo - Nest Rental"/>
+                <div className={styles.header__main__logo}>
+                    <img src={Logo} alt="Logo - Nest Rental"/>
+                </div>
+            
                 
                 <ul className={styles.header__links}>
                     <Link to="/">Home</Link>
