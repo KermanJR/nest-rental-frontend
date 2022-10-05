@@ -62,7 +62,8 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
     queryCategories();
     queryBrands();
   }, [])
-
+  
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -264,10 +265,11 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
 
               
 
-              <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+              {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
                 {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
                 <Button text="Cancelar" />
               </div>
+            }
               {loading && (             
                 <svg  version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                   width="40px" height="40px" viewBox="0 0 40 40" enableBackground="new 0 0 40 40" xmlSpace="preserve" style={{

@@ -4,8 +4,9 @@ import  {AiFillCloseCircle} from 'react-icons/ai'
 import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
 import Button from 'src/components/Button/Button';
-import React from 'react';
+import React, { useContext } from 'react';
 import {ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
+import { UserContext } from 'src/context/UserContext';
 
 export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
@@ -32,6 +33,15 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
 
   const [loading, setLoading] = React.useState<Boolean>(false);
   const [message, setMessage] = React.useState<string>('');
+
+  {/*const {
+    usuario
+  } = useContext(UserContext);
+
+  console.log(usuario)
+*/}
+
+const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 
 
   //editar pedido
@@ -174,10 +184,11 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+             {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
                 {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
                 <Button text="Cancelar" />
               </div>
+            }
 
               {loading && (             
                 <svg  version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

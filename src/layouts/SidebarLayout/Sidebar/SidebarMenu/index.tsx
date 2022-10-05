@@ -180,6 +180,8 @@ function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   // const { idPerfil } = useContext(UserContext)
   const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
+
+  console.log(id_perfil)
   
   if(!id_perfil) {
     const navigate = useNavigate();

@@ -16,7 +16,8 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
   const [idBrand, setIdBrand] = useState<string>('');
   const [loading, setLoading] = useState<Boolean>(false);
   const [message, setMessage] = useState<string>('');
-
+  
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
   //Editar marca
   async function editBrandById(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -110,10 +111,11 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
                 style={{ padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%' }}
               />
             </div>
-            <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
-                {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
+            {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                <Button text="Editar" /> <Button text="Cadastrar" />
                 <Button text="Cancelar" />
-            </div>
+              </div>
+            }
             <div>
 
               {loading && (             

@@ -146,6 +146,8 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     }
   }
 
+
+
   return (
     <Card >
       {selectedBulkActions && (

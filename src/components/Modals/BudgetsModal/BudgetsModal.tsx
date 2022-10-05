@@ -106,7 +106,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
         buscaCep(billingCep)
     },[billingCep])
 
-
+    const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 
  
   return (
@@ -454,10 +454,12 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                 <div>
                     <p><b>Total:</b></p>
                 </div>
-                <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
-                  <Button text="Cadastrar" />
-                  <Button text="Cancelar" />
-                </div>
+                {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                <Button text="Editar" /> <Button text="Cadastrar" />
+                <Button text="Cancelar" />
+              </div>
+            }
+
                 
             </form>
           </div>

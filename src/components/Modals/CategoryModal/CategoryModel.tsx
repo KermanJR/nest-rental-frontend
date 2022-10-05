@@ -88,7 +88,7 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
     window.location.reload();
   }*/
 
-
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 
   return (
     <>
@@ -118,10 +118,11 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
                 style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
               />
             </div>
-            <div style={{display: 'flex', gridGap: '1rem', width: '20rem'}}>
-            {edit? <Button text="Editar" />:  <Button text="Cadastrar" />  }
-              <Button text="Cancelar" />
-            </div>
+            {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
+                <Button text="Cancelar" />
+              </div>
+            }
             <div>
 
               {loading && (             

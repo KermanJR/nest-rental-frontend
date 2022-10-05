@@ -11,7 +11,9 @@ function PageHeaderOrders() {
     avatar: '/static/images/avatars/1.jpg'
   };
 
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
   const [modal, setModal] = React.useState<Boolean>(false);
+
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
@@ -23,7 +25,7 @@ function PageHeaderOrders() {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+        {id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
@@ -32,7 +34,7 @@ function PageHeaderOrders() {
           }
         >
           Cadastrar pedido
-        </Button>
+        </Button>}
       </Grid>
       <RegisterOrderModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>

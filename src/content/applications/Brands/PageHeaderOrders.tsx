@@ -14,6 +14,7 @@ function PageHeaderOrders() {
   };
 
   const [modal, setModal] = React.useState<Boolean>(false);
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
@@ -25,15 +26,16 @@ function PageHeaderOrders() {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+      {id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
           style={{backgroundColor: "rgb(18, 80, 130)"}}
-          onClick={(e)=>setModal(!modal)}
+          onClick={(e)=>setModal(!modal)
+          }
         >
           Cadastrar marca
-        </Button>
+        </Button>}
       </Grid>
       <BrandsModal data={null} setModal={setModal} openModal={modal} edit={false}/>
     </Grid>

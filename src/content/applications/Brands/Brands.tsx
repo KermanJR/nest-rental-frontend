@@ -11,7 +11,6 @@ function Brands() {
 
   async function carregar(){
     const {data} = await api.get("/marcas");
-    console.log(data)
     setDados(data);
   }
 

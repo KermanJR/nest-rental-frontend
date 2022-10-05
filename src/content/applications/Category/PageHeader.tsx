@@ -10,6 +10,7 @@ function PageHeader() {
   };
 
   const [modal, setModal] = React.useState<Boolean>(false);
+  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
@@ -21,7 +22,7 @@ function PageHeader() {
         </Typography>
       </Grid>
       <Grid item>
-        <Button
+      {id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
@@ -30,7 +31,7 @@ function PageHeader() {
           }
         >
           Cadastrar categoria
-        </Button>
+        </Button>}
       </Grid>
       <CategoryModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>
