@@ -301,7 +301,7 @@ export const Checkout = () => {
         const nome = encodeURI(nome_cidade);
         const { data } = await api.get(`/cidades/${nome}`);
 
-        return data?.id
+        return data?.id;
     }
 
     async function criar_endereco_cobranca(id_entidade) {
