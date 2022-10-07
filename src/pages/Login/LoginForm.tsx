@@ -47,6 +47,7 @@ export const LoginForm = () => {
                         id="userEmail"
                         placeholder="Digite seu email"
                        {...email}
+                       disabled={false}
                     />
                     <label style={{display: "block"}}>Senha:</label>
                     <input 

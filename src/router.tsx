@@ -10,7 +10,6 @@ import { LoginForm } from './pages/Login/LoginForm';
 import { LoginCreate } from './pages/Login/LoginCreate';
 import { ProtectedRoute } from './helpers/ProtectedRoute';
 import { UserStorage } from './context/UserContext';
-import Footer from './components/Footer/Footer';
 
 
 const Loader = (Component) => (props) =>
@@ -41,6 +40,10 @@ const Budget = Loader(
 const Clients = Loader(
   lazy(() => import('src/content/applications/Clients'))
 );
+const Devolution = Loader(
+  lazy(() => import('src/content/applications/Devolution'))
+);
+
 
 const Orders = Loader(
   lazy(() => import('src/content/applications/Orders'))
@@ -177,11 +180,19 @@ const routes: RouteObject[] = [
 
   {
     path: 'dashboard',
-    element: <SidebarLayout />,
+   
+    element:  <UserStorage>
+                <SidebarLayout />
+              </UserStorage>,
     children: [
       {
         path: '',
-        element: <Navigate to="geral" replace />
+        element: 
+          <ProtectedRoute>
+            <UserStorage>
+              <Navigate to="geral" replace />
+            </UserStorage>
+          </ProtectedRoute>
       },
       {
         path: 'geral',
@@ -196,26 +207,42 @@ const routes: RouteObject[] = [
       {
         path: 'pedidos',
         element:  <ProtectedRoute>
-                    <Orders/>
+                    <UserStorage>
+                      <Orders/>
+                    </UserStorage>
+                  </ProtectedRoute>
+      },
+      {
+        path: 'devolucao',
+        element:  <ProtectedRoute>
+                    <UserStorage>
+                      <Devolution/>
+                    </UserStorage>
                   </ProtectedRoute>
       },
       {
         path: 'clientes',
         element:  <ProtectedRoute>
-                    <Clients/>
+                    <UserStorage>
+                      <Clients/>
+                    </UserStorage>
                   </ProtectedRoute>
       },
       {
         path: 'cadastrar-categoria',
         element:  <ProtectedRoute>
+                    <UserStorage>
                     <RegisterCategory />
+                    </UserStorage>
                   </ProtectedRoute>
         
       },
       {
         path: 'cadastrar-produto',
         element:  <ProtectedRoute>
-                    <RegisterProduct />
+                    <UserStorage>
+                      <RegisterProduct />
+                    </UserStorage>
                   </ProtectedRoute>
       },
 
@@ -241,18 +268,17 @@ const routes: RouteObject[] = [
           {
             path: 'detalhes',
             element:  <ProtectedRoute>
-                        <UserStorage>
+                      <UserStorage>
                        <UserProfile />
-                       </UserStorage>
+                      </UserStorage>
                       </ProtectedRoute>
           },
           {
             path: 'configuracoes',
             element:  <ProtectedRoute>
                       <UserStorage>
-                      <UserSettings />
+                       <UserSettings />
                       </UserStorage>
-                
                       </ProtectedRoute>
           }
         ]

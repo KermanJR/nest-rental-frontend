@@ -28,10 +28,12 @@ import {
 import Label from 'src/components/Label';
 import { Cliente, CryptoOrderStatus } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import { BsEye } from 'react-icons/bs';
 import BulkActions from '../Category/BulkActions';
 import {FaCloudDownloadAlt} from 'react-icons/fa'
 import { ClientsModal } from 'src/components/Modals/ClientsModal/ClientsModal';
+import { UserContext } from 'src/context/UserContext';
+import { useContext } from 'react';
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -194,6 +196,10 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
     }
   }
 
+  const {
+    usuario
+  } = useContext(UserContext);
+
 
 
 
@@ -208,21 +214,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
         <CardHeader
           action={
             <Box width={150}>
-              {/*<FormControl fullWidth variant="outlined">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={filters.status || 'all'}
-                  onChange={handleStatusChange}
-                  label="Status"
-                  autoWidth
-                >
-                  {statusOptions.map((statusOption) => (
-                    <MenuItem key={statusOption.id} value={statusOption.id}>
-                      {statusOption.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                  </FormControl>*/}
+              
                 <FaCloudDownloadAlt style={{
                   textAlign: 'right',
                   position: 'relative',
@@ -309,6 +301,8 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
                       {data.email}
                     </Typography>
                   </TableCell>
+
+                  {usuario?.id_perfil === 1? 
                   
                   <TableCell align="right">
                     <Tooltip title="Editar cliente" arrow>
@@ -326,19 +320,26 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    {/*<Tooltip title="Excluir cliente" arrow>
+                  </TableCell>
+                  :
+                  <TableCell align="right">
+                    <Tooltip title="Visuzalizar cliente" arrow>
                       <IconButton
                         sx={{
-                          '&:hover': { background: theme.colors.error.lighter },
-                          color: theme.palette.error.main
+                          '&:hover': {
+                            background: theme.colors.primary.lighter
+                          },
+                          color: theme.palette.primary.main
                         }}
                         color="inherit"
                         size="small"
+                        onClick={(e)=>queryClientsById(data.id)}
                       >
-                        <DeleteTwoToneIcon fontSize="small" />
+                        <BsEye style={{width: '20px', height: '20px'}}/>
                       </IconButton>
-                      </Tooltip>*/}
+                    </Tooltip>
                   </TableCell>
+                }
                 </TableRow>
               );
             })}

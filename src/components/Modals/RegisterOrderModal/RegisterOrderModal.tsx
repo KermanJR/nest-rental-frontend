@@ -1,101 +1,96 @@
 
 import styles from '../Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
+import React, { useContext, useEffect } from 'react';
+import { ModalProps } from 'src/default/interfaces/Interfaces';
 import { Title } from 'src/components/Title/Title';
 import { Input } from 'src/components/Input/Input';
+import { useForm } from 'src/hooks/useForm';
 import Button from 'src/components/Button/Button';
-import React, { useContext } from 'react';
-import {ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
+import {useState} from 'react';
+import { Produto } from 'src/models/crypto_order';
+import { api } from 'src/api/api';
+import SearchCep from 'src/helpers/SearchCep';
+import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 import { UserContext } from 'src/context/UserContext';
+import { Today } from '@mui/icons-material';
 
 export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
+  //frete e total
+  const [billingValue, setBillingValue] = React.useState(null);
+  const [totalBudget, setTotalBudget] = React.useState(null);
 
-  const [nameOrder, setNameOrder] = React.useState<string>('');
 
-  //Valor
-  const [editedValueOrder, setEditedValueOrder] = React.useState<string>(data['vr_total']);
-  const [newValueOrder, setNewValueOrder] = React.useState<string>('');
+  //detalhes e endereço de usuário
+  const [userDetails, setUserDetails] = useState(null);
+  const [userAddress, setUserAddress] = useState(null);
+  const [idUser, setIdUser] = useState(data['id']);
+  const [idUserAddress, setIdUserAddress] = useState(data['id_endereco']);
 
-  //Descrição
-  const [editedDescriptionOrder, setEditedDescriptionOrder] = React.useState<string>(data['descricao']);
-  const [newDescriptionOrder, setNewDescriptionOrder] = React.useState<string>('');
+  //datas
+  const [dateMin, setDateMin] = useState('');
+  const [date, setDate] = useState('');
 
-  //Data inicio
-  const [editedDateInitOrder, setEditedDateInitOrder] = React.useState(data['data_inicio']);
-  const [newDateInitOrder, setNewDateInitOrder] = React.useState('');
 
-  //Data fim
-  const [editedDateEndOrder, setEditedDateEndOrder] = React.useState<string>(data['data_entrega']);
-  const [newDateEndOrder, setNewDateEndOrder] = React.useState<string>('');
+  //busca endereço do usuário pelo id
+  async function queryAddressById(){
+    setUserAddress(null)
+    const {data} = await api.get(`/enderecos/${idUserAddress}`);
+    if(data){
+       setUserAddress(data);
+    }else{
+      setUserDetails(null);
+    }
+  }
 
-  const [idOrder, setIdOrder] = React.useState(null);
 
-  const [loading, setLoading] = React.useState<Boolean>(false);
-  const [message, setMessage] = React.useState<string>('');
+  //busca usuário pelo id
+  async function queryUserById(){
+    setUserDetails(null)
+    const {data} = await api.get(`/usuarios/${idUser}`);
+    if(data){
+      setUserDetails(data['entidade']);
+    }else{
+      setUserDetails(null);
+    }
+}
 
-  {/*const {
+
+  //formata data
+  function formatDate(date: Date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+    return [year, month, day].join('-');
+  }
+
+  //bloqueia dias anteriores ao dia atual e os próximos dois dias
+  function blockBeforeTwoDays(){
+    var today = new Date();                   
+    today.setDate(today.getDate() + 2); 
+    var l = today.toISOString().split('T')[0]; 
+    setDateMin(l);
+  }
+
+  useEffect(()=>{
+    queryUserById()
+    queryAddressById()
+  },[idUser])
+
+  useEffect(()=>{
+    blockBeforeTwoDays();
+  },[])
+
+  const {
     usuario
   } = useContext(UserContext);
-
-  console.log(usuario)
-*/}
-
-const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
-
-
-  //editar pedido
-  async function editOrderById(event: React.FormEvent<HTMLFormElement>){
-    event.preventDefault();
-    setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/pedidos/${idOrder}`, {
-      headers:{
-        'Content-Type': 'application/json',
-      }, 
-      method: 'PUT',
-      body: JSON.stringify({
-          "descricao": editedDescriptionOrder,
-          "data_entrega": editedDateInitOrder,
-          "data_inicio": editedDateEndOrder,
-          "vr_total": editedValueOrder 
-      })
-    })
-
-    const data = await teste;
-    const dataJson = await data.json();
-    if(dataJson){
-      setMessage('Pedido editado com sucesso.')
-    }
-    setLoading(false)
-    //window.location.reload();
-  }
-
-  //Criar pedido
-  async function CreateOrder(event: React.FormEvent<HTMLFormElement>){
-    event.preventDefault();
-    setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/pedidos`, {
-      headers:{
-        'Content-Type': 'application/json',
-      }, 
-      method: 'POST',
-      body: JSON.stringify({
-          "descricao": newDescriptionOrder,
-          "data_entrega": newDateEndOrder,
-          "data_inicio": newDateInitOrder,
-          "vr_total": newValueOrder 
-      })
-    })
-
-    const data = await teste;
-    const dataJson = await data.json();
-    if(dataJson){
-      setMessage('Pedido criado com sucesso.')
-    }
-    setLoading(false)
-   //window.location.reload();
-  }
-
+  
   return (
     <>
       {openModal && (
@@ -107,120 +102,322 @@ const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.lo
             >
               <AiFillCloseCircle/>
             </button>
-          </div>
-          <section>
-              <Title>
-                Cadastre um novo pedido
-              </Title>
-              <p></p>
-              <form onSubmit={edit? editOrderById: CreateOrder}>
-                <div 
-                  style={{
-                    display: 'flex',
-                    gridGap: '1rem',
-                    justifyContent: 'space-between',
-                    grid: '1rem',
-                    width: '100%'
 
-                  }}>
-
-                  <div style={{marginTop: '1rem', width: '100%'}}>
-                    <label style={{display: 'block'}}>Descrição do pedido</label>
-                      <input 
-                        type="text"
-                        name="order_description"
-                        id="order_description"
-                        placeholder="Digite a descrição do pedido"
-                        value={edit? editedDescriptionOrder: newDescriptionOrder}
-                        onChange={
-                          edit? (e)=>setEditedDescriptionOrder(e.target.value): (e)=>setNewDescriptionOrder(e.target.value)}
-                        style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                      />
-                  </div>
-
-                  <div style={{marginTop: '1rem', width: '100%'}}>
-                    <label style={{display: 'block'}}>Valor do pedido</label>
-                      <input 
-                        type="text"
-                        name="order_value"
-                        id="order_value"
-                        placeholder="R$"
-                        value={edit? editedValueOrder: newValueOrder}
-                        onChange={
-                          edit? (e)=>setEditedValueOrder(e.target.value): (e)=>setNewValueOrder(e.target.value)}
-                        style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                      />
-                  </div>
-
-              </div>
-              
-              <div style={{display: 'flex', gridGap: '1rem'}}>
-                <div style={{marginTop: '1rem'}}>
-                  <label style={{display: 'block'}}>Data de inicio</label>
-                    <input 
-                      type="date"
-                      name="date_init"
-                      id="date_init"
-                      placeholder=""
-                      value={edit? editedDateInitOrder: newDateInitOrder}
-                      onChange={
-                        edit? (e)=>setEditedDateInitOrder(e.target.value): (e)=>setNewDateInitOrder(e.target.value)}
-                      style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                    />
+            <form className={styles.formCheckout} style={{textAlign: 'left'}}>
+                <div style={{width: '50%'}}>
+                    <Title level={3}>
+                        Detalhes do pedido:
+                    </Title>
                 </div>
-          
-                <div style={{marginTop: '1rem'}}>
-                  <label style={{display: 'block'}}>Data de entrega</label>
-                    <input 
-                      type="date"
-                      name="date_end"
-                      id="date_end"
-                      placeholder=""
-                      value={edit? editedDateEndOrder: newDateEndOrder}
-                      onChange={
-                        edit? (e)=>setEditedDateEndOrder(e.target.value): (e)=>setNewDateEndOrder(e.target.value)}
-                      style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
-                    />
+
+                {/*Produto e CNPJ*/}
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridGap: '1rem'}}>
+                    <div style={{width: '100%'}}>
+                        <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Produto</label>
+                        <input 
+                          type="text"
+                          name="product"
+                          value={data['descricao']}
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                          disabled
+                        />
+                    </div>
+                    {usuario?.id_perfil === 1 || usuario?.id_perfil === 3?
+                    <div style={{width: '100%'}}>
+                      <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Status CNPJ</label>
+                      <input type="text" 
+                        value='{verificar status CNPJ}'
+                        name="status_cnpj" 
+                        style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        disabled
+                        />
+                    </div>
+                    :
+                    <>
+                    </>
+                  }
+                    
                 </div>
-              </div>
 
-             {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
-                {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
-                <Button text="Cancelar" />
-              </div>
-            }
 
-              {loading && (             
-                <svg  version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                  width="40px" height="40px" viewBox="0 0 40 40" enableBackground="new 0 0 40 40" xmlSpace="preserve" style={{
-                    position: 'relative',
-                    top: 0,
-                    left: 0,
-                    marginTop: '10px'
-                  }}>
-                <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-                  s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-                  c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
-                <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-                  C22.32,8.481,24.301,9.057,26.013,10.047z">
-                  <animateTransform attributeType="xml"
-                    attributeName="transform"
-                    type="rotate"
-                    from="0 20 20"
-                    to="360 20 20"
-                    dur="0.5s"
-                    repeatCount="indefinite"/>
-                  </path>
-                </svg>
 
-              )}
+                {/*Data de início e devolução do produto*/}
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridGap: '1rem'}}>
+                    <div style={{width: '100%'}}>
+                        <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Início</label>
+                        <input 
+                          type="date"
+                          name="start"
+                          value={formatDate(data['data_inicio'])}
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                          disabled
+                        />
+                    </div>
+                    <div style={{width: '100%'}}>
+                        <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Devolução</label>
+                        <input type="date" 
+                          value={formatDate(data['data_entrega'])}
+                          name="end" 
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                          disabled
+                      />
+                    </div>
+                </div>
 
-              {!loading && (
-                <p style={{color: 'green'}}>{message}</p>
-              )}
+
+                {/*Dados do cliente*/}
+                <div className={styles.formCheckout__div}>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gridGap: "1rem"
+                    }}>
+                        <Title level={3}>
+                          Detalhes do cliente
+                        </Title>
+                    </div>
+                    
+                    {/*Razão Social*/}
+                    <div style={{width: '100%'}}>
+                      <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Razão Social</label>
+                        <input 
+                          type="text"
+                          name="razao_social"
+                          value={userDetails?.razao_social}
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                          disabled
+                        />
+                      </div>
+
+
+                    {/*Nome fantsia e CNPJ*/}
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}> 
+                      <div style={{width: '100%'}}>
+                        <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Nome Fantasia</label>
+                          <input 
+                            type="text"
+                            name="fantasy_name"
+                            value={userDetails?.nome_fantasia}
+                            style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                            disabled
+                          />
+                      </div>
+                      <div style={{width: '100%'}}>
+                          <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>CNPJ</label>
+                          <input 
+                              type="text" 
+                              name="cnpj_client"
+                              value={userDetails?.documento}
+                              style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                              disabled
+                          />
+                      </div>
+                    </div>
+
+                    {/*Inscrição Estadual e Email*/}
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                      <div style={{width: '100%'}}>
+                          <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Inscrição Estadual</label>
+                            <input 
+                              type="text"
+                              name="insc_estadual"
+                              value={userDetails?.inscricao_estadual}
+                              style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                              disabled
+                            />
+                        </div>
+                        <div style={{width: '100%'}}>
+                            <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Email</label>
+                            <input 
+                                type="text" 
+                                name="email_client"
+                                value={userDetails?.email}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                    </div>
+                </div>
+
+
+                {/* DETALHES DO FATURAMENTO*/}
+                <div className={styles.formCheckout__div}>
+                    <Title level={3}>
+                        Detalhes do faturamento
+                    </Title>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                            <div style={{width:"100%"}}>
+                                <label style={{display: "block", paddingTop: '1rem'}}>Nome(responsável por receber)</label>
+                                <input 
+                                    type="text" 
+                                    id="" 
+                                    name="" 
+                                    placeholder=""
+                                    value={userAddress?.contato}
+                                    style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                    disabled
+                                />
+                            </div>
+                            <div style={{width:"100%"}}>
+                                <label style={{display: "block", paddingTop: '1rem'}}>Telefone</label>
+                                <input 
+                                    type="text" 
+                                    id="" 
+                                    name="" 
+                                    placeholder="Digite o nome do responsável"
+                                    value={userAddress?.telefone}
+                                    style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                    disabled
+                                />
+                            </div>
+                            
+                    </div>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                        <div style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>CEP</label>
+                            <input 
+                                type="number" 
+                                id="" 
+                                name="" 
+                                pattern="[0-9]+"
+                                placeholder="Digite seu CEP"
+                                value={userAddress?.cep}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Rua/Av*</label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                placeholder="Digite sua rua ou avenida"
+                                value={userAddress?.rua}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Número*</label>
+                            <input 
+                                type="number" 
+                                id="number" 
+                                placeholder="Digite o número"
+                                name="number"
+                                value={userAddress?.numero}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Cidade*</label>
+                            <input 
+                                type="text" 
+                                id="country" 
+                                placeholder="Digite sua cidade"
+                                name="country" 
+                                value="{retornar cidade}"
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>UF*</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                placeholder="Digite seu estado"
+                                name="" 
+                                value={'SP'}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Bairro*</label>
+                            <input 
+                                type="text" 
+                                id="bairro" 
+                                placeholder="Digite seu bairro"
+                                name="bairro"
+                                value={userAddress?.bairro}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Complemento</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name=""
+                                placeholder="Digite um complemento"
+                                value={userAddress?.complemento}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                    
+                    </div>
+                </div>
+            
+              {usuario?.id_perfil === 1 || usuario?.id_perfil === 3 ? 
+                <></>
+                :
                 
-              </form>
-          </section>
+                <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                    <div  style={{width:"100%"}}>
+                      <label style={{display: "block", paddingTop: '1rem'}}>Selecione a data de devolução:</label>
+                        <input 
+                          type="date" 
+                          id="dateMax" 
+                          name="stockDate"
+                          placeholder=""
+                          min={dateMin}
+                          value={date}
+                          required
+                          onChange={(e)=>setDate(e.target.value)}
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        />
+                    </div>
+
+                    <div  style={{width:"100%"}}>
+                      <label style={{display: "block", paddingTop: '1rem'}}>Anexar documento</label>
+                        <input 
+                          type="file" 
+                          id="file_product" 
+                          name="file_product"
+                          placeholder=""
+                          required
+                          accept="application/pdf"
+                          style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        />
+                    </div>
+                  </div>
+              }
+              {usuario?.id_perfil === 2? <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                {edit ? <Button text="Alterar data de devolução" /> : <Button text="Cancelar" />}
+                
+              </div>: <></>
+              }
+                <div style={{paddingTop: "1rem"}}>
+                    <p><b>Frete:</b> {billingValue?.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
+                </div>
+
+                <div>
+                    <p><b>Total:</b></p>
+                </div>
+            </form>
+          </div>
+          
+            
         </div>
       )}
     </>

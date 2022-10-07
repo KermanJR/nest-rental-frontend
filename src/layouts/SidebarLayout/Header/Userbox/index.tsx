@@ -74,11 +74,12 @@ function HeaderUserbox() {
     emailUser,
     passwordUser,
     levelUser,
+    usuario
     
   } = useContext(UserContext);
   
   const localuser = window.localStorage.getItem('user')
-    const nameUser = localuser ? JSON.parse(localuser).name :''
+  const nameUser = localuser ? JSON.parse(localuser).name :''
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);

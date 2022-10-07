@@ -216,7 +216,7 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
 
                   <div style={{ width: '50%', marginTop: '1rem' }}>
                     <label style={{ display: 'block' }}>
-                      Selecione a marca do produto:
+                      Selecione a categoria do produto:
                     </label>
 
                     {categories &&
@@ -269,7 +269,7 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
                 {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
                 <Button text="Cancelar" />
               </div>
-            }
+              }
               {loading && (             
                 <svg  version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                   width="40px" height="40px" viewBox="0 0 40 40" enableBackground="new 0 0 40 40" xmlSpace="preserve" style={{

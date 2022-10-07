@@ -515,6 +515,7 @@ export const Checkout = () => {
                             id="razao_social"
                             placeholder="Digite sua razão social"
                             {...razaoSocial}
+                            disabled={false}
                         />
 
                         <div className={styles.formCheckout__div__inputs}>
@@ -525,6 +526,7 @@ export const Checkout = () => {
                                 id="fantasy_name"
                                 placeholder="Digite seu nome fantasia"
                                 {...fantasyName}
+                                disabled={false}
                             />
 
                             <Input
@@ -534,6 +536,7 @@ export const Checkout = () => {
                                 id="cnpj"
                                 placeholder="xx.xxx.xxx/xxxx-xx"
                                 {...cnpj}
+                                disabled={false}
                             />
                         </div>
 
@@ -546,6 +549,7 @@ export const Checkout = () => {
                                     id="insc_estadual"
                                     placeholder="xx.xxx.xxx-x"
                                     {...insc_estadual}
+                                    disabled={false}
                                 />
                             </div>
                             <div style={{ width: "100%" }}>
@@ -556,6 +560,7 @@ export const Checkout = () => {
                                     id="email_company"
                                     placeholder="emailexample@com.br"
                                     {...email_company}
+                                    disabled={false}
                                 />
                             </div>
                         </div>
@@ -568,6 +573,7 @@ export const Checkout = () => {
                             id="new_pass_client"
                             placeholder="Digite sua senha"
                             {...passwordClient}
+                            disabled={false}
                         />
                         )}
                         
@@ -696,6 +702,7 @@ export const Checkout = () => {
                                     id="tel_company"
                                     placeholder="(00) 000000000"
                                     {...tel_company}
+                                    disabled={false}
                                 />
                             </div>
                         </div>
@@ -939,6 +946,7 @@ export const Checkout = () => {
                                             id="email_user"
                                             placeholder="emailexample@com.br"
                                             {...email_user}
+                                            disabled={false}
                                         />
                                     </div>
                                     <div style={{ width: '100%' }}>
@@ -950,6 +958,7 @@ export const Checkout = () => {
                                             id="tel_user"
                                             placeholder="(00) 000000000"
                                             {...tel_user}
+                                            disabled={false}
                                         />
                                     </div>
                                 </div>

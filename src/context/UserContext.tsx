@@ -70,10 +70,13 @@ export const UserStorage = ({ children }: any) => {
                 window.localStorage.setItem('token', token)
                 window.localStorage.setItem('user', JSON.stringify(user))
                 setUsuario(user)
-                setEmailUser(emailUser)
-                setIdPerfil(user.id_perfil || 0)
                 setLogin(true)
-                navigate(redirect || '/dashboard/geral')
+                if(user?.id_perfil === 2 || user?.id_perfil === 3){
+                    navigate(redirect || '/dashboard/pedidos')
+                }else if(user?.id_perfil === 1){
+                    navigate(redirect || '/dashboard/geral')
+                }
+                
             }
 
         } catch (err) {

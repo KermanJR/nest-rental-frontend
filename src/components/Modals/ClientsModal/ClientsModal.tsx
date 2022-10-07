@@ -6,6 +6,8 @@ import React from 'react';
 import {ModalPropsTestEdit } from '../../../default/interfaces/Interfaces';
 import { Title } from 'src/components/Title/Title';
 import Button from 'src/components/Button/Button';
+import { UserContext } from 'src/context/UserContext';
+import { useContext } from 'react';
 
 
 
@@ -139,8 +141,13 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     }
     setLoading(false)
     //window.location.reload();
+
   }
-  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
+
+  const {
+    usuario
+  } = useContext(UserContext);
+
 
   return (
     <>
@@ -156,9 +163,16 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
           </div>
 
           <section>
-            <Title>
-              Editar cliente
-            </Title>
+
+            {usuario?.id_perfil === 1 ? 
+              <Title>
+                Editar cliente
+              </Title>
+            :
+              <Title>
+                Detalhes do cliente
+              </Title>
+            }            
               <form onSubmit={edit?editClientById: createClient}>
                 <div style={{marginTop: '1rem'}}>
                   <label style={{display: 'block'}}>Razão social</label>
@@ -171,6 +185,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                     onChange={
                       edit? (e)=>setEditedRazaoSocial(e.target.value): (e)=>setNewRazaoSocial(e.target.value)}
                     style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
+                    disabled={usuario?.id_perfil === 3 ? true : false}
                   />
                 </div>
                   
@@ -186,6 +201,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                         onChange={
                           edit? (e)=>setEditedFantasyName(e.target.value): (e)=>setNewFantasyName(e.target.value)}
                         style={{padding: '.7rem', borderRadius: '8px', border: '1px solid #ccc', width: '100%'}}
+                        disabled={usuario?.id_perfil === 3 ? true : false}
                       />
                     </div>
 
@@ -203,6 +219,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                       onBlur={
                         edit? (e)=>setEditedCnpj(e.target.value): (e)=>setNewCnpj(e.target.value)
                      }
+                     disabled={usuario?.id_perfil === 3 ? true : false}
                     />
                 </div>
 
@@ -221,6 +238,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                         onBlur={
                           edit? (e)=>setEditedEmail(e.target.value): (e)=>setNewEmail(e.target.value)
                         }
+                        disabled={usuario?.id_perfil === 3 ? true : false}
                       />
                   </div>
                   <div className={styles.formCheckout__div}>
@@ -241,6 +259,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedCep(e.target.value): (e)=>setPayNewCep(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
@@ -255,6 +274,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedStreet(e.target.value): (e)=>setPayEditedStreet(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
                         <div  style={{width:"100%"}}>
@@ -269,6 +289,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedNumberAddress(e.target.value): (e)=>setPayNewNumberAddress(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
                     </div>
@@ -286,6 +307,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedCity(e.target.value): (e)=>setPayNewCity(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             
                             />
                         </div>
@@ -302,6 +324,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedState(e.target.value): (e)=>setPayNewState(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
 
@@ -317,6 +340,7 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedNeighbourhood(e.target.value): (e)=>setPayNewNeighbourhood(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
                         <div>
@@ -331,12 +355,13 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                                   edit? (e)=>setPayEditedComplement(e.target.value): (e)=>setPayNewComplement(e.target.value)
                                 }
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled={usuario?.id_perfil === 3 ? true : false}
                             />
                         </div>
                     
                     </div>
                     </div>
-                    {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                    {usuario?.id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
                 {edit ? <Button text="Editar" /> : <Button text="Cadastrar" />}
                 <Button text="Cancelar" />
               </div>

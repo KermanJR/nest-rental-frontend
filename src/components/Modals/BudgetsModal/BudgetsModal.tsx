@@ -8,11 +8,12 @@ import { Input } from 'src/components/Input/Input';
 import { useForm } from 'src/hooks/useForm';
 import Button from 'src/components/Button/Button';
 import {useState} from 'react';
-import { Produto } from 'src/models/crypto_order';
+import { Cliente, Produto } from 'src/models/crypto_order';
 import { api } from 'src/api/api';
 import SearchCep from 'src/helpers/SearchCep';
+import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 
-export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
+export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
 
     const razaoSocial = useForm('');
     const fantasyName = useForm('');
@@ -52,6 +53,8 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [errorCep, setErrorCep] = React.useState('');
+
+    const [clients, setClients] = useState<Cliente[]>([]);
 
    
 
@@ -93,10 +96,26 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
         const {data} = await api.get(`/produtos`);
         if(data){
             setProdutos(data);
+            console.log(data)
         }else{
             setProdutos(null);
         }
     }
+
+    async function searchClients(){
+        setProdutos(null)
+        const {data} = await api.get("/usuarios");
+        if(data){
+            console.log(data)
+            setClients(data);
+        }else{
+            setClients(null);
+        }
+      }
+    
+    React.useEffect(()=>{
+        searchClients();
+      }, [])
 
     React.useEffect(()=>{
         queryProductsById()
@@ -123,20 +142,40 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
             <form className={styles.formCheckout} style={{textAlign: 'left'}}>
                 <div style={{width: '50%'}}>
                     <Title level={3}>
-                        Selecione o produto:
+                        Gere um novo orçamento
                     </Title>
-
-                    {produtos && 
-                      <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
-                        {produtos.map((item, index)=>{
-                          return  <>
-                                    <option value={item.id} key={item.id}>{item.nome}</option>
-                                  </>
-                          
-                        })} 
-                    </select>
-                    }
                 </div>
+
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridGap: '1rem'}}>
+                    <div style={{width: '100%'}}>
+                    <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Selecione o produto</label>
+                        {produtos && 
+                            <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                                {produtos.map((item, index)=>{
+                                return  <>
+                                            <option value={item.id} key={item.id}>{item.nome}</option>
+                                        </>
+                                
+                                })} 
+                            </select>
+                        }
+                    </div>
+                    <div style={{width: '100%'}}>
+                    <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Selecione o cliente</label>
+                        {clients && 
+                            <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                                {clients.map((item, index)=>{
+                                return  <>
+                                            <option value={item.id} key={item.id}>{item.nome}</option>
+                                        </>
+                                
+                                })} 
+                            </select>
+                        }
+                    </div>
+                </div>
+
+                
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridGap: '1rem'}}>
                     <div style={{width: '100%'}}>
                         <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Início</label>
@@ -175,6 +214,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                         id="razao_social"
                         placeholder="Digite sua razão social"
                         {...razaoSocial}
+                        disabled={false}
                     />
 
                     <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}> 
@@ -185,6 +225,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                             id="fantasy_name"
                             placeholder="Digite seu nome fantasia"
                             {...fantasyName}
+                            disabled={false}
                         />
                         
                         <Input
@@ -194,6 +235,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                             id="cnpj"
                             placeholder="xx.xxx.xxx/xxxx-xx"
                             {...cnpj}
+                            disabled={false}
                         />
                     </div>
 
@@ -206,6 +248,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                                 id="insc_estadual"
                                 placeholder="xx.xxx.xxx-x"
                                 {...insc_estadual}
+                                disabled={false}
                             />
                         </div>
                         <div style={{width:"100%"}}>
@@ -216,6 +259,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                                 id="email_company"
                                 placeholder="emailexample@com.br"
                                 {...email_company}
+                                disabled={false}
                             />
                         </div>
                     </div>
@@ -350,6 +394,7 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                                     id="tel_company"
                                     placeholder="(00) 000000000"
                                     {...tel_company}
+                                    disabled={false}
                                     
                                 />
                             </div>
@@ -454,11 +499,12 @@ export const BudgetsModal = ({openModal, setModal}: ModalProps) => {
                 <div>
                     <p><b>Total:</b></p>
                 </div>
-                {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
-                <Button text="Editar" /> <Button text="Cadastrar" />
-                <Button text="Cancelar" />
+
+                <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
+                    {edit ? <Button text="Editar" />: <Button text="Cadastrar" />}
+                    <Button text="Cancelar" />
               </div>
-            }
+            
 
                 
             </form>

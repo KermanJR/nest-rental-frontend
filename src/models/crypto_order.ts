@@ -7,6 +7,7 @@ export interface Pedido {
   vr_total: string;
   data_inicio: string;
   data_entrega: string;
+  status_devolucao: string;
 }
 
 
@@ -36,6 +37,8 @@ export interface Cliente {
   razao_social: string;
   documento: string;
   email: string;
+  nome: string;
+  inscricao_estadual: string
 }
 
 export interface Produto {

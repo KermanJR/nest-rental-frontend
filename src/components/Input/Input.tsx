@@ -11,10 +11,11 @@ interface InputProps{
     onChange: React.ChangeEventHandler<HTMLInputElement>;
     error: string;
     onBlur: React.ChangeEventHandler<HTMLInputElement>;
+    disabled: boolean;
 }
 
 
-export const Input = ({label, type, name, value, placeholder, onChange, error, onBlur}: InputProps) => {
+export const Input = ({label, type, name, value, placeholder, onChange, error, onBlur, disabled}: InputProps) => {
     return (
         <div style={{display: 'block', width: '100%', padding: ".5rem 0"}}>
           <label htmlFor={name}>{label}</label>
@@ -27,6 +28,7 @@ export const Input = ({label, type, name, value, placeholder, onChange, error, o
               placeholder={placeholder}
               onBlur={onBlur}
               style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}} 
+              disabled={disabled}
   
             />
           {error && <p style={{color: 'red', fontSize: '.75rem'}}>{error}</p>}

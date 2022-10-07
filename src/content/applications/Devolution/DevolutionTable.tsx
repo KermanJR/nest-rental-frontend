@@ -35,6 +35,7 @@ import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/Reg
 import moment from 'moment';
 import { BsEye } from 'react-icons/bs'
 import { UserContext } from 'src/context/UserContext';
+import { DevolutionModal } from 'src/components/Modals/DevolutionModal/DevolutionModal';
 
 interface RecentOrdersTableProps {
   className?: string;
@@ -70,7 +71,7 @@ const applyPagination = (
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
+const DevolutionTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -140,6 +141,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     setData(null)
     const {data} = await api.get(`/pedidos/${idOrder}`);
     if(data){
+      console.log(data)
       setData(data);
     }else{
       setData(null);
@@ -193,7 +195,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
             
             
           }
-          title={panel? "Pedidos recentes": "Pedidos cadastrados"}
+          title={'Devoluções'}
           
         />
       )}
@@ -212,7 +214,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
               </TableCell>
               <TableCell>Empresa</TableCell>
               <TableCell>Contato</TableCell>
-              <TableCell>Início e Devolução</TableCell>
+              <TableCell>Devolução</TableCell>
               <TableCell align="right">Valor</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Ações</TableCell>
@@ -293,9 +295,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                     
                     </Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
-                    R${numeral(data.vr_total).format(
-                        `0,0.00`
-                      )}
+                      {Number(data.vr_total)?.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -316,7 +316,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                     </Typography>
                   </TableCell>
 
-            
+                  {usuario?.id_perfil === 2 || usuario?.id_perfil === 3 ? 
                     <TableCell align="right">
                     <Tooltip title="Visualizar pedido" arrow>
                       <IconButton
@@ -334,6 +334,37 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       </IconButton>
                     </Tooltip>
                   </TableCell>
+                  :
+                  <TableCell align="right">
+                    <Tooltip title="Editar pedido" arrow>
+                      <IconButton
+                        sx={{
+                          '&:hover': {
+                            background: theme.colors.primary.lighter
+                          },
+                          color: theme.palette.primary.main
+                        }}
+                        color="inherit"
+                        size="small"
+                        onClick={(e)=>queryOrdersById(data.id)}
+                      >
+                        <EditTwoToneIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    {/*<Tooltip title="Excluir pedido" arrow>
+                      <IconButton
+                        sx={{
+                          '&:hover': { background: theme.colors.error.lighter },
+                          color: theme.palette.error.main
+                        }}
+                        color="inherit"
+                        size="small"
+                      >
+                        <DeleteTwoToneIcon fontSize="small" />
+                      </IconButton>
+                      </Tooltip>*/}
+                  </TableCell>
+                  }
                 </TableRow>
               );
             })}
@@ -342,7 +373,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
       </TableContainer>
 
       {data  && (
-        <RegisterOrderModal 
+        <DevolutionModal 
         openModal={modal}
         setModal={setModal}
         data={data}
@@ -353,12 +384,12 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   );
 };
 
-OrdersTable.propTypes = {
+DevolutionTable.propTypes = {
   cryptoOrders: PropTypes.array.isRequired
 };
 
-OrdersTable.defaultProps = {
+DevolutionTable.defaultProps = {
   cryptoOrders: []
 };
 
-export default OrdersTable;
+export default DevolutionTable;

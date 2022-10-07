@@ -61,6 +61,7 @@ export const LoginCreate = () => {
                         onChange={(e)=>setInscEstadual(e.target.value)}
                         value={inscEstadual}
                         error=""
+                        disabled={false}
                     />
 
                     <Input
@@ -71,6 +72,7 @@ export const LoginCreate = () => {
                         placeholder="Digite o e-mail"
                         {...emailCad}
                         error=""
+                        disabled={false}
                 
                     />
                     <Input
@@ -80,6 +82,7 @@ export const LoginCreate = () => {
                         id="user_password"
                         placeholder="Digite sua senha"
                         {...password}
+                        disabled={false}
                  
                     />
                 </form>
@@ -132,6 +135,7 @@ export const LoginCreate = () => {
                         onChange={(e)=>setCorporateName(e.target.value)}
                         value={corporateName}
                         error=""
+                        disabled={false}
                     />
 
                     <Input
@@ -144,6 +148,7 @@ export const LoginCreate = () => {
                         onBlur={(e)=>setFantasyName(e.target.value)}
                         value={fantasyName}
                         error=""
+                        disabled={false}
                 
                     />
                     <Input
@@ -153,6 +158,7 @@ export const LoginCreate = () => {
                         id="user_cnpj"
                         placeholder="00.000.000/0000-00"
                         {...cnpj}
+                        disabled={false}
                  
                     />
                 </form>

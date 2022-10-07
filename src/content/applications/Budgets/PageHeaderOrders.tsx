@@ -25,7 +25,7 @@ function PageHeaderOrders() {
         </Typography>
       </Grid>
       <Grid item>
-      {id_perfil === 3 ? '': <Button
+      <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
@@ -34,9 +34,9 @@ function PageHeaderOrders() {
           }
         >
           Cadastrar orçamento
-        </Button>}
+        </Button>
       </Grid>
-      <BudgetsModal data={null} setModal={setModal} openModal={modal}/>
+      <BudgetsModal data={null} setModal={setModal} openModal={modal} edit={false}/>
     </Grid>
   );
 }

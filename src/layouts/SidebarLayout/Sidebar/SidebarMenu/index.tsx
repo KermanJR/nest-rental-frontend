@@ -179,18 +179,21 @@ const SubMenuWrapper = styled(Box)(
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
   // const { idPerfil } = useContext(UserContext)
-  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
+  const {
+    usuario
+  } = useContext(UserContext);
+  console.log(usuario)
 
-  console.log(id_perfil)
   
-  if(!id_perfil) {
+  if(!usuario?.id_perfil) {
     const navigate = useNavigate();
     navigate('/login');
   }
   return (
     <>
       <MenuWrapper>
-        <List component="div">
+        {usuario?.id_perfil === 1 && (
+          <List component="div">
           <SubMenuWrapper>
             <List component="div">
               <ListItem component="div">
@@ -207,6 +210,8 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
+        )}
+        
         <List
           component="div"
           subheader={
@@ -228,7 +233,21 @@ function SidebarMenu() {
                   Pedidos
                 </Button>
               </ListItem>
-              {[1, 3].includes(id_perfil) && 
+              
+                <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/dashboard/devolucao"
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  Devoluções
+                </Button>
+              </ListItem>
+              
+              
+              {[1, 3].includes(usuario?.id_perfil) && 
               
                 <ListItem component="div">
                   <Button
@@ -243,7 +262,7 @@ function SidebarMenu() {
                 </ListItem>
               }
 
-              {[1, 3].includes(id_perfil) && 
+              {[1, 3].includes(usuario?.id_perfil) && 
                 <ListItem component="div">
                   <Button
                     disableRipple
@@ -259,7 +278,7 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
-        {[1, 3].includes(id_perfil) && <>
+        {usuario?.id_perfil === 1 && <>
         <List
           component="div"
           subheader={
@@ -371,211 +390,8 @@ function SidebarMenu() {
           </SubMenuWrapper>
           
         </List>
-        </> }
-        {/*<List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Accounts
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/management/profile/details"
-                  startIcon={<AccountCircleTwoToneIcon />}
-                >
-                  User Profile
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/management/profile/settings"
-                  startIcon={<DisplaySettingsTwoToneIcon />}
-                >
-                  Account Settings
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Components
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/buttons"
-                  startIcon={<BallotTwoToneIcon />}
-                >
-                  Buttons
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/modals"
-                  startIcon={<BeachAccessTwoToneIcon />}
-                >
-                  Modals
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/accordions"
-                  startIcon={<EmojiEventsTwoToneIcon />}
-                >
-                  Accordions
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/tabs"
-                  startIcon={<FilterVintageTwoToneIcon />}
-                >
-                  Tabs
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/badges"
-                  startIcon={<HowToVoteTwoToneIcon />}
-                >
-                  Badges
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/tooltips"
-                  startIcon={<LocalPharmacyTwoToneIcon />}
-                >
-                  Tooltips
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/avatars"
-                  startIcon={<RedeemTwoToneIcon />}
-                >
-                  Avatars
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/cards"
-                  startIcon={<SettingsTwoToneIcon />}
-                >
-                  Cards
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/forms"
-                  startIcon={<TrafficTwoToneIcon />}
-                >
-                  Forms
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Extra Pages
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/status/404"
-                  startIcon={<CheckBoxTwoToneIcon />}
-                >
-                  Error 404
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/status/500"
-                  startIcon={<CameraFrontTwoToneIcon />}
-                >
-                  Error 500
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/status/coming-soon"
-                  startIcon={<ChromeReaderModeTwoToneIcon />}
-                >
-                  Coming Soon
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/status/maintenance"
-                  startIcon={<WorkspacePremiumTwoToneIcon />}
-                >
-                  Maintenance
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>*/}
+        </> 
+      }
       </MenuWrapper>
     </>
   );

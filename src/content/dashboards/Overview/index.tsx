@@ -1,16 +1,23 @@
 import { Helmet } from 'react-helmet-async';
-import PageHeader from './PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Container, Grid } from '@mui/material';
-
-import AccountBalance from './AccountBalance';
-import Wallets from './Wallets';
-import AccountSecurity from './AccountSecurity';
 import WatchList from './WatchList';
+import { useContext } from 'react';
+import { UserContext } from 'src/context/UserContext';
+import { Navigate } from "react-router-dom";
 
 function DashboardCrypto() {
+
+
+  const {
+    usuario
+  } = useContext(UserContext);
   return (
-    <>
+
+    
+      <>
+      {usuario?.id_perfil == 1 ? 
+      <>
       <Helmet>
         <title>Dashboard - Geral</title>
       </Helmet>
@@ -30,7 +37,14 @@ function DashboardCrypto() {
           </Grid>
         </Grid>
       </Container>
-    </>
+      </>
+      :
+      <>
+        <Navigate to="/dashboard/pedidos"/>
+      </> 
+  }
+  </>
+    
   );
 }
 

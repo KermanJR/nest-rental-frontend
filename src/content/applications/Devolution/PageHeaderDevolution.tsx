@@ -1,17 +1,21 @@
 import { Typography, Button, Grid } from '@mui/material';
-
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import React, { useContext } from 'react';
-import { ClientsModal } from 'src/components/Modals/ClientsModal/ClientsModal';
 import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
 import { UserContext } from 'src/context/UserContext';
+import {useLocation} from 'react-router'
 
-function PageHeaderOrders() {
+function PageHeaderDevolution() {
+
 
   const {
     usuario
   } = useContext(UserContext);
 
+
+  const {
+    pathname
+  } = useLocation();
 
 
   const [modal, setModal] = React.useState<Boolean>(false);
@@ -20,26 +24,20 @@ function PageHeaderOrders() {
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          Pedidos
+          Devoluções
         </Typography>
         <Typography variant="subtitle2">
-          {usuario?.id_perfil === 1 && (
-            <label>{usuario?.nome}, cadastre novos pedidos da sua empresa.</label>
-            )
-          }
-          {usuario?.id_perfil === 2 && (
-           <label>{usuario?.nome}, consulte novos pedidos da sua empresa.</label>
-            )
-          }
-          {usuario?.id_perfil === 3 && (
-            <label>{usuario?.nome}, consulte novos pedidos da sua empresa.</label>
-            )
-          }
-          
+          {usuario?.id_perfil === 1 || usuario?.id_perfil === 3 ?
+          <label>{(usuario?.nome).toUpperCase()}, gerencie as devoluções de seus produtos.</label>
+          :
+          <label>{(usuario?.nome).toUpperCase()}, faça a devolução de seus pedidos.</label>
+        }
+           
         </Typography>
       </Grid>
+      <RegisterOrderModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>
   );
 }
 
-export default PageHeaderOrders;
+export default PageHeaderDevolution;
