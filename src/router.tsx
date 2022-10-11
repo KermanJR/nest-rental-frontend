@@ -59,6 +59,10 @@ const UserSettings = Loader(
   lazy(() => import('src/content/applications/Users/settings'))
 );
 
+const UserOrders = Loader(
+  lazy(() => import('src/content/applications/Users/orders'))
+);
+
 const Brands = Loader(
   lazy(() => import('src/content/applications/Brands/'))
 );
@@ -280,17 +284,25 @@ const routes: RouteObject[] = [
           {
             path: 'detalhes',
             element:  <ProtectedRoute>
-                      <UserStorage>
-                       <UserProfile />
-                      </UserStorage>
+                        <UserStorage>
+                          <UserProfile />
+                        </UserStorage>
                       </ProtectedRoute>
           },
           {
             path: 'configuracoes',
             element:  <ProtectedRoute>
-                      <UserStorage>
-                       <UserSettings />
-                      </UserStorage>
+                        <UserStorage>
+                          <UserSettings />
+                        </UserStorage>
+                      </ProtectedRoute>
+          },
+          {
+            path: 'pedidos',
+            element:  <ProtectedRoute>
+                        <UserStorage>
+                          <UserOrders />
+                        </UserStorage>
                       </ProtectedRoute>
           }
         ]

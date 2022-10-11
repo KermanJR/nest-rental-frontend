@@ -22,8 +22,6 @@ export const Checkout = () => {
 
     const { request, error, data, loading } = useFetch();
 
-
-
     const razaoSocial = useForm('');
     const fantasyName = useForm('');
     const cnpj = useForm('cnpj');
@@ -50,46 +48,49 @@ export const Checkout = () => {
     const [keyDocumentSign, setKeyDocumentSign] = React.useState('');
 
 
-    //Billing address
+    //Billing address (endereço de cobrança)
     const [billingStreet, setBillingStreet] = React.useState('');
-    const [billingBairro, setBillingBairro] = React.useState('');
+    const [billingNeighbourhood, setBillingNeighbourhood] = React.useState('');
     const [billingCity, setBillingCity] = React.useState('');
     const [billingState, setBillingState] = React.useState('');
     const [numberAddressBilling, setNumberAddressBilling] = React.useState('');
     const [billingCep, setBillingCep] = React.useState('');
     const [billingAddress, setBillingAddress] = React.useState('');
 
-    //Pay address
-    const [payStreet, setPayStreet] = React.useState('');
-    const [payBairro, setPayBairro] = React.useState('');
-    const [payCity, setPayCity] = React.useState('');
-    const [payState, setPayState] = React.useState('');
-    const [numberAddressPay, setNumberAddressPay] = React.useState('');
-    const [payCep, setPayCep] = React.useState('');
+    //Shipping address (endereço de entrega)
+    const [shippingStreet, setShippingStreet] = React.useState('');
+    const [shippingNeighbourhood, setShippingNeighbourhood] = React.useState('');
+    const [shippingCity, setShippingCity] = React.useState('');
+    const [shippingState, setShippingState] = React.useState('');
+    const [numberAddressShipping, setNumberAddressShipping] = React.useState('');
+    const [shippingAddress, setShippingAddress] = React.useState('');
+    const [shippingCep, setShippingCep] = React.useState('');
+
+
     const [nameResp, setNameResp] = React.useState('');
     const [errorData, setErrorData] = React.useState('');
 
 
     /* Busca CEP 01*/
-    async function buscaCep(cep: string) {
+    async function buscaCepBilling(cep: string) {
         const json = await SearchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
-        setPayStreet(json.logradouro);
-        setPayCity(json.localidade);
-        setPayState(json.uf)
-        setPayBairro(json.bairro)
+        setBillingStreet(json.logradouro);
+        setBillingCity(json.localidade);
+        setBillingState(json.uf)
+        setBillingNeighbourhood(json.bairro)
 
     }
 
     /* Busca CEP 02*/
-    async function buscaCep2(cep: string) {
+    async function buscaCepShipping(cep: string) {
         const json = await SearchCep(cep);
         const faixaCep = (json.cep).split('-', 1);
-        setBillingStreet(json.logradouro);
-        setBillingBairro(json.bairro);
-        setBillingCity(json.localidade)
-        setBillingState(json.uf);
-        setBillingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+        setShippingStreet(json.logradouro);
+        setShippingNeighbourhood(json.bairro);
+        setShippingCity(json.localidade)
+        setShippingState(json.uf);
+        setShippingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
 
     }
 
@@ -133,15 +134,15 @@ export const Checkout = () => {
     //Cria modelo do documento
     const createModelDocument = async () => {
         if (cnpj.validate() && razaoSocial && fantasyName
-            && email_company.value && numberAddressPay && numberAddressBilling) {
+            && email_company.value && numberAddressShipping && numberAddressBilling) {
             const { url, options } = CREATE_DOCUMENT({
                 "document": {
                     "path": "/modelos/teste.docx",
                     "template": {
                         "data": {
                             "fantasy_name": fantasyName.value,
-                            "address_pay": `Rua ${payStreet}, ${payBairro}, ${payCity}, ${payState}, N°${numberAddressPay}`,
-                            "address_billing": `Rua ${billingStreet}, ${billingBairro}, ${billingCity}, ${billingState} N°${numberAddressBilling}`,
+                            "address_pay": `Rua ${billingStreet}, ${billingNeighbourhood}, ${billingCity}, ${billingState}, N°${numberAddressBilling}`,
+                            "address_billing": `Rua ${shippingStreet}, ${shippingNeighbourhood}, ${shippingCity}, ${shippingState} N°${numberAddressShipping}`,
                             "contact": email_company.value,
                             "business_email": email_company.value,
                             "total_days": totalDays,
@@ -259,17 +260,17 @@ export const Checkout = () => {
         const id_usuario = usuario?.id;
         const { data } = await api.get(`/enderecos`);
         const endereco_entrega = data.find(e => e.tipo == "E");
-        setBillingCep(endereco_entrega.cep);
-        setBillingBairro(endereco_entrega.bairro);
-        setBillingStreet(endereco_entrega.rua);
-        setNumberAddressBilling(endereco_entrega.numero);
+        setShippingCep(endereco_entrega.cep);
+        setShippingNeighbourhood(endereco_entrega.bairro);
+        setShippingStreet(endereco_entrega.rua);
+        setNumberAddressShipping(endereco_entrega.numero);
 
         const endereco_cobranca = data.find(e => e.tipo == "C");
 
-        setPayCep(endereco_cobranca.cep);
-        setPayBairro(endereco_cobranca.bairro);
-        setPayStreet(endereco_cobranca.rua);
-        setNumberAddressPay(endereco_cobranca.numero);
+        setBillingCep(endereco_cobranca.cep);
+        setBillingNeighbourhood(endereco_cobranca.bairro);
+        setBillingStreet(endereco_cobranca.rua);
+        setNumberAddressBilling(endereco_cobranca.numero);
     }
 
     useEffect(()=>{
@@ -305,12 +306,12 @@ export const Checkout = () => {
 
     async function criar_endereco_cobranca(id_entidade) {
         const { data } = await api.post(`/enderecos/${id_entidade}`, {
-            "id_cidade": await buscar_cidade(payCity),
-            "cep": payCep,
-            "bairro": payBairro,
+            "id_cidade": await buscar_cidade(billingCity),
+            "cep": billingCep,
+            "bairro": billingNeighbourhood,
             "complemento": "???",
-            "rua": payStreet,
-            "numero": numberAddressPay,
+            "rua": billingStreet,
+            "numero": numberAddressBilling,
             "contato": "???",
             "telefone": "???",
             "email": email_company.value,
@@ -324,11 +325,11 @@ export const Checkout = () => {
     async function criar_endereco_entrega(id_entidade) {
         const { data } = await api.post(`/enderecos/${id_entidade}`, {
             "id_cidade": await buscar_cidade(billingCity),
-            "cep": billingCep,
-            "bairro": billingBairro,
+            "cep": shippingCep,
+            "bairro": shippingNeighbourhood,
             "complemento": "???",
-            "rua": billingStreet,
-            "numero": numberAddressBilling,
+            "rua": shippingStreet,
+            "numero": numberAddressShipping,
             "contato": "???",
             "telefone": tel_user.value,
             "email": email_company.value,
@@ -384,6 +385,7 @@ export const Checkout = () => {
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
             createModelDocument()
+            sendLead();
         } catch (err) {
             alert(
                 JSON.stringify(err?.response?.data || err, null, 3)
@@ -396,7 +398,7 @@ export const Checkout = () => {
 
     //Envia LEAD para o ZOHO CRM
     const sendLead = async () => {
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
+        const teste = fetch('http://localhost:6800/send-lead', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -404,29 +406,87 @@ export const Checkout = () => {
             body: JSON.stringify({
                 "data": [
                     {
-                        "Company": fantasyName.value,
-                        "Last_Name": fantasyName.value,
-                        "First_Name": fantasyName.value,
-                        "Email": email_company,
-                        "State": "Brasil",
-                        "$wizard_connection_path": [
-                            "3652397000003679053"
+                        "Owner": { //Name, ID, and email of the owner of the Account
+                            "name": "Tatiana Tavora Dias",
+                            "id": "702098344",
+                            "email": "tdias@nestrental.com.br"
+                        },
+
+                        "Inscri_o_Estadual": insc_estadual.value,
+                        "CNPJ": cnpj.value,
+                        "Raz_o_Social": razaoSocial.value,
+                        "Phone": tel_user.value,
+                        "Origem_prospect": "E-commerce", 
+                        "$currency_symbol": "BRL",  //The currency in which the revenue is generated 
+                        "Account_Type": "Lead", //Represents the type of account
+                        "Industry": "Instaladoras", //The name of the industry of the account 
+                        "Account_Site": "https://nest-rental-frontend.herokuapp.com", //The name of the account's location, for example, Headquarters or London.
+                        "$process_flow": false, //Represents if the record is a blueprint data
+                        "Exchange_Rate": 3, //Represents of the currency in which the revenue is generated
+                        "Currency": "BRL", //The symbol of the currency in which the revenue is generated
+                        "Billing_Country": "Brasil", //The billing address of the account to send the quotes, invoices, and other agreements
+
+                        "$approval": { //Represents if the current user can approve, delegate, reject, or resubmit the operations performed on this record
+                            "delegate": false,
+                            "approve": false,                         
+                            "reject": false,
+                            "resubmit": false
+                        },
+                        
+                        "Billing_Street": billingStreet, //Represents the address details of the account
+                        "$editable": true, //Represents if the user can edit records in the Accounts module
+                        "Billing_Code": billingCep, //Represents the address details of the account
+                        "Shipping_City": shippingCity, //Represents the address details of the account
+                        "Shipping_Country": "Brasil", //Represents the address details of the account
+                        "Shipping_Code": shippingCep, //Represents the address details of the account
+                        "Billing_City": billingCity, //Represents the address details of the account
+
+                        "Created_By": { //Name and ID of the user who created the record. This is a system-generated field. You cannot modify it.
+                            "name": "Tatiana Tavora Dias",
+                            "id": "702098344",
+                            "email": "tdias@nestrental.com.br"
+                        },
+                        
+                        "Shipping_Street": shippingStreet, //Represents the address details of the account
+                        "Ownership": "Private", //Represents the ownership type of the account
+                        "Description": "This is a sample description.", //Represents the description about the account
+                        "Rating": "Active", //Represents the rating of the account
+                        "Shipping_State": "SP", //Represents the address details of the account
+
+                        "$review_process": { //Represents the review process details of the account
+                            "approve": false,
+                            "reject": false,
+                            "resubmit": false
+                        },
+                        
+                        "Website": "https://nest-rental-frontend.herokuapp.com", //Represents the website of the account
+                        "Employees": 100, //Represents the number of employees in the company
+                        "Record_Image": null, //The profile image of the account
+                        "$review": null, //Represents the review process details
+                        "Account_Name": fantasyName.value, //Represents the name of the account
+                        "Ticker_Symbol": "sample", 
+                        
+                        "Territories": [ //Represents the list of territories with which the account is associated with
+                            "Sample2",
+                            "sample"
                         ],
-                        "Wizard": {
-                            "id": "3652397000003677001"
-                        }
+                        
+                        "$in_merge": false,
+                        "Contact_Details": [{
+
+                        }], //Represents the details of contacts associated with the account
+                        "Billing_State": billingState, //Represents the address details of the account
+                        "Tag": [], //List of tags associated with the record
                     }
-                ],
-                "lar_id": "3652397000002045001",
-                "trigger": [
-                    "approval",
-                    "workflow",
-                    "blueprint"
                 ]
+                        
+                    
+                
             })
         })
         const response = await teste;
         const json = await response.json();
+        console.log(json)
     }
 
 
@@ -449,12 +509,12 @@ export const Checkout = () => {
     }, [cpfUser])
 
     React.useEffect(() => {
-        buscaCep(payCep);
-    }, [payCep])
+        buscaCepBilling(billingCep);
+    }, [billingCep])
 
     React.useEffect(() => {
-        buscaCep2(billingCep);
-    }, [billingCep])
+        buscaCepShipping(shippingCep);
+    }, [shippingCep])
 
 
 
@@ -598,8 +658,8 @@ export const Checkout = () => {
                                     name=""
                                     pattern="[0-9]+"
                                     placeholder="Digite seu CEP"
-                                    onChange={(e) => setPayCep(e.target.value)}
-                                    value={payCep}
+                                    onChange={(e) => setBillingCep(e.target.value)}
+                                    value={billingCep}
                                 />
                             </div>
                             <div style={{ width: "100%" }}>
@@ -609,8 +669,8 @@ export const Checkout = () => {
                                     id="street"
                                     name="street"
                                     placeholder="Digite sua rua ou avenida"
-                                    onChange={(e) => setPayStreet(e.target.value)}
-                                    value={payStreet}
+                                    onChange={(e) => setBillingStreet(e.target.value)}
+                                    value={billingStreet}
                                 />
                             </div>
                             <div style={{ width: "100%" }}>
@@ -620,8 +680,8 @@ export const Checkout = () => {
                                     id="number"
                                     placeholder="Digite o número"
                                     name="number"
-                                    onChange={(e) => setNumberAddressPay(e.target.value)}
-                                    value={numberAddressPay}
+                                    onChange={(e) => setNumberAddressBilling(e.target.value)}
+                                    value={numberAddressBilling}
                                 />
                             </div>
                         </div>
@@ -634,8 +694,8 @@ export const Checkout = () => {
                                     id="country"
                                     placeholder="Digite sua cidade"
                                     name="country"
-                                    onChange={(e) => setPayCity(e.target.value)}
-                                    value={payCity}
+                                    onChange={(e) => setBillingCity(e.target.value)}
+                                    value={billingCity}
 
                                 />
                             </div>
@@ -647,8 +707,8 @@ export const Checkout = () => {
                                     id=""
                                     placeholder="Digite seu estado"
                                     name=""
-                                    onChange={(e) => setPayState(e.target.value)}
-                                    value={payState}
+                                    onChange={(e) => setBillingState(e.target.value)}
+                                    value={billingState}
                                 />
                             </div>
 
@@ -659,8 +719,8 @@ export const Checkout = () => {
                                     id="bairro"
                                     placeholder="Digite seu bairro"
                                     name="bairro"
-                                    onChange={(e) => setPayBairro(e.target.value)}
-                                    value={payBairro}
+                                    onChange={(e) => setBillingNeighbourhood(e.target.value)}
+                                    value={billingNeighbourhood}
                                 />
                             </div>
                             <div>
@@ -677,7 +737,7 @@ export const Checkout = () => {
                     </div>
 
 
-
+                    {/*Detalhes de entrega*/}
 
                     <div className={styles.formCheckout__div}>
                         <Title level={3}>
@@ -701,7 +761,7 @@ export const Checkout = () => {
                                     name="tel_company"
                                     id="tel_company"
                                     placeholder="(00) 000000000"
-                                    {...tel_company}
+                                    {...tel_user}
                                     disabled={false}
                                 />
                             </div>
@@ -715,8 +775,8 @@ export const Checkout = () => {
                                     name=""
                                     pattern="[0-9]+"
                                     placeholder="Digite seu CEP"
-                                    onChange={(e) => setBillingCep(e.target.value)}
-                                    value={billingCep}
+                                    onChange={(e) => setShippingCep(e.target.value)}
+                                    value={shippingCep}
                                 />
                             </div>
                             <div style={{ width: "100%" }}>
@@ -726,8 +786,8 @@ export const Checkout = () => {
                                     placeholder="Digite sua rua ou avenida"
                                     id="street"
                                     name="street"
-                                    onChange={(e) => setBillingStreet(e.target.value)}
-                                    value={billingAddress}
+                                    onChange={(e) => setShippingStreet(e.target.value)}
+                                    value={shippingAddress}
 
                                 />
                             </div>
@@ -738,8 +798,8 @@ export const Checkout = () => {
                                     id="number"
                                     name="number"
                                     placeholder="Digite o número"
-                                    onChange={(e) => setNumberAddressBilling(e.target.value)}
-                                    value={numberAddressBilling}
+                                    onChange={(e) => setNumberAddressShipping(e.target.value)}
+                                    value={numberAddressShipping}
                                 />
                             </div>
                         </div>
@@ -752,8 +812,8 @@ export const Checkout = () => {
                                     id="country"
                                     placeholder="Digite sua cidade"
                                     name="country"
-                                    onChange={(e) => setBillingCity(e.target.value)}
-                                    value={billingCity}
+                                    onChange={(e) => setShippingCity(e.target.value)}
+                                    value={shippingCity}
 
                                 />
                             </div>
@@ -765,8 +825,8 @@ export const Checkout = () => {
                                     id=""
                                     name=""
                                     placeholder="Digite seu estado"
-                                    onChange={(e) => setBillingState(e.target.value)}
-                                    value={billingState}
+                                    onChange={(e) => setShippingState(e.target.value)}
+                                    value={shippingState}
 
                                 />
                             </div>
@@ -777,8 +837,8 @@ export const Checkout = () => {
                                     id="bairro"
                                     name="bairro"
                                     placeholder="Digite seu bairro"
-                                    onChange={(e) => setBillingBairro(e.target.value)}
-                                    value={billingBairro}
+                                    onChange={(e) => setShippingNeighbourhood(e.target.value)}
+                                    value={shippingNeighbourhood}
 
                                 />
                             </div>
