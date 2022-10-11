@@ -398,7 +398,7 @@ export const Checkout = () => {
 
     //Envia LEAD para o ZOHO CRM
     const sendLead = async () => {
-        const teste = fetch('http://localhost:6800/send-lead', {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
