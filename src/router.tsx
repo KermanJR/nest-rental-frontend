@@ -43,6 +43,9 @@ const Clients = Loader(
 const Devolution = Loader(
   lazy(() => import('src/content/applications/Devolution'))
 );
+const Ship = Loader(
+  lazy(() => import('src/content/applications/Ship'))
+);
 
 
 const Orders = Loader(
@@ -250,6 +253,15 @@ const routes: RouteObject[] = [
         path: 'orcamentos',
         element:  <ProtectedRoute>
                     <Budget />
+                  </ProtectedRoute>
+      },
+
+      {
+        path: 'frete',
+        element:  <ProtectedRoute>
+                    <UserStorage>
+                      <Ship/>
+                    </UserStorage>
                   </ProtectedRoute>
       },
       {

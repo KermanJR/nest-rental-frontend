@@ -104,7 +104,6 @@ export const ClientsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     const data = await teste;
     const dataJson = await data.json();
     if(dataJson){
-      console.log(dataJson)
       setMessage('Cliente editado com sucesso.')
     }
     setLoading(false)

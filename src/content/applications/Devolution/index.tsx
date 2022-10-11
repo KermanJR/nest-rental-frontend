@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import PageHeaderOrders from './PageHeaderDevolution';
+import PageHeaderOrders from './PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Grid, Container } from '@mui/material';
 import Devolution from './Devolution';

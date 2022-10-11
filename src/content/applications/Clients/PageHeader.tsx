@@ -1,6 +1,7 @@
 import { Typography, Button, Grid } from '@mui/material';
 import React from 'react';
-import { RegisterOrderModal } from 'src/components/Modals/RegisterOrderModal/RegisterOrderModal';
+import { useContext } from 'react';
+import { UserContext } from 'src/context/UserContext';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { ClientsModal } from 'src/components/Modals/ClientsModal/ClientsModal';
 
@@ -13,7 +14,10 @@ function PageHeader() {
   };
 
   const [modal, setModal] = React.useState<Boolean>(false);
-  const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
+  const {
+    usuario
+  }= useContext(UserContext);
+  
   
   return (
     <Grid container justifyContent="space-between" alignItems="center">
@@ -22,11 +26,11 @@ function PageHeader() {
           Clientes
         </Typography>
         <Typography variant="subtitle2">
-          {user.name}, gerencie os clientes da sua empresa
+          {usuario?.nome}, gerencie os clientes da sua empresa
         </Typography>
       </Grid>
       <Grid item>
-      {id_perfil === 3 ? '': <Button
+      {usuario?.id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}

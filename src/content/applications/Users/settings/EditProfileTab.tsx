@@ -137,7 +137,7 @@ const [modalAddress, setModalAddress] = useState<Boolean>(false);
           <Divider />
           <CardContent sx={{ p: 4 }}>
             <Typography variant="subtitle2">
-              <Grid container spacing={0}>
+              <Grid style={{display: 'flex'}} spacing={0}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
                     CEP:
@@ -168,6 +168,9 @@ const [modalAddress, setModalAddress] = useState<Boolean>(false);
                     <b>312</b>
                   </Text>
                 </Grid>
+              </Grid>
+
+              <Grid style={{display: 'flex'}} spacing={0}>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
                     Bairro:

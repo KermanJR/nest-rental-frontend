@@ -26,7 +26,6 @@ export const LoginCreate = () => {
 
     const handleSubmit = (e: any)=>{
         e.preventDefault();
-        console.log(e)
         if(password && fantasyName && corporateName){
             setStepTwo(!stepTwo);
         }
@@ -34,7 +33,6 @@ export const LoginCreate = () => {
 
     const handleSubmit2 = (e: any)=>{
         e.preventDefault();
-        console.log(e)
         if(inscEstadual && password && emailCad.value){
             setLogin(!login)
            navigate('/dashboard/geral')

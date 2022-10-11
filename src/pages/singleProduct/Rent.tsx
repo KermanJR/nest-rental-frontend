@@ -180,6 +180,8 @@ const Rent = ({valor}) => {
         e.preventDefault();
         if(!cep || price === 0){
             setError(["Preencha todos os campos."])
+        }else if(errorCep){
+            setError(["Área fora de cobertura de nossos serviços."])
         }
         else{
             navigate('/checkout')
@@ -222,9 +224,8 @@ const Rent = ({valor}) => {
                 />
             </div>
 
-            {errorCep ?     
-                <p style={{color: 'red'}}>{errorCep}</p> : 
-                <p>{log}</p>
+            {log?
+                <p>{log}</p>: <></>
             }
             
             <div>

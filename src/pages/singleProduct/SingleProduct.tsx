@@ -18,7 +18,6 @@ const SingleProduct = () => {
 
   async function carregar() {
     const { data } = await api.get(`/produtos/1`);
-    console.log(data)
     setProduto(data)
   }
 

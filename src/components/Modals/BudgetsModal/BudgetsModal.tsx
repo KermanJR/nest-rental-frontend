@@ -96,7 +96,6 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
         const {data} = await api.get(`/produtos`);
         if(data){
             setProdutos(data);
-            console.log(data)
         }else{
             setProdutos(null);
         }
@@ -106,7 +105,6 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
         setProdutos(null)
         const {data} = await api.get("/usuarios");
         if(data){
-            console.log(data)
             setClients(data);
         }else{
             setClients(null);
@@ -125,7 +123,6 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
         buscaCep(billingCep)
     },[billingCep])
 
-    const { id_perfil } = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : 0
 
  
   return (

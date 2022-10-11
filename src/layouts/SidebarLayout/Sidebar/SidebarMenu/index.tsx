@@ -14,23 +14,13 @@ import { SidebarContext } from 'src/context/SidebarContext';
 import { UserContext } from 'src/context/UserContext';
 import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
-import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
 import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone';
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
-import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
-import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
-import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
-import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
-import HowToVoteTwoToneIcon from '@mui/icons-material/HowToVoteTwoTone';
-import LocalPharmacyTwoToneIcon from '@mui/icons-material/LocalPharmacyTwoTone';
-import RedeemTwoToneIcon from '@mui/icons-material/RedeemTwoTone';
-import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
-import TrafficTwoToneIcon from '@mui/icons-material/TrafficTwoTone';
-import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
-import ChromeReaderModeTwoToneIcon from '@mui/icons-material/ChromeReaderModeTwoTone';
-import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
-import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
-import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
+import { MdOutlineLocalShipping } from 'react-icons/md';
+import { HiOutlineDocumentText } from 'react-icons/hi';
+import { HiOutlineDocumentAdd } from 'react-icons/hi';
+import { HiOutlineDocumentRemove } from 'react-icons/hi';
+import { FiUserPlus } from 'react-icons/fi';
+
 
 import { useNavigate } from 'react-router-dom';
 
@@ -182,7 +172,6 @@ function SidebarMenu() {
   const {
     usuario
   } = useContext(UserContext);
-  console.log(usuario)
 
   
   if(!usuario?.id_perfil) {
@@ -228,7 +217,7 @@ function SidebarMenu() {
                   component={RouterLink}
                   onClick={closeSidebar}
                   to="/dashboard/pedidos"
-                  startIcon={<BrightnessLowTwoToneIcon />}
+                  startIcon={<HiOutlineDocumentAdd />}
                 >
                   Pedidos
                 </Button>
@@ -240,7 +229,7 @@ function SidebarMenu() {
                   component={RouterLink}
                   onClick={closeSidebar}
                   to="/dashboard/devolucao"
-                  startIcon={<BrightnessLowTwoToneIcon />}
+                  startIcon={<HiOutlineDocumentRemove />}
                 >
                   Devoluções
                 </Button>
@@ -255,7 +244,7 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/dashboard/clientes"
-                    startIcon={<MmsTwoToneIcon />}
+                    startIcon={<FiUserPlus />}
                   >
                     Clientes
                   </Button>
@@ -269,9 +258,22 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/dashboard/orcamentos"
-                    startIcon={<MmsTwoToneIcon />}
+                    startIcon={<HiOutlineDocumentText/>}
                   >
                     Orçamentos
+                  </Button>
+                </ListItem>
+              }
+              {[1, 3].includes(usuario?.id_perfil) && 
+                <ListItem component="div">
+                  <Button
+                    disableRipple
+                    component={RouterLink}
+                    onClick={closeSidebar}
+                    to="/dashboard/frete"
+                    startIcon={<MdOutlineLocalShipping  />}
+                  >
+                    Frete
                   </Button>
                 </ListItem>
               }
@@ -297,7 +299,7 @@ function SidebarMenu() {
                   to="/dashboard/cadastrar-produto"
                   startIcon={<TableChartTwoToneIcon />}
                 >
-                  Lista de Produtos
+                  Produtos
                 </Button>
                
               </ListItem>
@@ -313,7 +315,7 @@ function SidebarMenu() {
                   to="/dashboard/cadastrar-categoria"
                   startIcon={<TableChartTwoToneIcon />}
                 >
-                  Categoria
+                  Categorias
                 </Button>
                
               </ListItem>

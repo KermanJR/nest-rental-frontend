@@ -58,7 +58,6 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
 
     const data = await teste;
     const dataJson = await data.json();
-    console.log(dataJson)
     if(dataJson.descricao){
       setEditedCategory(dataJson.descricao)
       setMessage('Categoria editada com sucesso.')

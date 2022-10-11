@@ -131,8 +131,7 @@ export const Checkout = () => {
 
 
     //Cria modelo do documento
-    const createModelDocument = async (e: React.MouseEvent<HTMLInputElement>) => {
-        e.preventDefault();
+    const createModelDocument = async () => {
         if (cnpj.validate() && razaoSocial && fantasyName
             && email_company.value && numberAddressPay && numberAddressBilling) {
             const { url, options } = CREATE_DOCUMENT({
@@ -161,7 +160,7 @@ export const Checkout = () => {
             })
             const { key } = await request(url, options);
             setKeyDocument(key);
-            sendLead();
+            //sendLead();
         } else {
             setErrorData('Preencha todos os campos obrigatórios.')
         }
@@ -306,7 +305,7 @@ export const Checkout = () => {
 
     async function criar_endereco_cobranca(id_entidade) {
         const { data } = await api.post(`/enderecos/${id_entidade}`, {
-            "id_cidade": await buscar_cidade(payBairro),
+            "id_cidade": await buscar_cidade(payCity),
             "cep": payCep,
             "bairro": payBairro,
             "complemento": "???",
@@ -324,7 +323,7 @@ export const Checkout = () => {
 
     async function criar_endereco_entrega(id_entidade) {
         const { data } = await api.post(`/enderecos/${id_entidade}`, {
-            "id_cidade": await buscar_cidade(billingBairro),
+            "id_cidade": await buscar_cidade(billingCity),
             "cep": billingCep,
             "bairro": billingBairro,
             "complemento": "???",
@@ -384,6 +383,7 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
+            createModelDocument()
         } catch (err) {
             alert(
                 JSON.stringify(err?.response?.data || err, null, 3)

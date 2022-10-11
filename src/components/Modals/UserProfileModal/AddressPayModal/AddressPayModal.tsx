@@ -78,7 +78,6 @@ export const AddressPayModal = ({openModal, setModal, data, edit}: ModalPropsTes
     const data = await teste;
     const dataJson = await data.json();
     if(dataJson){
-      console.log(dataJson)
       setMessage('Endereço editado com sucesso.')
     }
     setLoading(false)

@@ -1,9 +1,8 @@
-import React from 'react';
-import { Typography, Button, Grid } from '@mui/material';
+import React from 'react'
+import { Typography, Grid } from '@mui/material';
 import { useContext } from 'react';
 import { UserContext } from 'src/context/UserContext';
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { ListProductsModal } from 'src/components/Modals/ListProductsModal/ListProductsModal';
+import { CategoryModal } from 'src/components/Modals/CategoryModal/CategoryModel';
 
 function PageHeader() {
 
@@ -11,19 +10,19 @@ function PageHeader() {
   const {
     usuario
   }= useContext(UserContext);
-
+  
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item>
         <Typography variant="h3" component="h3" gutterBottom>
-          Lista de Produtos
+          Frete
         </Typography>
         <Typography variant="subtitle2">
-          {usuario?.nome}, cadastre novos produtos para sua empresa
+          {usuario?.nome}, consulte as regiões de frete de seus produtos
         </Typography>
       </Grid>
       <Grid item>
-      {usuario?.id_perfil === 3 ? '': <Button
+      {/*id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
@@ -31,10 +30,10 @@ function PageHeader() {
           onClick={(e)=>setModal(!modal)
           }
         >
-          Cadastrar produto
-        </Button>}
+          Cadastrar categoria
+        </Button>*/}
       </Grid>
-      <ListProductsModal setModal={setModal} openModal={modal} data="" edit={false}/>
+      <CategoryModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>
   );
 }

@@ -185,12 +185,10 @@ const ProductsTable: FC<RecentOrdersTableProps> = ({ productOrders }) => {
   const [modal, setModal] = useState<Boolean>(false)
 
   async function queryProductsById(idProduct: any){
-    console.log(idProduct)
     setModal(!modal)
     setData(null)
     const {data} = await api.get(`/produtos/${idProduct}`);
     if(data){
-      console.log(data)
       setData(data);
     }else{
       setData(null);

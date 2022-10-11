@@ -11,7 +11,6 @@ function Devolution() {
   async function carregar(){
     const {data} = await api.get("/pedidos/dashboard");
     setDados(data);
-    console.log(data)
   }
 
   useEffect(()=>{

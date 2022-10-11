@@ -7,7 +7,6 @@ import RecentOrders from './Category';
 
 
 function ApplicationsTransactions() {
-  let link = window.location.pathname;
   return (
     <>
       <Helmet>

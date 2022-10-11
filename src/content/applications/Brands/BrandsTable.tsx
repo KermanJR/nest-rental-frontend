@@ -189,7 +189,6 @@ const BrandsTable: FC<RecentOrdersTableProps> = ({ cryptoOrders}) => {
     const {data} = await api.get(`/marcas/${idBrand}`);
     if(data){
       setData(data);
-      console.log(data);
     }else{
       setData(null);
     }

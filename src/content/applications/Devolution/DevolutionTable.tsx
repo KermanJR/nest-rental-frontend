@@ -141,7 +141,6 @@ const DevolutionTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) =>
     setData(null)
     const {data} = await api.get(`/pedidos/${idOrder}`);
     if(data){
-      console.log(data)
       setData(data);
     }else{
       setData(null);

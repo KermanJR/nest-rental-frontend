@@ -44,7 +44,6 @@ export const useAuth = (type: any) =>{
     }
 
     const onChange = ({target}:any) =>{
-        console.log(target.value)
         if(error) validate(target.value)
         setValue(target.value)
     }   

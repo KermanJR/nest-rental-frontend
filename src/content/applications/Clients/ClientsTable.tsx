@@ -210,24 +210,7 @@ const ClientsTable: FC<RecentOrdersTableProps> = ({ clients }) => {
           <BulkActions />
         </Box>
       )}
-      {!selectedBulkActions && (
-        <CardHeader
-          action={
-            <Box width={150}>
-              
-                <FaCloudDownloadAlt style={{
-                  textAlign: 'right',
-                  position: 'relative',
-                  left: '7rem',
-                  height: '25px',
-                  width: '25px',
-                  cursor: 'pointer'
-               }}/>
-            </Box>
-          }
-          title="Clientes cadastrados"
-        />
-      )}
+      
       <Divider />
       <TableContainer>
         <Table>

@@ -1,19 +1,20 @@
 import { Helmet } from 'react-helmet-async';
-import PageHeaderOrders from './PageHeader';
+import PageHeader from './PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Grid, Container } from '@mui/material';
-import Brands from './Brands';
+import RecentOrders from './Ship';
 
 
 
 function ApplicationsTransactions() {
+  let link = window.location.pathname;
   return (
     <>
       <Helmet>
-        <title>Marcas - Produtos</title>
+        <title>Produtos - Cadastrar</title>
       </Helmet>
       <PageTitleWrapper>
-        <PageHeaderOrders />
+        <PageHeader />
       </PageTitleWrapper>
       <Container maxWidth="lg">
         <Grid
@@ -24,7 +25,7 @@ function ApplicationsTransactions() {
           spacing={3}
         >
           <Grid item xs={12}>
-            <Brands/>
+            <RecentOrders/>
           </Grid>
         </Grid>
       </Container>

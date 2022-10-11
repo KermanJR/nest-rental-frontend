@@ -34,7 +34,6 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
 
     const data = await teste;
     const dataJson = await data.json();
-    console.log(dataJson)
     if(dataJson){
       setMessage('Marca editada com sucesso.')
     }
@@ -112,7 +111,7 @@ export const BrandsModal = ({ openModal, setModal, data, edit}: ModalPropsTestEd
               />
             </div>
             {id_perfil === 3? '': <div style={{ display: 'flex', gridGap: '1rem', width: '20rem' }}>
-                <Button text="Editar" /> <Button text="Cadastrar" />
+                <Button text="Cadastrar" />
                 <Button text="Cancelar" />
               </div>
             }

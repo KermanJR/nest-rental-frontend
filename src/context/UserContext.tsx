@@ -62,7 +62,6 @@ export const UserStorage = ({ children }: any) => {
             const { url, options } = TOKEN_POST(emailUser, passwordUser);
             const response = await fetch(url, options)
             const json = await response.json();
-            console.log(json)
             if (json.message) {
                 setError(json.message)
             } else {

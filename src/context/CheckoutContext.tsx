@@ -240,9 +240,7 @@ export const checkContext = React.createContext<PropsContextType>({
         else if(totalDays > 30){
 
             let comp = totalDays - 30
-            console.log(comp)
             result = calculaValorDias(comp) + 1688;
-            console.log(result)
             setPrice(result)
         }
     

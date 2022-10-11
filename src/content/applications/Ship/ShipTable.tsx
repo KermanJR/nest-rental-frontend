@@ -1,5 +1,5 @@
-import { FC, ChangeEvent, useState, useCallback } from 'react';
-import {utils, writeFileXLSX } from 'xlsx';
+import { FC, ChangeEvent, useState } from 'react';
+import { format } from 'date-fns';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import { api } from 'src/api/api';
@@ -7,7 +7,8 @@ import {
   Tooltip,
   Divider,
   Box,
-
+  FormControl,
+  InputLabel,
   Card,
   Checkbox,
   IconButton,
@@ -26,15 +27,16 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/Label';
-import { CryptoOrder, CryptoOrderStatus } from 'src/models/crypto_order';
+import { Categoria, CryptoOrderStatus } from 'src/models/crypto_order';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
 import {FaCloudDownloadAlt} from 'react-icons/fa'
-import {BsEye} from 'react-icons/bs'
-import { BudgetsModal } from 'src/components/Modals/BudgetsModal/BudgetsModal';
+import { CategoryModal } from 'src/components/Modals/CategoryModal/CategoryModel';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: CryptoOrder[];
+  cryptoOrders: Categoria[];
 }
 
 interface Filters {
@@ -63,29 +65,29 @@ const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Categoria[],
   filters: Filters
-): CryptoOrder[] => {
+): Categoria[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
-    if (filters.status && cryptoOrder.status !== filters.status) {
+    /*if (filters.status && cryptoOrder.status !== filters.status) {
       matches = false;
-    }
+    }*/
 
     return matches;
   });
 };
 
 const applyPagination = (
-  cryptoOrders: CryptoOrder[],
+  cryptoOrders: Categoria[],
   page: number,
   limit: number
-): CryptoOrder[] => {
+): Categoria[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
-const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
+const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );
@@ -114,13 +116,6 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
       name: 'Opção 4'
     }
   ];
-
-  const exportFile = useCallback(() => {
-    const ws = utils.json_to_sheet(cryptoOrders);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "Orcamentos.xlsx");
-  }, [cryptoOrders]);
 
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     let value = null;
@@ -182,9 +177,10 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     selectedCryptoOrders.length === cryptoOrders.length;
   const theme = useTheme();
 
+
+  const [data, setData] = useState<Categoria[]>([]);
+  const [idCategory, setIdCategory] = useState<Categoria[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
-  const [data, setData] = useState([]);
-  const [idCategory, setIdCategory] = useState([]);
 
   async function queryCategoryId(idCategory: any){
     setModal(!modal)
@@ -197,8 +193,9 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
     }
   }
 
+
   return (
-    <Card >
+    <Card>
       {selectedBulkActions && (
         <Box flex={1} p={2}>
           <BulkActions />
@@ -223,17 +220,17 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   ))}
                 </Select>
                   </FormControl>*/}
-                <FaCloudDownloadAlt style={{
-                textAlign: 'right',
-                position: 'relative',
-                left: '7rem',
-                height: '25px',
-                width: '25px',
-                cursor: 'pointer'
+                  <FaCloudDownloadAlt style={{
+                  textAlign: 'right',
+                  position: 'relative',
+                  left: '7rem',
+                  height: '25px',
+                  width: '25px',
+                  cursor: 'pointer'
                }}/>
             </Box>
           }
-          title="Orçamentos cadastrados"
+          title="Regiões cadastradas"
         />
       )}
       <Divider />
@@ -249,23 +246,20 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   onChange={handleSelectAllCryptoOrders}
                 />
               </TableCell>
-              <TableCell>Empresa</TableCell>
-              <TableCell>ID pedido</TableCell>
-              <TableCell>Início e Devolução</TableCell>
-              <TableCell align="right">Valor</TableCell>
-              {/*<TableCell align="right">Status</TableCell>*/}
+              <TableCell>Área de entrega</TableCell>
+              <TableCell>Valor</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((cryptoOrder) => {
+            {paginatedCryptoOrders.map((data) => {
               const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                cryptoOrder.id
+                data.id
               );
               return (
                 <TableRow
                   hover
-                  key={cryptoOrder.id}
+                  key={data.id}
                   selected={isCryptoOrderSelected}
                 >
                   <TableCell padding="checkbox">
@@ -273,7 +267,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       color="primary"
                       checked={isCryptoOrderSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneCryptoOrder(event, cryptoOrder.id)
+                        handleSelectOneCryptoOrder(event, data.id)
                       }
                       value={isCryptoOrderSelected}
                     />
@@ -286,10 +280,7 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderDetails}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {(cryptoOrder.orderDate)}
+                      {data.descricao}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -300,48 +291,11 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {cryptoOrder.orderID}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {cryptoOrder.sourceName}
-                    </Typography>
-                    <Typography 
-                        variant="body1"
-                        fontWeight="bold"
-                        color="text.secondary"
-                        gutterBottom 
-                        noWrap
-                    >
-                      {cryptoOrder.sourceDesc}
+                      {data.id}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-
-                    
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(cryptoOrder.amount).format(
-                        `${cryptoOrder.currency}0,0.00`
-                      )}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Editar orçamento" arrow>
+                    <Tooltip title="Editar categoria" arrow>
                       <IconButton
                         sx={{
                           '&:hover': {
@@ -351,13 +305,12 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>setModal(!modal)}
+                        onClick={(e)=>queryCategoryId(data.id)}
                       >
-                        <BsEye style={{width: '20px', height: '20px'}}/>
-                        
+                        <EditTwoToneIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    {/*<Tooltip title="Excluir pedido" arrow>
+                    {/*<Tooltip title="Excluir produto" arrow>
                       <IconButton
                         sx={{
                           '&:hover': { background: theme.colors.error.lighter },
@@ -387,24 +340,24 @@ const BudgetTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
-      
-        <BudgetsModal 
+      {data  && (
+        <CategoryModal 
         openModal={modal}
         setModal={setModal}
         data={data}
         edit={true}
       />
-      
+      )}
     </Card>
   );
 };
 
-BudgetTable.propTypes = {
+ShipTable.propTypes = {
   cryptoOrders: PropTypes.array.isRequired
 };
 
-BudgetTable.defaultProps = {
+ShipTable.defaultProps = {
   cryptoOrders: []
 };
 
-export default BudgetTable;
+export default ShipTable;
