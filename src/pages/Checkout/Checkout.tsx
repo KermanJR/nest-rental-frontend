@@ -95,25 +95,12 @@ export const Checkout = () => {
     }
 
     const {
-        cep,
-        setCep,
         totalDays,
         billing,
         price,
-        setPrice,
         newPrice,
         startDate,
         endDate,
-        nameLocataria,
-        setNameLocataria,
-        street,
-        bairro,
-        country,
-        contact,
-        setContact,
-        dataCheckout,
-        state,
-        setDataCheckout,
     } = useContext(checkContext);
 
     
@@ -232,7 +219,7 @@ export const Checkout = () => {
     }
 
     const {
-        usuario
+        usuario 
     } = useContext(UserContext);
 
 
@@ -275,7 +262,6 @@ export const Checkout = () => {
 
     useEffect(()=>{
         carregar_usuario_logado();
-        //carregar_endereco();
     }, []);
 
     async function criar_usuario() {
@@ -289,7 +275,7 @@ export const Checkout = () => {
             "inscricao_estadual": insc_estadual.value,
             "login": email_company.value,
             "password": passwordClient.value,
-            "id_perfil": 2
+            "id_perfil": 2,
         });
 
         return data;
@@ -367,8 +353,7 @@ export const Checkout = () => {
     }
 
 
-    async function salvar(e) {
-        e.preventDefault();
+    async function salvar() {
         try {
             let entidade_id, user_id;
 
@@ -384,8 +369,7 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
-            createModelDocument()
-            sendLead();
+           // createModelDocument()
         } catch (err) {
             alert(
                 JSON.stringify(err?.response?.data || err, null, 3)
@@ -395,10 +379,125 @@ export const Checkout = () => {
     }
 
 
+    const [idAccount, setIdAccount] = React.useState(null);
+    const [errorCreateLeadZoho, setErrorCreateLeadZoho] = React.useState<string>('');
 
-    //Envia LEAD para o ZOHO CRM
-    const sendLead = async () => {
-        const teste = fetch('http://localhost:6800/send-lead', {
+    //Envia QUOTE para o ZOHO CRM 
+    const sendQuote = async (idAccount: any) => {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-quote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "data": [
+                            {
+                                "Owner": {   
+                                    "name": "Tatiana Tavora Dias",
+                                    "id": "702098344",
+                                    "email": "tdias@nestrental.com.br"
+                                },
+
+                                //settings
+                                "$currency_symbol": "BRL", 
+                                "Currency": "BRL",
+                                "Adjustment": 0,             
+                                "$editable": true, 
+                                "Tax": 0, 
+                                
+
+                                //billing address
+                                "Billing_Country": "Brasil",
+                                "Billing_Street": billingStreet,  
+                                "Billing_Code": billingCep, 
+                                "Billing_City": billingCity,   
+                                "Billing_State": billingState,
+
+                                //shipping address
+                                "Shipping_Country": "Brasil",             
+                                "Shipping_Code": shippingCep,  
+                                "Shipping_Street": shippingStreet,  
+                                "Shipping_State": shippingState,  
+                                "Shipping_City": shippingCity,
+                                
+          
+                                "Carrier": "Nest Rental", 
+                                "Grand_Total": 9785,    
+
+                                "$approval": {                
+                                    "delegate": false,                
+                                    "approve": false,                
+                                    "reject": false,                
+                                    "resubmit": false
+                                },
+
+                            "Product_Details": [ 
+                                {
+                                    "product": {
+                                        "Product_Code": null,                                        
+                                        "Currency": "BRL",
+                                        "name": "sample",
+                                        "id": "4288853000019876145"
+                                    },
+                                    
+                                    "quantity": 1,                  
+                                    "Discount": 0,                    
+                                    "total_after_discount": newPrice+billing,                    
+                                    "net_total": 0,                    
+                                    "book": null,                    
+                                    "Tax": 0,                    
+                                    "list_price": 0,                    
+                                    "unit_price": null,                   
+                                    "quantity_in_stock": -1,                    
+                                    "total": newPrice+billing,                    
+                                    "id": "4288853000019876145",
+                                    "product_description": produto?.descricao,                    
+                                    "line_tax": []
+                                }
+                            ],
+               
+                            "Discount": 0,              
+                            "Description": produto?.descricao,             
+                            
+
+                            "$review_process": { 
+                                "approve": false,
+                                "reject": false,
+                                "resubmit": false
+                            },
+                
+                            "$review": null, 
+                            "Valid_Till": null, 
+                            
+                            "Account_Name": { 
+                                "name": razaoSocial.value,
+                                "id": idAccount
+                            },
+                            
+                            "Quote_Stage": "Pendente", 
+                            "Terms_and_Conditions": null, 
+                            "Sub_Total": price+billing, 
+                            "Subject": "Locação", 
+                            "$orchestration": false, 
+                            "Contact_Name": null, 
+                            "$in_merge": false,
+                            "$line_tax": [], 
+                            "Tag": []
+    
+                        }
+                    ]
+                })
+            })
+        const response = await teste;
+        const json = await response.json();
+        createModelDocument();
+    }
+
+
+    //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
+    const sendLead = async (e: any) => {
+        e.preventDefault()
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-lead', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -425,7 +524,6 @@ export const Checkout = () => {
                         "Exchange_Rate": 3, //Represents of the currency in which the revenue is generated
                         "Currency": "BRL", //The symbol of the currency in which the revenue is generated
                         "Billing_Country": "Brasil", //The billing address of the account to send the quotes, invoices, and other agreements
-
                         "$approval": { //Represents if the current user can approve, delegate, reject, or resubmit the operations performed on this record
                             "delegate": false,
                             "approve": false,                         
@@ -449,7 +547,6 @@ export const Checkout = () => {
                         
                         "Shipping_Street": shippingStreet, //Represents the address details of the account
                         "Ownership": "Private", //Represents the ownership type of the account
-                        "Description": "This is a sample description.", //Represents the description about the account
                         "Rating": "Active", //Represents the rating of the account
                         "Shipping_State": "SP", //Represents the address details of the account
 
@@ -460,16 +557,8 @@ export const Checkout = () => {
                         },
                         
                         "Website": "https://nest-rental-frontend.herokuapp.com", //Represents the website of the account
-                        "Employees": 100, //Represents the number of employees in the company
-                        "Record_Image": null, //The profile image of the account
-                        "$review": null, //Represents the review process details
                         "Account_Name": fantasyName.value, //Represents the name of the account
-                        "Ticker_Symbol": "sample", 
-                        
-                        "Territories": [ //Represents the list of territories with which the account is associated with
-                            "Sample2",
-                            "sample"
-                        ],
+
                         
                         "$in_merge": false,
                         "Contact_Details": [{
@@ -477,6 +566,8 @@ export const Checkout = () => {
                         }], //Represents the details of contacts associated with the account
                         "Billing_State": billingState, //Represents the address details of the account
                         "Tag": [], //List of tags associated with the record
+
+                        
                     }
                 ]
                         
@@ -486,9 +577,18 @@ export const Checkout = () => {
         })
         const response = await teste;
         const json = await response.json();
-        console.log(json)
+        if(json.message.data[0].code === 'SUCCESS'){
+            sendQuote(json.message.data[0].details.id);
+            salvar()
+            createModelDocument()
+        }else if(json.message.data[0].code === 'DUPLICATE_DATA' &&
+                    json.message.data[0].details.api_name === 'CNPJ'
+                ){
+                    setErrorCreateLeadZoho('Este CNPJ já está associado a uma conta! Por favor, faça login.')
+                }
     }
 
+    
 
 
 
@@ -499,6 +599,14 @@ export const Checkout = () => {
         //realizar a formatação...
         setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
     }
+
+
+    const [produto, setProduto] = React.useState(null);
+
+    async function carregar() {
+        const { data } = await api.get(`/produtos/1`);
+        setProduto(data)
+      }
 
 
 
@@ -542,109 +650,101 @@ export const Checkout = () => {
 
             {!keyDocument && <section className={styles.divCheckout}>
                 <form className={styles.formCheckout}>
-                    <input type="text" id="total_days" name="total_days" value={totalDays} style={{ display: 'none' }} />
-                    <input type="text" id="billing" name="billing" value={billing} style={{ display: 'none' }} />
-                    <input type="text" id="total" name="total" value={price ? price : newPrice} style={{ display: 'none' }} />
-                    <input type="text" id="address_pay" name="address_pay" value={`${street}, ${bairro}, ${country}, ${number}`} style={{ display: 'none' }} />
-
-
-
                     <div className={styles.formCheckout__div}>
                         <div style={{
-                            display: 'flex',
+                            display: 'block',
                             justifyContent: 'space-between',
                             alignItems: 'center'
                         }}>
-                            <Title level={3}>
-                                Empresa
-                            </Title>
-                            {
-                                usuario == null && <div>
-                                    <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600' }}>Já possui cadastro?
-                                        <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}>Faça Login</Link>
-                                    </p>
-                                </div>
-                            }
 
-                        </div>
-
-                        <Input
-                            type="text"
-                            label="Razão social"
-                            name="razao_social"
-                            id="razao_social"
-                            placeholder="Digite sua razão social"
-                            {...razaoSocial}
-                            disabled={false}
-                        />
-
-                        <div className={styles.formCheckout__div__inputs}>
-                            <Input
-                                type="text"
-                                label="Nome fantasia*"
-                                name="fantasy_name"
-                                id="fantasy_name"
-                                placeholder="Digite seu nome fantasia"
-                                {...fantasyName}
-                                disabled={false}
-                            />
-
-                            <Input
-                                type="text"
-                                label="CNPJ*"
-                                name="cnpj"
-                                id="cnpj"
-                                placeholder="xx.xxx.xxx/xxxx-xx"
-                                {...cnpj}
-                                disabled={false}
-                            />
-                        </div>
-
-                        <div className={styles.formCheckout__div__inputs}>
-                            <div style={{ width: "100%" }}>
-                                <Input
-                                    type="text"
-                                    label="Inscrição Estadual*"
-                                    name="insc_estadual"
-                                    id="insc_estadual"
-                                    placeholder="xx.xxx.xxx-x"
-                                    {...insc_estadual}
-                                    disabled={false}
-                                />
-                            </div>
-                            <div style={{ width: "100%" }}>
-                                <Input
-                                    type="email"
-                                    label="Email*"
-                                    name="email_company"
-                                    id="email_company"
-                                    placeholder="emailexample@com.br"
-                                    {...email_company}
-                                    disabled={false}
-                                />
-                            </div>
-                        </div>
-
-                        {usuario?.id == null && (
-                            <Input
-                            type="password"
-                            label="Senha*"
-                            name="new_pass_client"
-                            id="new_pass_client"
-                            placeholder="Digite sua senha"
-                            {...passwordClient}
-                            disabled={false}
-                        />
-                        )}
                         
+                                
+                                    <Title level={3}>
+                                        Empresa
+                                    </Title>
+                                    <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600', textAlign: 'right' }}>Já possui cadastro?
+                                        <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}> Faça Login</Link>
+                                    </p>
+                                    <Input
+                                        type="text"
+                                        label="Razão social"
+                                        name="razao_social"
+                                        id="razao_social"
+                                        placeholder="Digite sua razão social"
+                                        {...razaoSocial}
+                                        disabled={usuario?true:false}
+                                    />
 
+                                    <div className={styles.formCheckout__div__inputs}>
+                                        <Input
+                                            type="text"
+                                            label="Nome fantasia*"
+                                            name="fantasy_name"
+                                            id="fantasy_name"
+                                            placeholder="Digite seu nome fantasia"
+                                            {...fantasyName}
+                                            disabled={usuario?true:false}
+                                        />
 
+                                        <Input
+                                            type="text"
+                                            label="CNPJ*"
+                                            name="cnpj"
+                                            id="cnpj"
+                                            placeholder="xx.xxx.xxx/xxxx-xx"
+                                            {...cnpj}
+                                            disabled={usuario?true:false}
+                                        />
+                                    </div>
+
+                                    <div className={styles.formCheckout__div__inputs}>
+                                        <div style={{ width: "100%" }}>
+                                            <Input
+                                                type="text"
+                                                label="Inscrição Estadual*"
+                                                name="insc_estadual"
+                                                id="insc_estadual"
+                                                placeholder="xx.xxx.xxx-x"
+                                                {...insc_estadual}
+                                                disabled={usuario?true:false}
+                                            />
+                                        </div>
+                                        <div style={{ width: "100%" }}>
+                                            <Input
+                                                type="email"
+                                                label="Email*"
+                                                name="email_company"
+                                                id="email_company"
+                                                placeholder="emailexample@com.br"
+                                                {...email_company}
+                                                disabled={usuario?true:false}
+                                            />
+                                        </div>
+                                    </div>
+
+                                {usuario ? <> </>: <Input
+                                        type="password"
+                                        label="Senha*"
+                                        name="new_pass_client"
+                                        id="new_pass_client"
+                                        placeholder="Digite sua senha"
+                                        {...passwordClient}
+                                        disabled={usuario?true:false}
+                                    />  }
+                                             
+                        
+                        </div>
                     </div>
+                    
+            
+               
+                    
+
+
+
+
 
                     {/* DETALHES DO FATURAMENTO*/}
-
-
-
                     <div className={styles.formCheckout__div}>
                         <Title level={3}>
                             Detalhes do faturamento
@@ -906,8 +1006,9 @@ export const Checkout = () => {
                             boxShadow: "1px 10px 15px 2px #ccc"
                         }}
                             value="Finalizar aluguel"
-                            onClick={salvar/*(e)=>createModelDocument(e)*/}
+                            onClick={usuario?.id != null ? (e)=>sendQuote(e): (e)=>sendLead(e)}
                         />
+                        {errorCreateLeadZoho && <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorCreateLeadZoho}</p>}
                     </form>
                     {errorData && <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>}
                 </div>
