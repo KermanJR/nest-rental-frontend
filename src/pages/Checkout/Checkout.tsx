@@ -384,7 +384,7 @@ export const Checkout = () => {
 
     //Envia QUOTE para o ZOHO CRM 
     const sendQuote = async (idAccount: any) => {
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-quote', {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -497,7 +497,7 @@ export const Checkout = () => {
     //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
     const sendLead = async (e: any) => {
         e.preventDefault()
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-lead', {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
