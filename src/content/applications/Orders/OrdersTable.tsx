@@ -2,6 +2,7 @@ import { FC, ChangeEvent, useState, useContext } from 'react';
 import { api } from 'src/api/api';
 import numeral from 'numeral';
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Tooltip,
   Divider,
@@ -131,6 +132,23 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const theme = useTheme();
 
 
+
+  async function getAllDocuments(){
+    const req = fetch("http://localhost:8080/get-all-documents", {
+      method: "GET",
+      headers:{
+        "Content-Type": "application/json"
+      },
+    }).then((r)=>{
+      return r;
+    }).then((r)=>{
+      return r.json()
+    }).then((r)=>{
+      console.log(r);
+    })
+  }
+
+
   const [data, setData] = useState<Pedido[]>([]);
   const [idOrder, setIdOrder] = useState<Pedido[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
@@ -149,6 +167,10 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const {
     usuario
   } = useContext(UserContext);
+
+  React.useEffect(()=>{
+    getAllDocuments();
+  })
 
 
 
