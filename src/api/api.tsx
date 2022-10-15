@@ -1,6 +1,5 @@
 import axios from 'axios';
-//export const API_URL = 'http://127.0.0.1:4003/api'
-export const API_URL = 'https://nest-rental-backend.herokuapp.com/api'
+export const API_URL = process.env.API_URL || 'https://nest-rental-backend.herokuapp.com/api'
 
 let token = null;
 
