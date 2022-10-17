@@ -15,6 +15,7 @@ import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
 import { UserContext } from "src/context/UserContext";
 import SearchCep from "src/helpers/SearchCep";
+import TrendingUpTwoTone from "@mui/icons-material/TrendingUpTwoTone";
 
 
 
@@ -353,10 +354,11 @@ export const Checkout = () => {
     }
 
 
+    //salva novo cliente no banco de dados
     async function salvar() {
         try {
             let entidade_id, user_id;
-
+        
             if(usuario == null){
                 const { entidade, user } = await criar_usuario();
                 entidade_id = entidade.id;
@@ -369,12 +371,9 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
-           // createModelDocument()
+            return true;
         } catch (err) {
-            alert(
-                JSON.stringify(err?.response?.data || err, null, 3)
-            );
-            console.log(err?.response?.data || err);
+            return false;
         }
     }
 
@@ -382,9 +381,9 @@ export const Checkout = () => {
     const [idAccount, setIdAccount] = React.useState(null);
     const [errorCreateLeadZoho, setErrorCreateLeadZoho] = React.useState<string>('');
 
-    //Envia QUOTE para o ZOHO CRM 
+    //Envia ORÇAMENTO para o ZOHO CRM 
     const sendQuote = async (idAccount: any) => {
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-quote', {
+        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -490,102 +489,114 @@ export const Checkout = () => {
             })
         const response = await teste;
         const json = await response.json();
-        createModelDocument();
     }
 
 
     //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
     const sendLead = async (e: any) => {
+        setErrorData('');
         e.preventDefault()
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/create-document/send-lead', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "data": [
-                    {
-                        "Owner": { //Name, ID, and email of the owner of the Account
-                            "name": "Tatiana Tavora Dias",
-                            "id": "702098344",
-                            "email": "tdias@nestrental.com.br"
-                        },
+        if(cnpj.validate() && razaoSocial && fantasyName
+        && email_company.value && numberAddressShipping && numberAddressBilling){
+        
+            const fetchLead = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "data": [
+                        {
+                            "Owner": { //Name, ID, and email of the owner of the Account
+                                "name": "Tatiana Tavora Dias",
+                                "id": "702098344",
+                                "email": "tdias@nestrental.com.br"
+                            },
 
-                        "Inscri_o_Estadual": insc_estadual.value,
-                        "CNPJ": cnpj.value,
-                        "Raz_o_Social": razaoSocial.value,
-                        "Phone": tel_user.value,
-                        "Origem_prospect": "E-commerce", 
-                        "$currency_symbol": "BRL",  //The currency in which the revenue is generated 
-                        "Account_Type": "Lead", //Represents the type of account
-                        "Industry": "Instaladoras", //The name of the industry of the account 
-                        "Account_Site": "https://nest-rental-frontend.herokuapp.com", //The name of the account's location, for example, Headquarters or London.
-                        "$process_flow": false, //Represents if the record is a blueprint data
-                        "Exchange_Rate": 3, //Represents of the currency in which the revenue is generated
-                        "Currency": "BRL", //The symbol of the currency in which the revenue is generated
-                        "Billing_Country": "Brasil", //The billing address of the account to send the quotes, invoices, and other agreements
-                        "$approval": { //Represents if the current user can approve, delegate, reject, or resubmit the operations performed on this record
-                            "delegate": false,
-                            "approve": false,                         
-                            "reject": false,
-                            "resubmit": false
-                        },
-                        
-                        "Billing_Street": billingStreet, //Represents the address details of the account
-                        "$editable": true, //Represents if the user can edit records in the Accounts module
-                        "Billing_Code": billingCep, //Represents the address details of the account
-                        "Shipping_City": shippingCity, //Represents the address details of the account
-                        "Shipping_Country": "Brasil", //Represents the address details of the account
-                        "Shipping_Code": shippingCep, //Represents the address details of the account
-                        "Billing_City": billingCity, //Represents the address details of the account
+                            "Inscri_o_Estadual": insc_estadual.value,
+                            "CNPJ": cnpj.value,
+                            "Raz_o_Social": razaoSocial.value,
+                            "Phone": tel_user.value,
+                            "Origem_prospect": "E-commerce", 
+                            "$currency_symbol": "BRL",  //The currency in which the revenue is generated 
+                            "Account_Type": "Lead", //Represents the type of account
+                            "Industry": "Instaladoras", //The name of the industry of the account 
+                            "Account_Site": "https://nest-rental-frontend.herokuapp.com", //The name of the account's location, for example, Headquarters or London.
+                            "$process_flow": false, //Represents if the record is a blueprint data
+                            "Exchange_Rate": 3, //Represents of the currency in which the revenue is generated
+                            "Currency": "BRL", //The symbol of the currency in which the revenue is generated
+                            "Billing_Country": "Brasil", //The billing address of the account to send the quotes, invoices, and other agreements
+                            "$approval": { //Represents if the current user can approve, delegate, reject, or resubmit the operations performed on this record
+                                "delegate": false,
+                                "approve": false,                         
+                                "reject": false,
+                                "resubmit": false
+                            },
+                            
+                            "Billing_Street": billingStreet, //Represents the address details of the account
+                            "$editable": true, //Represents if the user can edit records in the Accounts module
+                            "Billing_Code": billingCep, //Represents the address details of the account
+                            "Shipping_City": shippingCity, //Represents the address details of the account
+                            "Shipping_Country": "Brasil", //Represents the address details of the account
+                            "Shipping_Code": shippingCep, //Represents the address details of the account
+                            "Billing_City": billingCity, //Represents the address details of the account
 
-                        "Created_By": { //Name and ID of the user who created the record. This is a system-generated field. You cannot modify it.
-                            "name": "Tatiana Tavora Dias",
-                            "id": "702098344",
-                            "email": "tdias@nestrental.com.br"
-                        },
-                        
-                        "Shipping_Street": shippingStreet, //Represents the address details of the account
-                        "Ownership": "Private", //Represents the ownership type of the account
-                        "Rating": "Active", //Represents the rating of the account
-                        "Shipping_State": "SP", //Represents the address details of the account
+                            "Created_By": { //Name and ID of the user who created the record. This is a system-generated field. You cannot modify it.
+                                "name": "Tatiana Tavora Dias",
+                                "id": "702098344",
+                                "email": "tdias@nestrental.com.br"
+                            },
+                            
+                            "Shipping_Street": shippingStreet, //Represents the address details of the account
+                            "Ownership": "Private", //Represents the ownership type of the account
+                            "Rating": "Active", //Represents the rating of the account
+                            "Shipping_State": "SP", //Represents the address details of the account
 
-                        "$review_process": { //Represents the review process details of the account
-                            "approve": false,
-                            "reject": false,
-                            "resubmit": false
-                        },
-                        
-                        "Website": "https://nest-rental-frontend.herokuapp.com", //Represents the website of the account
-                        "Account_Name": fantasyName.value, //Represents the name of the account
+                            "$review_process": { //Represents the review process details of the account
+                                "approve": false,
+                                "reject": false,
+                                "resubmit": false
+                            },
+                            
+                            "Website": "https://nest-rental-frontend.herokuapp.com", //Represents the website of the account
+                            "Account_Name": fantasyName.value, //Represents the name of the account
 
-                        
-                        "$in_merge": false,
-                        "Contact_Details": [{
+                            
+                            "$in_merge": false,
+                            "Contact_Details": [{
 
-                        }], //Represents the details of contacts associated with the account
-                        "Billing_State": billingState, //Represents the address details of the account
-                        "Tag": [], //List of tags associated with the record
+                            }], //Represents the details of contacts associated with the account
+                            "Billing_State": billingState, //Represents the address details of the account
+                            "Tag": [], //List of tags associated with the record
 
-                        
-                    }
-                ]
-                        
-                    
-                
+                            
+                        }
+                    ]
+                            
+                })
             })
-        })
-        const response = await teste;
-        const json = await response.json();
-        if(json.message.data[0].code === 'SUCCESS'){
-            sendQuote(json.message.data[0].details.id);
-            salvar()
-            createModelDocument()
-        }else if(json.message.data[0].code === 'DUPLICATE_DATA' &&
-                    json.message.data[0].details.api_name === 'CNPJ'
-                ){
-                    setErrorCreateLeadZoho('Este CNPJ já está associado a uma conta! Por favor, faça login.')
+        
+            const response = await fetchLead;
+            const json = await response.json();
+            if(json.message.data[0].code === 'SUCCESS'){
+                let approveUser = await salvar()
+                console.log(approveUser)
+                if(approveUser){
+                    sendQuote(json.message.data[0].details.id);
+                    createModelDocument()
+                    setErrorData(null)
+                    
+                }else{
+                    setErrorData('Este email já está associado a uma conta. Faça Login!')
                 }
+            }
+            else if(json.message.data[0].code === 'DUPLICATE_DATA' && json.message.data[0].details.api_name === 'CNPJ'){
+                    setErrorData('Este CNPJ já está associado a uma conta! Por favor, faça login.')
+            }
+        }
+        else{
+            setErrorData('Preencha todos os campos obrigatórios.')
+        }    
     }
 
     
@@ -606,8 +617,7 @@ export const Checkout = () => {
     async function carregar() {
         const { data } = await api.get(`/produtos/1`);
         setProduto(data)
-      }
-
+    }
 
 
 
@@ -1008,9 +1018,15 @@ export const Checkout = () => {
                             value="Finalizar aluguel"
                             onClick={usuario?.id != null ? (e)=>sendQuote(e): (e)=>sendLead(e)}
                         />
-                        {errorCreateLeadZoho && <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorCreateLeadZoho}</p>}
+                        {errorCreateLeadZoho &&
+                            <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
+                        }
+                        {errorData && 
+                         <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
+                        }
                     </form>
-                    {errorData && <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>}
+
+                    
                 </div>
             </section>}
 
@@ -1124,7 +1140,11 @@ export const Checkout = () => {
                                     </div>
                                 </div>
                             </div>
-                            {errorData && <p style={{ color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>}
+                            {errorData && 
+                                setTimeout(()=>{
+                                    <p style={{ color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
+                                }, 2000)
+                            }
                         </form>
 
                         <div style={{

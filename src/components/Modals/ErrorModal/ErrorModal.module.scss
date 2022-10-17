@@ -1,0 +1,20 @@
+.errorModal{
+    width: 50%;
+    height: 220px;
+    margin: 0 auto;
+    overflow-y: auto;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+    border-radius: 8px;
+    right: -8rem;
+    left: 0;
+    top: 15vh;
+    padding: 1rem 2.5rem;
+    box-shadow: 1px 1px 2px 1px #ccc;
+    background-color: rgb(243, 243, 243);
+    p{
+        text-align: center;
+        color: red;
+    }
+}
