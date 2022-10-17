@@ -15,7 +15,7 @@ import Footer from "src/components/Footer/Footer";
 import { Link } from "react-router-dom";
 import { UserContext } from "src/context/UserContext";
 import SearchCep from "src/helpers/SearchCep";
-import TrendingUpTwoTone from "@mui/icons-material/TrendingUpTwoTone";
+
 
 
 
@@ -33,11 +33,6 @@ export const Checkout = () => {
     const tel_user = useForm('telefone');
     const passwordClient = useForm('password')
 
-
-    const [inscEstadual, setInscEstadual] = React.useState('');
-    const [number, setNumber] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [businessEmail, setBusinessEmail] = React.useState('');
     const [nameUser, setNameUser] = React.useState('');
     const [cpfUser, setCpfUser] = React.useState('');
     const [dateBirthday, setDateBirthday] = React.useState('');
@@ -56,7 +51,6 @@ export const Checkout = () => {
     const [billingState, setBillingState] = React.useState('');
     const [numberAddressBilling, setNumberAddressBilling] = React.useState('');
     const [billingCep, setBillingCep] = React.useState('');
-    const [billingAddress, setBillingAddress] = React.useState('');
 
     //Shipping address (endereço de entrega)
     const [shippingStreet, setShippingStreet] = React.useState('');
@@ -70,6 +64,7 @@ export const Checkout = () => {
 
     const [nameResp, setNameResp] = React.useState('');
     const [errorData, setErrorData] = React.useState('');
+    const [idZohoAccount, setIdZohoAccount] = React.useState('');
 
 
     /* Busca CEP 01*/
@@ -95,6 +90,11 @@ export const Checkout = () => {
 
     }
 
+    function formataCPF(cpf: string) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
+    }
+
     const {
         totalDays,
         billing,
@@ -104,7 +104,19 @@ export const Checkout = () => {
         endDate,
     } = useContext(checkContext);
 
+
+    const {
+        usuario 
+    } = useContext(UserContext);
+
     
+
+    const [produto, setProduto] = React.useState(null);
+
+    async function carregar() {
+        const { data } = await api.get(`/produtos/1`);
+        setProduto(data)
+    }
 
 
   
@@ -149,7 +161,6 @@ export const Checkout = () => {
             })
             const { key } = await request(url, options);
             setKeyDocument(key);
-            //sendLead();
         } else {
             setErrorData('Preencha todos os campos obrigatórios.')
         }
@@ -219,10 +230,7 @@ export const Checkout = () => {
         }
     }
 
-    const {
-        usuario 
-    } = useContext(UserContext);
-
+   
 
     //Carrega dados de usuário que já está logado.
     async function carregar_usuario_logado() {
@@ -261,10 +269,7 @@ export const Checkout = () => {
         setNumberAddressBilling(endereco_cobranca.numero);
     }
 
-    useEffect(()=>{
-        carregar_usuario_logado();
-    }, []);
-
+    
     async function criar_usuario() {
         const { data } = await api.post("/usuarios", {
             "nome": "???",
@@ -277,6 +282,7 @@ export const Checkout = () => {
             "login": email_company.value,
             "password": passwordClient.value,
             "id_perfil": 2,
+            "id_zoho": ''
         });
 
         return data;
@@ -354,8 +360,12 @@ export const Checkout = () => {
     }
 
 
-    //salva novo cliente no banco de dados
-    async function salvar() {
+    //salva novo cliente no banco de dados e envia lead para zoho
+    async function salvar(e: any) {
+
+        e.preventDefault()
+        if(cnpj.validate() && razaoSocial.validate() && fantasyName
+        && email_company.value && numberAddressShipping && numberAddressBilling && insc_estadual.validate){
         try {
             let entidade_id, user_id;
         
@@ -371,15 +381,18 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
-            return true;
+            sendLead();
         } catch (err) {
-            return false;
+            if(err?.response?.data?.errors[0].field == 'login'){
+                setErrorData('Este email já está vinculado a uma conta. Faça login!')
+            }
+        }
         }
     }
 
 
-    const [idAccount, setIdAccount] = React.useState(null);
-    const [errorCreateLeadZoho, setErrorCreateLeadZoho] = React.useState<string>('');
+    
+
 
     //Envia ORÇAMENTO para o ZOHO CRM 
     const sendQuote = async (idAccount: any) => {
@@ -492,12 +505,11 @@ export const Checkout = () => {
     }
 
 
+
     //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
-    const sendLead = async (e: any) => {
+    const sendLead = async () => {
         setErrorData('');
-        e.preventDefault()
-        if(cnpj.validate() && razaoSocial && fantasyName
-        && email_company.value && numberAddressShipping && numberAddressBilling){
+        
         
             const fetchLead = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
                 method: 'POST',
@@ -564,7 +576,7 @@ export const Checkout = () => {
                             
                             "$in_merge": false,
                             "Contact_Details": [{
-
+                                "Email": email_company.value
                             }], //Represents the details of contacts associated with the account
                             "Billing_State": billingState, //Represents the address details of the account
                             "Tag": [], //List of tags associated with the record
@@ -579,49 +591,22 @@ export const Checkout = () => {
             const response = await fetchLead;
             const json = await response.json();
             if(json.message.data[0].code === 'SUCCESS'){
-                let approveUser = await salvar()
-                console.log(approveUser)
-                if(approveUser){
-                    sendQuote(json.message.data[0].details.id);
-                    createModelDocument()
-                    setErrorData(null)
-                    
-                }else{
-                    setErrorData('Este email já está associado a uma conta. Faça Login!')
-                }
+                sendQuote(json.message.data[0].details.id);
+                createModelDocument();
+                setErrorData('');
             }
             else if(json.message.data[0].code === 'DUPLICATE_DATA' && json.message.data[0].details.api_name === 'CNPJ'){
-                    setErrorData('Este CNPJ já está associado a uma conta! Por favor, faça login.')
+                setErrorData('Este CNPJ já está associado a uma conta! Por favor, faça login.')
             }
-        }
-        else{
-            setErrorData('Preencha todos os campos obrigatórios.')
-        }    
+          
     }
 
     
 
-
-
-    function formataCPF(cpf: string) {
-        //retira os caracteres indesejados...
-        cpf = cpf.replace(/[^\d]/g, "");
-
-        //realizar a formatação...
-        setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
-    }
-
-
-    const [produto, setProduto] = React.useState(null);
-
-    async function carregar() {
-        const { data } = await api.get(`/produtos/1`);
-        setProduto(data)
-    }
-
-
-
-
+    React.useEffect(() => {
+        carregar()
+    }, [])
+    
     React.useEffect(() => {
         formataCPF(cpfUser)
     }, [cpfUser])
@@ -633,6 +618,11 @@ export const Checkout = () => {
     React.useEffect(() => {
         buscaCepShipping(shippingCep);
     }, [shippingCep])
+
+    useEffect(()=>{
+        carregar_usuario_logado();
+    }, []);
+
 
 
 
@@ -1016,13 +1006,10 @@ export const Checkout = () => {
                             boxShadow: "1px 10px 15px 2px #ccc"
                         }}
                             value="Finalizar aluguel"
-                            onClick={usuario?.id != null ? (e)=>sendQuote(e): (e)=>sendLead(e)}
+                            onClick={usuario?.id != null ? (e)=>sendQuote(e): (e)=>salvar(e)}
                         />
-                        {errorCreateLeadZoho &&
+                        {errorData &&
                             <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
-                        }
-                        {errorData && 
-                         <p style={{ color: 'red', textAlign: 'center', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
                         }
                     </form>
 
