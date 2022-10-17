@@ -144,34 +144,36 @@ const Rent = ({valor}) => {
     /*Verifica se o CEP está dentro do frete*/
     async function VerifyCep(){
         const json = await SearchCep(cep)
-        const faixaCep = (json.cep).split('-', 1);
-        setStreet(json.logradouro);
-        setBairro(json.bairro);
-        setCountry(json.localidade)
-        setState(json.uf)
-        setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade + ', ' + json.uf)
-        if(faixaCep >= '11000' && faixaCep <= '11999'){
-            setBilling(1800);
-            setErrorCep('')
-        }
 
-        else if(faixaCep >= '12000' && faixaCep <= '19999'){
-            setBilling(1800);
-            setErrorCep('')
-        }
+            const faixaCep = (json.cep).split('-', 1);
+            setStreet(json.logradouro);
+            setBairro(json.bairro);
+            setCountry(json.localidade)
+            setState(json.uf)
+            setLog(json.logradouro + ', ' + json.bairro + ', ' + json.localidade + ', ' + json.uf)
+            if(faixaCep >= '11000' && faixaCep <= '11999'){
+                setBilling(1800);
+                setErrorCep('')
+            }
 
-        else if(faixaCep >= '06000' && faixaCep <= '09999'){
-            setBilling(730);
-            setErrorCep('')
-        }
+            else if(faixaCep >= '12000' && faixaCep <= '19999'){
+                setBilling(1800);
+                setErrorCep('')
+            }
 
-        else if(faixaCep >= '01000' && faixaCep <= '05999'){
-            setBilling(320);
-            setErrorCep('')
-        }
-        else{
-            setErrorCep('Área fora de cobertura de nossos serviços.')
-        }
+            else if(faixaCep >= '06000' && faixaCep <= '09999'){
+                setBilling(730);
+                setErrorCep('')
+            }
+
+            else if(faixaCep >= '01000' && faixaCep <= '05999'){
+                setBilling(320);
+                setErrorCep('')
+            }
+            else{
+                setErrorCep('Área fora de cobertura de nossos serviços.')
+            }
+        
     }
 
 

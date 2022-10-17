@@ -64,30 +64,36 @@ export const Checkout = () => {
 
     const [nameResp, setNameResp] = React.useState('');
     const [errorData, setErrorData] = React.useState('');
-    const [idZohoAccount, setIdZohoAccount] = React.useState('');
+
+
+    const [idZohoAccount, setIdZohoAccount] = React.useState<string>(null);
 
 
     /* Busca CEP 01*/
     async function buscaCepBilling(cep: string) {
-        const json = await SearchCep(cep);
-        const faixaCep = (json.cep).split('-', 1);
-        setBillingStreet(json.logradouro);
-        setBillingCity(json.localidade);
-        setBillingState(json.uf)
-        setBillingNeighbourhood(json.bairro)
+     
+            const json = await SearchCep(cep);
+            const faixaCep = (json.cep).split('-', 1);
+            setBillingStreet(json.logradouro);
+            setBillingCity(json.localidade);
+            setBillingState(json.uf)
+            setBillingNeighbourhood(json.bairro)
+        
+       
 
     }
 
     /* Busca CEP 02*/
     async function buscaCepShipping(cep: string) {
-        const json = await SearchCep(cep);
-        const faixaCep = (json.cep).split('-', 1);
-        setShippingStreet(json.logradouro);
-        setShippingNeighbourhood(json.bairro);
-        setShippingCity(json.localidade)
-        setShippingState(json.uf);
-        setShippingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
-
+    
+            const json = await SearchCep(cep);
+            const faixaCep = (json.cep).split('-', 1);
+            setShippingStreet(json.logradouro);
+            setShippingNeighbourhood(json.bairro);
+            setShippingCity(json.localidade)
+            setShippingState(json.uf);
+            setShippingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+        
     }
 
     function formataCPF(cpf: string) {
@@ -272,7 +278,7 @@ export const Checkout = () => {
     
     async function criar_usuario() {
         const { data } = await api.post("/usuarios", {
-            "nome": "???",
+            "nome": fantasyName.value,
             "documento": cnpj.value,
             "tipo": "J",
             "razao_social": razaoSocial.value,
@@ -281,8 +287,7 @@ export const Checkout = () => {
             "inscricao_estadual": insc_estadual.value,
             "login": email_company.value,
             "password": passwordClient.value,
-            "id_perfil": 2,
-            "id_zoho": ''
+            "id_perfil": 2
         });
 
         return data;
@@ -361,9 +366,8 @@ export const Checkout = () => {
 
 
     //salva novo cliente no banco de dados e envia lead para zoho
-    async function salvar(e: any) {
-
-        e.preventDefault()
+    async function salvar(e?: any) {
+        e?.preventDefault()
         if(cnpj.validate() && razaoSocial.validate() && fantasyName
         && email_company.value && numberAddressShipping && numberAddressBilling && insc_estadual.validate){
         try {
@@ -371,8 +375,10 @@ export const Checkout = () => {
         
             if(usuario == null){
                 const { entidade, user } = await criar_usuario();
+                console.log(entidade)
                 entidade_id = entidade.id;
                 user_id = user.id;
+                sendLead(e, user_id);
             }else{
                 entidade_id = usuario.id_entidade;
                 user_id = usuario.id;
@@ -381,10 +387,12 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
-            sendLead();
+            
         } catch (err) {
             if(err?.response?.data?.errors[0].field == 'login'){
                 setErrorData('Este email já está vinculado a uma conta. Faça login!')
+            }else if(err?.response?.data?.errors[0].field == 'documento'){
+                setErrorData('Este CNPJ já está vinculado a uma conta. Faça login!')
             }
         }
         }
@@ -395,8 +403,9 @@ export const Checkout = () => {
 
 
     //Envia ORÇAMENTO para o ZOHO CRM 
-    const sendQuote = async (idAccount: any) => {
-        const teste = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
+    const sendQuote = async (e?: any, idZoho?: any) => {
+        e?.preventDefault()
+        const fetchQuote = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -482,8 +491,8 @@ export const Checkout = () => {
                             "Valid_Till": null, 
                             
                             "Account_Name": { 
-                                "name": razaoSocial.value,
-                                "id": idAccount
+                                "name": usuario? usuario?.razao_social : razaoSocial.value,
+                                "id": usuario? usuario?.id_zoho : idZoho
                             },
                             
                             "Quote_Stage": "Pendente", 
@@ -500,17 +509,49 @@ export const Checkout = () => {
                     ]
                 })
             })
-        const response = await teste;
+        const response = await fetchQuote;
+        const json = await response.json();
+
+        if(usuario){
+            //cria documento
+            createModelDocument();
+            setErrorData('');
+        }
+    }
+
+
+
+   async function updateUserIdZoho(idZoho: any, idUser: any){
+        const fetchUpdateUser = fetch(`https://nest-rental-backend.herokuapp.com/api/usuarios/${idUser}`, {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'id_zoho': idZoho,
+                "nome": "???",
+                "documento": cnpj.value,
+                "tipo": "J",
+                "razao_social": razaoSocial.value,
+                "email": email_company.value,
+                "nome_fantasia": fantasyName.value,
+                "inscricao_estadual": insc_estadual.value,
+                "login": email_company.value,
+                "password": passwordClient.value,
+                "id_perfil": 2
+            })
+        })
+
+        const response = await fetchUpdateUser;
         const json = await response.json();
     }
 
 
 
     //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
-    const sendLead = async () => {
+    const sendLead = async (e?: any, idUser?: any) => {
+        e?.preventDefault();
         setErrorData('');
-        
-        
             const fetchLead = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
                 method: 'POST',
                 headers: {
@@ -591,7 +632,19 @@ export const Checkout = () => {
             const response = await fetchLead;
             const json = await response.json();
             if(json.message.data[0].code === 'SUCCESS'){
-                sendQuote(json.message.data[0].details.id);
+                //id zoho vinculado a uma nova conta
+                const idZoho = await json.message.data[0].details.id;
+
+                setIdZohoAccount(idZoho)
+
+
+                //update user
+                updateUserIdZoho(idZoho, idUser)
+
+                //envia orcamento
+                sendQuote(idZoho);
+
+                //cria documento
                 createModelDocument();
                 setErrorData('');
             }
@@ -662,9 +715,12 @@ export const Checkout = () => {
                                     <Title level={3}>
                                         Empresa
                                     </Title>
-                                    <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600', textAlign: 'right' }}>Já possui cadastro?
-                                        <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}> Faça Login</Link>
-                                    </p>
+                                    {usuario? <></>:
+                                        <p style={{ color: 'rgba(18, 80,130)', fontWeight: '600', textAlign: 'right' }}>Já possui cadastro?
+                                            <Link to="/login?redirect=/checkout" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'rgba(18, 80,130)', fontSize: '1.1rem' }}> Faça Login</Link>
+                                        </p>
+                                    }
+                                    
                                     <Input
                                         type="text"
                                         label="Razão social"
@@ -1128,9 +1184,7 @@ export const Checkout = () => {
                                 </div>
                             </div>
                             {errorData && 
-                                setTimeout(()=>{
                                     <p style={{ color: 'red', textAlign: 'left', paddingTop: '.5rem', fontSize: '.7rem' }}>{errorData}</p>
-                                }, 2000)
                             }
                         </form>
 
