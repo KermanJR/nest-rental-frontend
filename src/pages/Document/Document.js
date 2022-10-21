@@ -3,12 +3,13 @@ import React from "react";
 
 export const Document = () =>{
    
-    let key = window.localStorage.getItem('document_key');
+    let key = '';
     var widget = '';
     var input = '';
     setTimeout(()=>{
         widget = window.document.querySelector("#request_signature_key");
         input = window.document.querySelector("#request_signature_key");
+        key = window.localStorage.getItem('document_key_signer');
     }, 3000)
     
     
@@ -51,7 +52,7 @@ export const Document = () =>{
           console.log('resized!');
           document.getElementById('container').style.height = height+'px';
         });
-        window.localStorage.setItem('document_key', '');
+        //window.localStorage.setItem('document_key_signer', '');
     }
 
     React.useEffect(()=>{

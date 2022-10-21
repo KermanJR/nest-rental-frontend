@@ -3,6 +3,9 @@ import { Typography, Grid } from '@mui/material';
 import { useContext } from 'react';
 import { UserContext } from 'src/context/UserContext';
 import { CategoryModal } from 'src/components/Modals/CategoryModal/CategoryModel';
+import Button from '@mui/material/Button';
+import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
+import { ShipModal } from 'src/components/Modals/ShipModal/ShipModal';
 
 function PageHeader() {
 
@@ -22,7 +25,7 @@ function PageHeader() {
         </Typography>
       </Grid>
       <Grid item>
-      {/*id_perfil === 3 ? '': <Button
+      {usuario?.id_perfil === 3 ? '': <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
           startIcon={<AddTwoToneIcon fontSize="small" />}
@@ -30,10 +33,10 @@ function PageHeader() {
           onClick={(e)=>setModal(!modal)
           }
         >
-          Cadastrar categoria
-        </Button>*/}
+          Cadastrar Endereço
+        </Button>}
       </Grid>
-      <CategoryModal setModal={setModal} openModal={modal} data="" edit={false}/>
+      <ShipModal setModal={setModal} openModal={modal} data="" edit={false}/>
     </Grid>
   );
 }

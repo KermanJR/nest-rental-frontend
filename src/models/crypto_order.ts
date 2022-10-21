@@ -8,6 +8,7 @@ export interface Pedido {
   data_inicio: string;
   data_entrega: string;
   status_devolucao: string;
+  id_tokencontrato: string;
 }
 
 
@@ -53,3 +54,12 @@ export interface Categoria {
   id: string;
   descricao: string;
 }
+
+export interface Frete {
+  cep_fim: string;
+  cep_inicio: string;
+  id: string;
+  valor: number;
+  nome: string;
+}
+

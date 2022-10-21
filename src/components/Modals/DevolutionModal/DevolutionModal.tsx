@@ -1,16 +1,9 @@
 
 import styles from '../Modal.module.scss';
 import  {AiFillCloseCircle} from 'react-icons/ai'
-import React, { useContext } from 'react';
-import { ModalProps } from 'src/default/interfaces/Interfaces';
+import { useContext } from 'react';
 import { Title } from 'src/components/Title/Title';
-import { Input } from 'src/components/Input/Input';
-import { useForm } from 'src/hooks/useForm';
 import Button from 'src/components/Button/Button';
-import {useState} from 'react';
-import { Produto } from 'src/models/crypto_order';
-import { api } from 'src/api/api';
-import SearchCep from 'src/helpers/SearchCep';
 import { ModalPropsTestEdit } from 'src/default/interfaces/Interfaces';
 import { UserContext } from 'src/context/UserContext';
 

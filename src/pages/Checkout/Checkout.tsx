@@ -21,8 +21,6 @@ import SearchCep from "src/helpers/SearchCep";
 
 export const Checkout = () => {
 
-    const { request, error, data, loading } = useFetch();
-
     const razaoSocial = useForm('');
     const fantasyName = useForm('');
     const cnpj = useForm('cnpj');
@@ -43,6 +41,8 @@ export const Checkout = () => {
     const [keySigner, setKeySigner] = React.useState('');
     const [keyDocumentSign, setKeyDocumentSign] = React.useState('');
 
+    const [keyDocumentUserLog, setKeyDocumentUserLog] = React.useState('');
+
 
     //Billing address (endereço de cobrança)
     const [billingStreet, setBillingStreet] = React.useState('');
@@ -51,6 +51,7 @@ export const Checkout = () => {
     const [billingState, setBillingState] = React.useState('');
     const [numberAddressBilling, setNumberAddressBilling] = React.useState('');
     const [billingCep, setBillingCep] = React.useState('');
+    const [billingComplement, setBillingComplement] = React.useState('');
 
     //Shipping address (endereço de entrega)
     const [shippingStreet, setShippingStreet] = React.useState('');
@@ -60,6 +61,7 @@ export const Checkout = () => {
     const [numberAddressShipping, setNumberAddressShipping] = React.useState('');
     const [shippingAddress, setShippingAddress] = React.useState('');
     const [shippingCep, setShippingCep] = React.useState('');
+    const [shippingComplement, setShippingComplement] = React.useState('');
 
 
     const [nameResp, setNameResp] = React.useState('');
@@ -67,39 +69,11 @@ export const Checkout = () => {
 
 
     const [idZohoAccount, setIdZohoAccount] = React.useState<string>(null);
+    const [detalhesNovoPedido, setDetalhesNovoPedido] = React.useState(null);
 
+    const [produto, setProduto] = React.useState(null);
+    const { request, error, data, loading } = useFetch();
 
-    /* Busca CEP 01*/
-    async function buscaCepBilling(cep: string) {
-     
-            const json = await SearchCep(cep);
-            const faixaCep = (json.cep).split('-', 1);
-            setBillingStreet(json.logradouro);
-            setBillingCity(json.localidade);
-            setBillingState(json.uf)
-            setBillingNeighbourhood(json.bairro)
-        
-       
-
-    }
-
-    /* Busca CEP 02*/
-    async function buscaCepShipping(cep: string) {
-    
-            const json = await SearchCep(cep);
-            const faixaCep = (json.cep).split('-', 1);
-            setShippingStreet(json.logradouro);
-            setShippingNeighbourhood(json.bairro);
-            setShippingCity(json.localidade)
-            setShippingState(json.uf);
-            setShippingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
-        
-    }
-
-    function formataCPF(cpf: string) {
-        cpf = cpf.replace(/[^\d]/g, "");
-        setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
-    }
 
     const {
         totalDays,
@@ -110,14 +84,37 @@ export const Checkout = () => {
         endDate,
     } = useContext(checkContext);
 
-
     const {
         usuario 
     } = useContext(UserContext);
 
-    
+   
 
-    const [produto, setProduto] = React.useState(null);
+    /* Busca CEP 01*/
+    async function buscaCepBilling(cep: string) {
+        const json = await SearchCep(cep);
+        setBillingStreet(json.logradouro);
+        setBillingCity(json.localidade);
+        setBillingState(json.uf)
+        setBillingNeighbourhood(json.bairro)
+    }
+
+    /* Busca CEP 02*/
+    async function buscaCepShipping(cep: string) {
+        const json = await SearchCep(cep);
+        setShippingStreet(json.logradouro);
+        setShippingNeighbourhood(json.bairro);
+        setShippingCity(json.localidade)
+        setShippingState(json.uf);
+        setShippingAddress(json.logradouro + ', ' + json.bairro + ', ' + json.localidade)
+    }
+
+    function formataCPF(cpf: string) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        setCpfUser(cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"));
+    }
+
+    
 
     async function carregar() {
         const { data } = await api.get(`/produtos/1`);
@@ -167,10 +164,59 @@ export const Checkout = () => {
             })
             const { key } = await request(url, options);
             setKeyDocument(key);
+            window.localStorage.setItem('key_document_user_new', key);
         } else {
             setErrorData('Preencha todos os campos obrigatórios.')
         }
 
+    }
+
+    async function atualizarPedido(key?: string) {
+        const tt = await api.put(`/pedidos/${detalhesNovoPedido?.id}`, {
+            "id_tokencontrato": key,
+            "descricao": "????",
+            "data_inicio": detalhesNovoPedido?.data_inicio,
+            "data_entrega": detalhesNovoPedido?.data_entrega,
+            "vr_total": detalhesNovoPedido?.vr_total,
+            "id_endereco": detalhesNovoPedido?.id_endereco,
+            "id_cupom_desconto": null,
+            "id_cliente": detalhesNovoPedido?.id_cliente,
+            "id_usuario": detalhesNovoPedido?.id_usuario,
+            "itens": [
+                {
+                    "id_produto": detalhesNovoPedido?.itens[0].id_produto,
+                    "valor": detalhesNovoPedido?.itens[0].valor,
+                    "vr_desconto": 0,
+                    "quantidade": 1
+                },
+            ]
+           
+        });
+        return tt;
+    }
+
+    async function atualizarPedidoUsuarioLogado() {
+        const tt = await api.put(`/pedidos/${usuario?.id}`, {
+            "id_tokencontrato": keyDocument,
+            "descricao": "????",
+            "data_inicio": detalhesNovoPedido?.data_inicio,
+            "data_entrega": detalhesNovoPedido?.data_entrega,
+            "vr_total": detalhesNovoPedido?.vr_total,
+            "id_endereco": detalhesNovoPedido?.id_endereco,
+            "id_cupom_desconto": null,
+            "id_cliente": detalhesNovoPedido?.id_cliente,
+            "id_usuario": detalhesNovoPedido?.id_usuario,
+            "itens": [
+                {
+                    "id_produto": detalhesNovoPedido?.itens[0].id_produto,
+                    "valor": detalhesNovoPedido?.itens[0].valor,
+                    "vr_desconto": 0,
+                    "quantidade": 1
+                },
+            ]
+           
+        });
+        return tt;
     }
 
 
@@ -192,13 +238,21 @@ export const Checkout = () => {
         })
         const response = await fetchDocumentKey;
         const json = await response.json();
-        const key = await json?.data;
-        window.localStorage.setItem('document_key', key)
+        const key = await json?.key_document_signer;
+        if(usuario){
+            await salvarPedidoUsuarioLogado();
+            await atualizarPedidoUsuarioLogado();
+        }
+        else{
+            setTimeout(()=>{
+                atualizarPedido(keyDocument)
+            }, 3000)
+        }
         setKeyDocumentSign(key);
-
+        window.localStorage.setItem('document_key_signer', key);
     }
 
-
+     
 
     //Cria signatário do documento
     const createSignerDocument = async (e: React.FormEvent<HTMLInputElement>) => {
@@ -225,9 +279,7 @@ export const Checkout = () => {
                 })
                 const { key } = await request(url, options);
                 setKeySigner(key);
-                setTimeout(() => {
-                    createDocumentKey(key);
-                }, 5000)
+                await createDocumentKey(key);
             } else {
                 setErrorData('Este contrato já foi gerado...')
             }
@@ -236,7 +288,6 @@ export const Checkout = () => {
         }
     }
 
-   
 
     //Carrega dados de usuário que já está logado.
     async function carregar_usuario_logado() {
@@ -298,7 +349,6 @@ export const Checkout = () => {
         //Considerando apenas cidades de sao paulo.
         const nome = encodeURI(nome_cidade);
         const { data } = await api.get(`/cidades/${nome}`);
-
         return data?.id;
     }
 
@@ -307,7 +357,7 @@ export const Checkout = () => {
             "id_cidade": await buscar_cidade(billingCity),
             "cep": billingCep,
             "bairro": billingNeighbourhood,
-            "complemento": "???",
+            "complemento": billingComplement? billingComplement : 'Não possui',
             "rua": billingStreet,
             "numero": numberAddressBilling,
             "contato": "???",
@@ -325,7 +375,7 @@ export const Checkout = () => {
             "id_cidade": await buscar_cidade(billingCity),
             "cep": shippingCep,
             "bairro": shippingNeighbourhood,
-            "complemento": "???",
+            "complemento": shippingComplement? shippingComplement: 'Não possui',
             "rua": shippingStreet,
             "numero": numberAddressShipping,
             "contato": "???",
@@ -338,7 +388,7 @@ export const Checkout = () => {
         return data;
     }
 
-    async function criar_pedido(id_endereco, id_usuario, id_entidade) {
+    async function criar_pedido(id_endereco?: any, id_usuario?: any, id_entidade?: any) {
         const total = (newPrice || price) + billing;
         const id_produto = 1;
 
@@ -351,6 +401,7 @@ export const Checkout = () => {
             "id_cupom_desconto": null,
             "id_cliente": id_entidade,
             "id_usuario": id_usuario,
+            "id_tokencontrato": "",
             "itens": [
                 {
                     "id_produto": id_produto,
@@ -364,6 +415,7 @@ export const Checkout = () => {
         return data;
     }
 
+    
 
     //salva novo cliente no banco de dados e envia lead para zoho
     async function salvar(e?: any) {
@@ -372,10 +424,36 @@ export const Checkout = () => {
         && email_company.value && numberAddressShipping && numberAddressBilling && insc_estadual.validate){
         try {
             let entidade_id, user_id;
+            if(usuario == null){
+                const { entidade, user } = await criar_usuario();
+                entidade_id = entidade.id;
+                user_id = user.id;
+                sendLead(e, user_id);
+            }
+            const { endereco } = await criar_endereco_cobranca(entidade_id);
+            const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
+            const pedido = await criar_pedido(endereco, user_id, entidade_id);
+            setDetalhesNovoPedido(pedido)
+        } catch (err) {
+            if(err?.response?.data?.errors[0].field == 'login'){
+                setErrorData('Este email já está vinculado a uma conta. Faça login!')
+            }else if(err?.response?.data?.errors[0].field == 'documento'){
+                setErrorData('Este CNPJ já está vinculado a uma conta. Faça login!')
+            }
+        }
+        }
+    }
+
+    //salva novo cliente no banco de dados e envia lead para zoho
+    async function salvarPedidoUsuarioLogado(e?: any) {
+        e?.preventDefault()
+        if(cnpj.validate() && razaoSocial.validate() && fantasyName
+        && email_company.value && numberAddressShipping && numberAddressBilling && insc_estadual.validate){
+        try {
+            let entidade_id, user_id;
         
             if(usuario == null){
                 const { entidade, user } = await criar_usuario();
-                console.log(entidade)
                 entidade_id = entidade.id;
                 user_id = user.id;
                 sendLead(e, user_id);
@@ -398,13 +476,9 @@ export const Checkout = () => {
         }
     }
 
-
-    
-
-
     //Envia ORÇAMENTO para o ZOHO CRM 
-    const sendQuote = async (e?: any, idZoho?: any) => {
-        e?.preventDefault()
+    const sendQuote = async (e?: any) => {
+        e.preventDefault()
         const fetchQuote = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
             method: 'POST',
             headers: {
@@ -442,8 +516,7 @@ export const Checkout = () => {
                                 "Shipping_City": shippingCity,
                                 
           
-                                "Carrier": "Nest Rental", 
-                                "Grand_Total": 9785,    
+                                "Carrier": "Nest Rental",    
 
                                 "$approval": {                
                                     "delegate": false,                
@@ -462,20 +535,189 @@ export const Checkout = () => {
                                     },
                                     
                                     "quantity": 1,                  
-                                    "Discount": 0,                    
-                                    "total_after_discount": newPrice+billing,                    
+                                    "Discount":0,                    
+                                    "total_after_discount": (price + billing),                    
                                     "net_total": 0,                    
                                     "book": null,                    
                                     "Tax": 0,                    
-                                    "list_price": 0,                    
-                                    "unit_price": null,                   
+                                    "list_price": price,                    
+                                    "unit_price": 0,                   
                                     "quantity_in_stock": -1,                    
-                                    "total": newPrice+billing,                    
+                                    "total": price,                    
                                     "id": "4288853000019876145",
                                     "product_description": produto?.descricao,                    
-                                    "line_tax": []
+                                    "line_tax": [],
+                                   
+                                },
+                                {
+                                    "product": {
+                                        "Product_Code": null,                                        
+                                        "Currency": "BRL",
+                                        "name": "sample",
+                                        "id": "4288853000000510001"
+                                    },
+                                    
+                                    "quantity": 1,                  
+                                    "Discount":0,                    
+                                    "total_after_discount": billing,                    
+                                    "net_total": 0,                    
+                                    "book": null,                    
+                                    "Tax": 0,                    
+                                    "list_price": billing,                    
+                                    "unit_price": 0,                   
+                                    "quantity_in_stock": -1,                    
+                                    "total": billing,                    
+                                    "id": "4288853000000510001",
+                                    "product_description": "",                    
+                                    "line_tax": [],
+                                   
                                 }
                             ],
+
+                            
+               
+                            "Discount": 0,              
+                            "Description": produto?.descricao,             
+                            
+
+                            "$review_process": { 
+                                "approve": false,
+                                "reject": false,
+                                "resubmit": false
+                            },
+                
+                            "$review": null, 
+                            "Valid_Till": null, 
+                            
+                            "Account_Name": { 
+                                "name": usuario? usuario?.razao_social : razaoSocial.value,
+                                "id":  usuario?.id_zoho
+                            },
+                            
+                            "Quote_Stage": "Pendente", 
+                            "Terms_and_Conditions": null, 
+                            "Sub_Total": (price + billing), 
+                            "Subject": "Locação", 
+                            "$orchestration": false, 
+                            "Contact_Name": null, 
+                            "$in_merge": false,
+                            "$line_tax": [], 
+                            "Tag": [],
+
+    
+                        }
+                    ]
+                })
+            })
+        const response = await fetchQuote;
+        const json = await response.json();
+        if(usuario){
+            createModelDocument();
+            setErrorData('');
+        }
+    }
+
+    
+
+
+    //Envia ORÇAMENTO para o ZOHO CRM 
+    const sendQuoteNewUser = async (idZoho?: string) => {
+        const fetchQuote = fetch('https://nest-rental-backend-api.herokuapp.com/send-quote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "data": [
+                            {
+                                "Owner": {   
+                                    "name": "Tatiana Tavora Dias",
+                                    "id": "702098344",
+                                    "email": "tdias@nestrental.com.br"
+                                },
+
+                                //settings
+                                "$currency_symbol": "BRL", 
+                                "Currency": "BRL",
+                                "Adjustment": 0,             
+                                "$editable": true, 
+                                "Tax": 0, 
+                                
+
+                                //billing address
+                                "Billing_Country": "Brasil",
+                                "Billing_Street": billingStreet,  
+                                "Billing_Code": billingCep, 
+                                "Billing_City": billingCity,   
+                                "Billing_State": billingState,
+
+                                //shipping address
+                                "Shipping_Country": "Brasil",             
+                                "Shipping_Code": shippingCep,  
+                                "Shipping_Street": shippingStreet,  
+                                "Shipping_State": shippingState,  
+                                "Shipping_City": shippingCity,
+                                
+          
+                                "Carrier": "Nest Rental",    
+
+                                "$approval": {                
+                                    "delegate": false,                
+                                    "approve": false,                
+                                    "reject": false,                
+                                    "resubmit": false
+                                },
+
+                            "Product_Details": [ 
+                                {
+                                    "product": {
+                                        "Product_Code": null,                                        
+                                        "Currency": "BRL",
+                                        "name": "sample",
+                                        "id": "4288853000019876145"
+                                    },
+                                    
+                                    "quantity": 1,                  
+                                    "Discount":0,                    
+                                    "total_after_discount": (price + billing),                    
+                                    "net_total": 0,                    
+                                    "book": null,                    
+                                    "Tax": 0,                    
+                                    "list_price": price,                    
+                                    "unit_price": 0,                   
+                                    "quantity_in_stock": -1,                    
+                                    "total": price,                    
+                                    "id": "4288853000019876145",
+                                    "product_description": produto?.descricao,                    
+                                    "line_tax": [],
+                                   
+                                },
+                                {
+                                    "product": {
+                                        "Product_Code": null,                                        
+                                        "Currency": "BRL",
+                                        "name": "sample",
+                                        "id": "4288853000000510001"
+                                    },
+                                    
+                                    "quantity": 1,                  
+                                    "Discount":0,                    
+                                    "total_after_discount": billing,                    
+                                    "net_total": 0,                    
+                                    "book": null,                    
+                                    "Tax": 0,                    
+                                    "list_price": billing,                    
+                                    "unit_price": 0,                   
+                                    "quantity_in_stock": -1,                    
+                                    "total": billing,                    
+                                    "id": "4288853000000510001",
+                                    "product_description": "",                    
+                                    "line_tax": [],
+                                   
+                                }
+                            ],
+
+                            
                
                             "Discount": 0,              
                             "Description": produto?.descricao,             
@@ -497,13 +739,14 @@ export const Checkout = () => {
                             
                             "Quote_Stage": "Pendente", 
                             "Terms_and_Conditions": null, 
-                            "Sub_Total": price+billing, 
+                            "Sub_Total": (price + billing), 
                             "Subject": "Locação", 
                             "$orchestration": false, 
                             "Contact_Name": null, 
                             "$in_merge": false,
                             "$line_tax": [], 
-                            "Tag": []
+                            "Tag": [],
+
     
                         }
                     ]
@@ -511,9 +754,7 @@ export const Checkout = () => {
             })
         const response = await fetchQuote;
         const json = await response.json();
-
         if(usuario){
-            //cria documento
             createModelDocument();
             setErrorData('');
         }
@@ -521,8 +762,8 @@ export const Checkout = () => {
 
 
 
-   async function updateUserIdZoho(idZoho: any, idUser: any){
-        const fetchUpdateUser = fetch(`https://nest-rental-backend.herokuapp.com/api/usuarios/${idUser}`, {
+   async function updateUserIdZoho(idZoho: string, idUser: number){
+        const fetchUpdateUser = fetch(`http://191.252.66.11:3333/api/usuarios/${idUser}`, {
             method: 'PUT',
             headers:{
                 'Content-Type': 'application/json'
@@ -550,7 +791,7 @@ export const Checkout = () => {
 
     //Envia LEAD para o ZOHO CRM ---- AQUI se centralizará a criação de conta na zoho e banco de dados
     const sendLead = async (e?: any, idUser?: any) => {
-        e?.preventDefault();
+        //e?.preventDefault();
         setErrorData('');
             const fetchLead = fetch('https://nest-rental-backend-api.herokuapp.com/send-lead', {
                 method: 'POST',
@@ -637,15 +878,16 @@ export const Checkout = () => {
 
                 setIdZohoAccount(idZoho)
 
-
                 //update user
                 updateUserIdZoho(idZoho, idUser)
 
                 //envia orcamento
-                sendQuote(idZoho);
+                sendQuoteNewUser(idZoho);
 
                 //cria documento
                 createModelDocument();
+
+                
                 setErrorData('');
             }
             else if(json.message.data[0].code === 'DUPLICATE_DATA' && json.message.data[0].details.api_name === 'CNPJ'){
@@ -727,6 +969,7 @@ export const Checkout = () => {
                                         name="razao_social"
                                         id="razao_social"
                                         placeholder="Digite sua razão social"
+                                        value={usuario? usuario?.razao_social: ''}
                                         {...razaoSocial}
                                         disabled={usuario?true:false}
                                     />
@@ -1268,7 +1511,7 @@ export const Checkout = () => {
                 </section>
             }
 
-            {keyDocumentSign &&
+            {keySigner &&
                 <>
                     <div style={{ padding: '1rem 5rem' }}>
                         <Title level={1}>

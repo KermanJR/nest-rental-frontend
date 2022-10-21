@@ -21,7 +21,7 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
   async function editCategoryById(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/categorias/${idCategory}`, {
+    const teste = fetch(`http://191.252.66.11:3333/api/categorias/${idCategory}`, {
       headers:{
         'Content-Type': 'application/json',
       }, 
@@ -46,7 +46,7 @@ export const CategoryModal = ({openModal, setModal, data, edit}: ModalPropsTestE
   async function createCategory(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/categorias/`, {
+    const teste = fetch(`http://191.252.66.11:3333/api/categorias`, {
       headers:{
         'Content-Type': 'application/json',
       }, 

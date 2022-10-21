@@ -13,27 +13,29 @@ import { useState } from 'react';
 
 export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalPropsTestEdit) => {
 
+  console.log(data)
+  console.log(edit)
 
-  const [editedNameProduct, setEditedNameProduct] = React.useState<string>(data['nome']);
+  const [editedNameProduct, setEditedNameProduct] = React.useState<string>(data[0]?.nome);
   const [newNameProduct, setNewNameProduct] = useState<string>("");
 
-  const [editedFabricProduct, setEditedFabricProduct] = React.useState<string>(data['fabricante']);
+  const [editedFabricProduct, setEditedFabricProduct] = React.useState<string>(data[0]?.fabricante);
   const [newFabricProduct, setNewFabricProduct] = React.useState<string>('');
 
-  const [editedDescriptionProduct, setEditedDescriptionProduct] = useState<string>(data['descricao']);
+  const [editedDescriptionProduct, setEditedDescriptionProduct] = useState<string>(data[0]?.descricao);
   const [newDescriptionProduct, setNewDescriptionProduct] = useState<string>("");
 
 
-  const [editedValueProduct, setEditedValueProduct] = useState<string>(data['valor']);
+  const [editedValueProduct, setEditedValueProduct] = useState<string>(data[0]?.valor);
   const [newValueProduct, setNewValueProduct] = useState<string>("");
 
-  const [editedCategoryProduct, setEditedCategoryProduct] = useState<string>(data['categoria']);
+  const [editedCategoryProduct, setEditedCategoryProduct] = useState<string>(data[0]?.categoria?.descricao);
   const [newCategoryProduct, setNewCategoryProduct] = useState<string>("");
 
-  const [editedImageProduct, setEditedImageProduct] = useState(data['prod_image']);
+  const [editedImageProduct, setEditedImageProduct] = useState(data[0]?.prod_image);
   const [newImageProduct, setNewImageProduct] = useState(null);
 
-  const [idProduct, setIdProduct] = useState<string>(data['id']);
+  const [idProduct, setIdProduct] = useState<string>(data[0]?.id);
 
   const [loading, setLoading] = useState<Boolean>(false);
   const [message, setMessage] = useState<string>('');
@@ -90,9 +92,10 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
    async function editProductById(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/produtos/${idProduct}`, {
+    const teste = fetch(`http://191.252.66.11:3333/api/produtos/${idProduct}`, {
       headers:{
         'Content-Type': 'application/json',
+        'Authorization': `Bearer eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjp7InVzZXJJZCI6NCwidXNlciI6e319LCJpYXQiOjE2NjU4NDcxNjUsImV4cCI6MTY2NjI3OTE2NX0.IPlQWFD-eACGxXbYsgxThkV9Zh-WhUO_vJs6b-GDeFS_kl8PzJtKRs90pYhnkFSxnKb57NxhgSEQnvLOQ6bQh_I88PyiGtNa9heuTc9_DUxo3VAyzlTaefdmAoZzhaso0ZEb3OHnZPJXdQZ3h1VPHzOnAUfX2h3n0GyM_Hh5qTkPqDStAURv3Hd_z0W-HYTytmJWprM22xGamD70UCnC8cTKj4dxEDn55jUJiCVxQMyNmM9gREcXjjxd3GL_Drfx5IE1qQ8iHR4McMd7JoDVczLd2FT3yzLL9AwIjn4YS5wnWoBTML263Ea4ecgjFGsBP60b6LfM5FMdc_Zvefx_mHWC5gxtfHzx2qvElO3kUY-pvo5hpEduR-Q5M3z1Avp4zeY7yBh0CB734yn_ZX-HWBoRkVBMyCldsXYOWvgOZR6sdbVEVzzr4yoDl2nNoxpwSKAQhOlLHMeIfA2tzbFxWpkZXH32ZNH_5ZhFfuqPLIdVDz7twG5tBib98UBCUFF8d9mAcU3TrYFWD__ziah9yMkVeJmWiGVHKKo9v1OeYFUdjnE3AILQ06c6ASSsk9xsSEpx5y6CeghDUkHI1MzqnyL4THeWXVUP05UkuPXPl3lOobe1vFqL7u8MJdarYAcYvy7aoiDUqZNpfdMbSivSLRkJJWvNxOIjx2l-8nvWKw4`
       }, 
       method: 'PUT',
       body: JSON.stringify({
@@ -122,7 +125,13 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
   async function CreateProduct(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     setLoading(true);
-    const teste = fetch(`https://nest-rental-backend.herokuapp.com/api/produtos`, {
+    let formData = new FormData();
+   // formData.append("nome", newNameProduct);
+    //formData.append("nome", newNameProduct);
+    //formData.append("nome", newNameProduct);
+    //formData.append("nome", newNameProduct);
+    //formData.append("nome", newNameProduct);
+    const teste = fetch(`http://191.252.66.11:3333/api/produtos`, {
       headers:{
         'Content-Type': 'application/json',
       }, 
@@ -132,6 +141,7 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
         "descricao": newDescriptionProduct,
         "fabricante": newFabricProduct,
         "valor": parseFloat(newValueProduct),
+        "id_categoria": newCategoryProduct,
         "prod_image": newImageProduct
  
       })
@@ -221,8 +231,8 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
 
                     {categories &&
                       <select
-                        onChange={edit? (e)=>setEditedFabricProduct(e.target.value): (e)=>setNewFabricProduct(e.target.value)}
-                        value={edit? editedFabricProduct: newFabricProduct} 
+                        onChange={edit? (e)=>setEditedCategoryProduct(e.target.value): (e)=>setNewCategoryProduct(e.target.value)}
+                        value={edit? editedCategoryProduct: newCategoryProduct} 
                         style={{ width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc' }}>
                         {categories.map((item, index) => {
                           return <>
@@ -257,7 +267,7 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
                        onChange={edit? (e)=>setEditedImageProduct(e.target.value): (e)=>setNewImageProduct(e.target.value)}
                       />
                     </div> :
-                    <img src={data.prod_image} alt="" style={{ width: "20rem", height: "20rem" }} />
+                    <img src={editedImageProduct} alt="" style={{ width: "20rem", height: "20rem" }} />
                   }
 
                 </div>

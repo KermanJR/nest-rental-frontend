@@ -132,33 +132,17 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
   const theme = useTheme();
 
 
-
-  async function getAllDocuments(){
-    const req = fetch("http://localhost:8080/get-all-documents", {
-      method: "GET",
-      headers:{
-        "Content-Type": "application/json"
-      },
-    }).then((r)=>{
-      return r;
-    }).then((r)=>{
-      return r.json()
-    }).then((r)=>{
-      console.log(r);
-    })
-  }
-
-
-  const [data, setData] = useState<Pedido[]>([]);
+  const [data, setData] = useState({});
   const [idOrder, setIdOrder] = useState<Pedido[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
+  
 
-  async function queryOrdersById(idOrder: any){
+  async function queryOrdersById(idOrder: any, id_tokencontrato: any){
     setModal(!modal)
     setData(null)
     const {data} = await api.get(`/pedidos/${idOrder}`);
     if(data){
-      setData(data);
+      setData({data, id_tokencontrato});
     }else{
       setData(null);
     }
@@ -168,9 +152,6 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
     usuario
   } = useContext(UserContext);
 
-  React.useEffect(()=>{
-    getAllDocuments();
-  })
 
 
 
@@ -236,7 +217,6 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
               <TableCell>Contato</TableCell>
               <TableCell>Início e Devolução</TableCell>
               <TableCell align="right">Valor</TableCell>
-              <TableCell align="right">Status</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
@@ -320,25 +300,6 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                       )}
                     </Typography>
                   </TableCell>
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-
-                    
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                    R${numeral(data.vr_total).format(
-                        `0,0.00`
-                      )}
-                    </Typography>
-                  </TableCell>
-
-            
                     <TableCell align="right">
                     <Tooltip title="Visualizar pedido" arrow>
                       <IconButton
@@ -350,7 +311,7 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryOrdersById(data.id)}
+                        onClick={(e)=>queryOrdersById(data?.id, data?.id_tokencontrato)}
                       >
                         <BsEye style={{width: '20px', height: '20px'}}/>
                       </IconButton>
@@ -362,7 +323,17 @@ const OrdersTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <Box p={2}>
+        <TablePagination
+          component="div"
+          count={filteredCryptoOrders.length}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={page}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[5, 10, 25, 30]}
+        />
+      </Box>
       {data  && (
         <RegisterOrderModal 
         openModal={modal}

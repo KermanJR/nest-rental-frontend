@@ -34,7 +34,7 @@ function PageHeader() {
           Cadastrar categoria
         </Button>}
       </Grid>
-      <CategoryModal setModal={setModal} openModal={modal} data="" edit={false}/>
+      
     </Grid>
   );
 }

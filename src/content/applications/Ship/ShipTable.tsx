@@ -28,15 +28,17 @@ import {
 
 import Label from 'src/components/Label';
 import { Categoria, CryptoOrderStatus } from 'src/models/crypto_order';
+import { Frete } from 'src/models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import BulkActions from '../Clients/BulkActions';
 import {FaCloudDownloadAlt} from 'react-icons/fa'
 import { CategoryModal } from 'src/components/Modals/CategoryModal/CategoryModel';
+import { ShipModal } from 'src/components/Modals/ShipModal/ShipModal';
 
 interface RecentOrdersTableProps {
   className?: string;
-  cryptoOrders: Categoria[];
+  cryptoOrders: Frete[];
 }
 
 interface Filters {
@@ -65,9 +67,9 @@ const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
 };
 
 const applyFilters = (
-  cryptoOrders: Categoria[],
+  cryptoOrders: Frete[],
   filters: Filters
-): Categoria[] => {
+): Frete[] => {
   return cryptoOrders.filter((cryptoOrder) => {
     let matches = true;
 
@@ -80,10 +82,10 @@ const applyFilters = (
 };
 
 const applyPagination = (
-  cryptoOrders: Categoria[],
+  cryptoOrders: Frete[],
   page: number,
   limit: number
-): Categoria[] => {
+): Frete[] => {
   return cryptoOrders.slice(page * limit, page * limit + limit);
 };
 
@@ -178,14 +180,14 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
   const theme = useTheme();
 
 
-  const [data, setData] = useState<Categoria[]>([]);
-  const [idCategory, setIdCategory] = useState<Categoria[]>([]);
+  const [data, setData] = useState<Frete[]>([]);
+  const [idShip, setIdShip] = useState<Frete[]>([]);
   const [modal, setModal] = useState<Boolean>(false)
 
-  async function queryCategoryId(idCategory: any){
+  async function queryShipById(idShip: any){
     setModal(!modal)
     setData(null)
-    const {data} = await api.get(`/categorias/${idCategory}`);
+    const {data} = await api.get(`/fretes/${idShip}`);
     if(data){
       setData(data);
     }else{
@@ -246,7 +248,9 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                   onChange={handleSelectAllCryptoOrders}
                 />
               </TableCell>
-              <TableCell>Área de entrega</TableCell>
+              <TableCell>Descrição</TableCell>
+              <TableCell>CEP Saída</TableCell>
+              <TableCell>CEP Destino</TableCell>
               <TableCell>Valor</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
@@ -280,7 +284,18 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.descricao}
+                      {data?.nome}
+                    </Typography>
+                    </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {data?.cep_inicio}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -291,9 +306,23 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                       gutterBottom
                       noWrap
                     >
-                      {data.id}
+                      {data?.cep_fim}
                     </Typography>
                   </TableCell>
+
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {data?.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+                    </Typography>
+                  </TableCell>
+
+             
                   <TableCell align="right">
                     <Tooltip title="Editar categoria" arrow>
                       <IconButton
@@ -305,7 +334,7 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
                         }}
                         color="inherit"
                         size="small"
-                        onClick={(e)=>queryCategoryId(data.id)}
+                        onClick={(e)=>queryShipById(data?.id)}
                       >
                         <EditTwoToneIcon fontSize="small" />
                       </IconButton>
@@ -341,7 +370,7 @@ const ShipTable: FC<RecentOrdersTableProps> = ({ cryptoOrders }) => {
         />
       </Box>
       {data  && (
-        <CategoryModal 
+        <ShipModal 
         openModal={modal}
         setModal={setModal}
         data={data}

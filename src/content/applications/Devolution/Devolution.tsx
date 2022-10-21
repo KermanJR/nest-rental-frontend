@@ -9,7 +9,7 @@ function Devolution() {
   const [dados, setDados] = useState<Pedido[]>([]);
 
   async function carregar(){
-    const {data} = await api.get("/pedidos/dashboard");
+    const {data} = await api.get("/api/devolucoes");
     setDados(data);
   }
 

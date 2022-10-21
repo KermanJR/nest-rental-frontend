@@ -72,6 +72,7 @@ const applyPagination = (
 };
 
 const DevolutionTable: FC<RecentOrdersTableProps> = ({ cryptoOrders, panel }) => {
+  console.log(cryptoOrders)
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
     []
   );

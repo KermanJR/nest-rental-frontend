@@ -16,6 +16,9 @@ import { UserContext } from 'src/context/UserContext';
 import { Today } from '@mui/icons-material';
 
 export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalPropsTestEdit) => {
+  
+
+  const { id_tokencontrato } = data;
 
   //frete e total
   const [billingValue, setBillingValue] = React.useState(null);
@@ -28,9 +31,17 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
   const [idUser, setIdUser] = useState(data['id']);
   const [idUserAddress, setIdUserAddress] = useState(data['id_endereco']);
 
+
+  //status contrato clicksign
+  const [statusDocument, setStatusDocument] = React.useState('');
+
   //datas
   const [dateMin, setDateMin] = useState('');
   const [date, setDate] = useState('');
+
+
+  //id product
+  const [product, setProduct] = React.useState('');
 
 
   //busca endereço do usuário pelo id
@@ -43,6 +54,39 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
       setUserDetails(null);
     }
   }
+
+  async function getStatusDocument(){
+    const fetchDocument = fetch(`https://nest-rental-backend-api.herokuapp.com/get-document/${id_tokencontrato}`, {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+    })
+
+    const response = await fetchDocument;
+    const json = await response.json();
+    let status = json.data.status;
+    if(status === 'running'){
+      setStatusDocument('Em processo')
+    }else if(status === 'canceled'){
+      setStatusDocument('Cancelado');
+    }
+  }
+
+  //busca produto pelo id
+  async function queryProductById(){
+    setProduct(null)
+    const response = await api.get(`/produtos/${data?.data?.itens[0].id_produto}`);
+    if(response.data){
+      console.log(response.data)
+       setProduct(response.data[0].nome);
+    }else{
+      setProduct(null);
+    }
+  }
+
+
+  
 
 
   //busca usuário pelo id
@@ -85,7 +129,12 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
 
   useEffect(()=>{
     blockBeforeTwoDays();
+    queryProductById();
   },[])
+
+  useEffect(()=>{
+    getStatusDocument();
+  },[id_tokencontrato])
 
   const {
     usuario
@@ -117,7 +166,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                         <input 
                           type="text"
                           name="product"
-                          value={data['descricao']}
+                          value={product}
                           style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                           disabled
                         />
@@ -132,10 +181,21 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                         disabled
                         />
                     </div>
+                    
                     :
                     <>
                     </>
                   }
+                  <div style={{width: '100%'}}>
+                      <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Status Contrato</label>
+                      <input type="text" 
+                        value={statusDocument}
+                        id="status_document"
+                        name="status_document" 
+                        style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                        disabled
+                        />
+                    </div>
                     
                 </div>
 
@@ -148,7 +208,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                         <input 
                           type="date"
                           name="start"
-                          value={formatDate(data['data_inicio'])}
+                          value={formatDate(data?.data?.data_inicio)}
                           style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                           disabled
                         />
@@ -156,7 +216,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                     <div style={{width: '100%'}}>
                         <label htmlFor="end" style={{display: "block", paddingTop: '1rem'}}>Devolução</label>
                         <input type="date" 
-                          value={formatDate(data['data_entrega'])}
+                          value={formatDate(data?.data?.data_entrega)}
                           name="end" 
                           style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                           disabled
@@ -166,7 +226,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
 
 
                 {/*Dados do cliente*/}
-                <div className={styles.formCheckout__div}>
+                <div className={styles.formCheckout__div} style={{marginTop: '3rem'}}>
                     <div style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -184,7 +244,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                         <input 
                           type="text"
                           name="razao_social"
-                          value={userDetails?.razao_social}
+                          value={data?.data?.cliente?.razao_social}
                           style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                           disabled
                         />
@@ -198,7 +258,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                           <input 
                             type="text"
                             name="fantasy_name"
-                            value={userDetails?.nome_fantasia}
+                            value={data?.data?.cliente?.nome_fantasia}
                             style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                             disabled
                           />
@@ -208,7 +268,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                           <input 
                               type="text" 
                               name="cnpj_client"
-                              value={userDetails?.documento}
+                              value={data?.data?.cliente?.documento}
                               style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                               disabled
                           />
@@ -222,7 +282,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                             <input 
                               type="text"
                               name="insc_estadual"
-                              value={userDetails?.inscricao_estadual}
+                              value={data?.data?.cliente?.inscricao_estadual}
                               style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                               disabled
                             />
@@ -232,7 +292,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                             <input 
                                 type="text" 
                                 name="email_client"
-                                value={userDetails?.email}
+                                value={data?.data?.cliente?.email}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -242,7 +302,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
 
 
                 {/* DETALHES DO FATURAMENTO*/}
-                <div className={styles.formCheckout__div}>
+                <div className={styles.formCheckout__div} style={{marginTop: '3rem'}}>
                     <Title level={3}>
                         Detalhes do faturamento
                     </Title>
@@ -282,7 +342,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 name="" 
                                 pattern="[0-9]+"
                                 placeholder="Digite seu CEP"
-                                value={userAddress?.cep}
+                                value={data?.data?.cliente?.enderecos[0].endereco?.cep}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -294,7 +354,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 id="street" 
                                 name="street" 
                                 placeholder="Digite sua rua ou avenida"
-                                value={userAddress?.rua}
+                                value={data?.data?.cliente?.enderecos[0].endereco?.rua}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -306,7 +366,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 id="number" 
                                 placeholder="Digite o número"
                                 name="number"
-                                value={userAddress?.numero}
+                                value={data?.data?.cliente?.enderecos[0].endereco?.numero}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -321,7 +381,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 id="country" 
                                 placeholder="Digite sua cidade"
                                 name="country" 
-                                value="{retornar cidade}"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.cidade?.nome}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -347,7 +407,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 id="bairro" 
                                 placeholder="Digite seu bairro"
                                 name="bairro"
-                                value={userAddress?.bairro}
+                                value={data?.data?.cliente?.enderecos[1].endereco?.bairro}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -359,7 +419,107 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                                 id="" 
                                 name=""
                                 placeholder="Digite um complemento"
-                                value={userAddress?.complemento}
+                                value={data?.data?.cliente?.enderecos[1].endereco?.complemento}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                    
+                    </div>
+                </div>
+
+                {/* DETALHES DO ENTREGA*/}
+                <div className={styles.formCheckout__div} style={{marginTop: '3rem'}}>
+                    <Title level={3}>
+                        Detalhes do entrega
+                    </Title>
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                        <div style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>CEP</label>
+                            <input 
+                                type="number" 
+                                id="" 
+                                name="" 
+                                pattern="[0-9]+"
+                                placeholder="Digite seu CEP"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.cep}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Rua/Av*</label>
+                            <input 
+                                type="text" 
+                                id="street" 
+                                name="street" 
+                                placeholder="Digite sua rua ou avenida"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.rua}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Número*</label>
+                            <input 
+                                type="number" 
+                                id="number" 
+                                placeholder="Digite o número"
+                                name="number"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.numero}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{display: "flex", justifyContent: "space-between", gridGap: "1rem"}}>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Cidade*</label>
+                            <input 
+                                type="text" 
+                                id="country" 
+                                placeholder="Digite sua cidade"
+                                name="country" 
+                                value={data?.data?.cliente?.enderecos[1].endereco?.cidade?.nome}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>UF*</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                placeholder="Digite seu estado"
+                                name="" 
+                                value={'SP'}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Bairro*</label>
+                            <input 
+                                type="text" 
+                                id="bairro" 
+                                placeholder="Digite seu bairro"
+                                name="bairro"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.bairro}
+                                style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
+                                disabled
+                            />
+                        </div>
+                        <div  style={{width:"100%"}}>
+                            <label style={{display: "block", paddingTop: '1rem'}}>Complemento</label>
+                            <input 
+                                type="text" 
+                                id="" 
+                                name=""
+                                placeholder="Digite um complemento"
+                                value={data?.data?.cliente?.enderecos[1].endereco?.complemento}
                                 style={{width: "100%", padding: ".7rem", borderRadius: "8px", border: "1px solid #ccc"}}
                                 disabled
                             />
@@ -407,12 +567,10 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
                 
               </div>: <></>
               }
-                <div style={{paddingTop: "1rem"}}>
-                    <p><b>Frete:</b> {billingValue?.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</p>
-                </div>
+               
 
-                <div>
-                    <p><b>Total:</b></p>
+                <div style={{marginTop: '2rem'}}>
+                    <p style={{fontSize: '2rem'}}><b>Total: {data?.data?.vr_total.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</b></p>
                 </div>
             </form>
           </div>

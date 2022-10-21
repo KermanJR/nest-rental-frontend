@@ -23,7 +23,6 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     const email_user = useForm('email');
     const tel_company = useForm('telefone');
     const tel_user = useForm('telefone');
-    const passwordClient = useForm('password')
 
     //Billing and total
     const [billingValue, setBillingValue] = React.useState(null);
@@ -54,7 +53,10 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     const [endDate, setEndDate] = useState('');
     const [errorCep, setErrorCep] = React.useState('');
 
-    const [clients, setClients] = useState<Cliente[]>([]);
+    const [clients, setClients] = useState([]);
+    const [idClient, setIdClient] = useState(null);
+
+    const [clientData, setClientData] = useState(null);
 
    
 
@@ -103,13 +105,22 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
 
     async function searchClients(){
         setProdutos(null)
-        const {data} = await api.get("/usuarios");
+        const {data} = await api.get("/usuarios/type/2");
         if(data){
             setClients(data);
         }else{
             setClients(null);
         }
-      }
+    }
+
+    async function searchClientById(idClient){
+        const {data} = await api.get(`/usuarios/${idClient}`);
+        if(data){
+            setClientData(data);
+        }else{
+            setClientData(null);
+        }
+    }
     
     React.useEffect(()=>{
         searchClients();
@@ -122,6 +133,10 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
     React.useEffect(()=>{
         buscaCep(billingCep)
     },[billingCep])
+
+    React.useEffect(()=>{
+        searchClientById(idClient)
+    }, [idClient])
 
 
  
@@ -160,10 +175,12 @@ export const BudgetsModal = ({openModal, setModal, data, edit}: ModalPropsTestEd
                     <div style={{width: '100%'}}>
                     <label htmlFor="start" style={{display: "block", paddingTop: '1rem'}}>Selecione o cliente</label>
                         {clients && 
-                            <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}>
+                            <select style={{width: '100%', height: '40px', borderRadius: '8px', borderColor: '#ccc'}}
+                                onChange={(e)=>setIdClient(e.target.value)}
+                            >
                                 {clients.map((item, index)=>{
                                 return  <>
-                                            <option value={item.id} key={item.id}>{item.nome}</option>
+                                            <option value={item.id} key={item.id}>{item?.login}</option>
                                         </>
                                 
                                 })} 
