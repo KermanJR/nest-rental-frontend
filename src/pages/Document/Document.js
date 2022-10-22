@@ -3,13 +3,13 @@ import React from "react";
 
 export const Document = () =>{
    
-    let key = '';
+    let key = window.localStorage.getItem('key_document_user_new');
     var widget = '';
     var input = '';
     setTimeout(()=>{
         widget = window.document.querySelector("#request_signature_key");
         input = window.document.querySelector("#request_signature_key");
-        key = window.localStorage.getItem('document_key_signer');
+        
     }, 3000)
     
     

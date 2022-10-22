@@ -20,6 +20,10 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
 
   const { id_tokencontrato } = data;
 
+  const {
+    usuario
+  } = useContext(UserContext);
+
   //frete e total
   const [billingValue, setBillingValue] = React.useState(null);
   const [totalBudget, setTotalBudget] = React.useState(null);
@@ -55,6 +59,31 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
     }
   }
 
+  
+
+
+
+  const updateStatusDocumentZoho = async (status: string) => {
+    const fetchQuote = fetch('https://nest-rental-backend-api.herokuapp.com/update-status/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "data": [
+                        {
+                          "id": data?.data?.id_orcamento,
+                          "Quote_Stage": status, 
+
+                    }
+                ]
+            })
+        })
+    const response = await fetchQuote;
+    const json = await response.json();
+}
+
+
   async function getStatusDocument(){
     const fetchDocument = fetch(`https://nest-rental-backend-api.herokuapp.com/get-document/${id_tokencontrato}`, {
       method: 'POST',
@@ -68,8 +97,13 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
     let status = json.data.status;
     if(status === 'running'){
       setStatusDocument('Em processo')
+      updateStatusDocumentZoho('Pendente')
     }else if(status === 'canceled'){
       setStatusDocument('Cancelado');
+      updateStatusDocumentZoho('Fechado perdido')
+    }else if(status === 'closed'){
+      setStatusDocument('Documento Assinado');
+      updateStatusDocumentZoho('Fechado Ganho')
     }
   }
 
@@ -78,7 +112,6 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
     setProduct(null)
     const response = await api.get(`/produtos/${data?.data?.itens[0].id_produto}`);
     if(response.data){
-      console.log(response.data)
        setProduct(response.data[0].nome);
     }else{
       setProduct(null);
@@ -136,9 +169,7 @@ export const RegisterOrderModal = ({openModal, setModal, data, edit}: ModalProps
     getStatusDocument();
   },[id_tokencontrato])
 
-  const {
-    usuario
-  } = useContext(UserContext);
+  
   
   return (
     <>

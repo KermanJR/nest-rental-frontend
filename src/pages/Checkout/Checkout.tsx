@@ -72,6 +72,7 @@ export const Checkout = () => {
     const [detalhesNovoPedido, setDetalhesNovoPedido] = React.useState(null);
 
     const [produto, setProduto] = React.useState(null);
+    const [idOrcamento, setIdOrcamento] = React.useState('');
     const { request, error, data, loading } = useFetch();
 
 
@@ -174,6 +175,7 @@ export const Checkout = () => {
     async function atualizarPedido(key?: string) {
         const tt = await api.put(`/pedidos/${detalhesNovoPedido?.id}`, {
             "id_tokencontrato": key,
+            "id_orcamento": idOrcamento,
             "descricao": "????",
             "data_inicio": detalhesNovoPedido?.data_inicio,
             "data_entrega": detalhesNovoPedido?.data_entrega,
@@ -195,21 +197,22 @@ export const Checkout = () => {
         return tt;
     }
 
-    async function atualizarPedidoUsuarioLogado() {
-        const tt = await api.put(`/pedidos/${usuario?.id}`, {
+    async function atualizarPedidoUsuarioLogado(detalhesPedido: any) {
+        const tt = await api.put(`/pedidos/${detalhesPedido?.id}`, {
             "id_tokencontrato": keyDocument,
+            "id_orcamento": idOrcamento,
             "descricao": "????",
-            "data_inicio": detalhesNovoPedido?.data_inicio,
-            "data_entrega": detalhesNovoPedido?.data_entrega,
-            "vr_total": detalhesNovoPedido?.vr_total,
-            "id_endereco": detalhesNovoPedido?.id_endereco,
+            "data_inicio": detalhesPedido?.data_inicio,
+            "data_entrega": detalhesPedido?.data_entrega,
+            "vr_total": detalhesPedido?.vr_total,
+            "id_endereco": detalhesPedido?.id_endereco,
             "id_cupom_desconto": null,
-            "id_cliente": detalhesNovoPedido?.id_cliente,
-            "id_usuario": detalhesNovoPedido?.id_usuario,
+            "id_cliente": detalhesPedido?.id_cliente,
+            "id_usuario": detalhesPedido?.id_usuario,
             "itens": [
                 {
-                    "id_produto": detalhesNovoPedido?.itens[0].id_produto,
-                    "valor": detalhesNovoPedido?.itens[0].valor,
+                    "id_produto": detalhesPedido?.itens[0].id_produto,
+                    "valor": detalhesPedido?.itens[0].valor,
                     "vr_desconto": 0,
                     "quantidade": 1
                 },
@@ -240,8 +243,8 @@ export const Checkout = () => {
         const json = await response.json();
         const key = await json?.key_document_signer;
         if(usuario){
-            await salvarPedidoUsuarioLogado();
-            await atualizarPedidoUsuarioLogado();
+           let detalhesPedido = await salvarPedidoUsuarioLogado();
+            await atualizarPedidoUsuarioLogado(detalhesPedido);
         }
         else{
             setTimeout(()=>{
@@ -402,6 +405,7 @@ export const Checkout = () => {
             "id_cliente": id_entidade,
             "id_usuario": id_usuario,
             "id_tokencontrato": "",
+            "id_orcamento": "",
             "itens": [
                 {
                     "id_produto": id_produto,
@@ -465,6 +469,7 @@ export const Checkout = () => {
             const { endereco } = await criar_endereco_cobranca(entidade_id);
             const { endereco: endereco_entrega } = await criar_endereco_entrega(entidade_id);
             const pedido = await criar_pedido(endereco, user_id, entidade_id);
+            return pedido;
             
         } catch (err) {
             if(err?.response?.data?.errors[0].field == 'login'){
@@ -611,6 +616,7 @@ export const Checkout = () => {
             })
         const response = await fetchQuote;
         const json = await response.json();
+        setIdOrcamento(json.message.data[0].details.id)
         if(usuario){
             createModelDocument();
             setErrorData('');
@@ -754,6 +760,7 @@ export const Checkout = () => {
             })
         const response = await fetchQuote;
         const json = await response.json();
+        setIdOrcamento(json.message.data[0].details.id)
         if(usuario){
             createModelDocument();
             setErrorData('');
