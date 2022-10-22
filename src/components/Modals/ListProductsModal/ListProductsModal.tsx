@@ -94,8 +94,7 @@ export const ListProductsModal = ({ openModal, setModal, data, edit }: ModalProp
     setLoading(true);
     const teste = fetch(`http://191.252.66.11:3333/api/produtos/${idProduct}`, {
       headers:{
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjp7InVzZXJJZCI6NCwidXNlciI6e319LCJpYXQiOjE2NjU4NDcxNjUsImV4cCI6MTY2NjI3OTE2NX0.IPlQWFD-eACGxXbYsgxThkV9Zh-WhUO_vJs6b-GDeFS_kl8PzJtKRs90pYhnkFSxnKb57NxhgSEQnvLOQ6bQh_I88PyiGtNa9heuTc9_DUxo3VAyzlTaefdmAoZzhaso0ZEb3OHnZPJXdQZ3h1VPHzOnAUfX2h3n0GyM_Hh5qTkPqDStAURv3Hd_z0W-HYTytmJWprM22xGamD70UCnC8cTKj4dxEDn55jUJiCVxQMyNmM9gREcXjjxd3GL_Drfx5IE1qQ8iHR4McMd7JoDVczLd2FT3yzLL9AwIjn4YS5wnWoBTML263Ea4ecgjFGsBP60b6LfM5FMdc_Zvefx_mHWC5gxtfHzx2qvElO3kUY-pvo5hpEduR-Q5M3z1Avp4zeY7yBh0CB734yn_ZX-HWBoRkVBMyCldsXYOWvgOZR6sdbVEVzzr4yoDl2nNoxpwSKAQhOlLHMeIfA2tzbFxWpkZXH32ZNH_5ZhFfuqPLIdVDz7twG5tBib98UBCUFF8d9mAcU3TrYFWD__ziah9yMkVeJmWiGVHKKo9v1OeYFUdjnE3AILQ06c6ASSsk9xsSEpx5y6CeghDUkHI1MzqnyL4THeWXVUP05UkuPXPl3lOobe1vFqL7u8MJdarYAcYvy7aoiDUqZNpfdMbSivSLRkJJWvNxOIjx2l-8nvWKw4`
+        'Content-Type': 'application/json'
       }, 
       method: 'PUT',
       body: JSON.stringify({
